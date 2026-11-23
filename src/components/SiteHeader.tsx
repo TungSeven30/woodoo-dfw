@@ -7,12 +7,16 @@ import { SITE_CONFIG } from "@/config/site";
 import { useSite } from "./SiteProvider";
 import { trackEvent } from "@/lib/analytics";
 
+// Five primary destinations in the bar; the rest live in the mobile menu and the footer.
 const NAV_LINKS = [
   { href: "/collections", label: "Collections" },
-  { href: "/compose", label: "Compose" },
   { href: "/precision", label: "Precision" },
+  { href: "/compose", label: "Compose" },
   { href: "/trade", label: "Trade" },
   { href: "/showroom", label: "Showroom" },
+];
+
+const MORE_LINKS = [
   { href: "/process", label: "Process" },
   { href: "/about", label: "About" },
   { href: "/faq", label: "FAQ" },
@@ -32,6 +36,7 @@ export function SiteHeader() {
   };
 
   const isDarkStage = pathname === "/" || pathname === "/compose";
+  const isFilm = pathname === "/";
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -83,7 +88,7 @@ export function SiteHeader() {
           </nav>
 
           <div className="header-actions">
-            {SITE_CONFIG.featureFlags.sound && (
+            {isFilm && SITE_CONFIG.featureFlags.sound && (
               <button
                 type="button"
                 id="sound-toggle-btn"
@@ -92,29 +97,28 @@ export function SiteHeader() {
                 aria-pressed={soundEnabled}
                 title={soundEnabled ? "Mute cabinet audio" : "Enable cabinet audio"}
               >
-                <span className="mono-label" style={{ color: "inherit", fontSize: "0.7rem" }}>
-                  {soundEnabled ? "Sound on" : "Sound off"}
-                </span>
+                <SoundGlyph on={soundEnabled} />
+                <span className="sr-only">{soundEnabled ? "Sound on" : "Sound off"}</span>
               </button>
             )}
 
-            <button
-              type="button"
-              id="lighter-version-toggle"
-              className="btn btn-quiet btn-sm header-hide-xs"
-              onClick={toggleLighterVersion}
-              aria-pressed={quality.tier === "C"}
-              title="Switch between interactive 3D Film and lighter still-image sequence"
-            >
-              <span className="mono-label" style={{ color: "inherit", fontSize: "0.7rem" }}>
+            {isFilm && (
+              <button
+                type="button"
+                id="lighter-version-toggle"
+                className="btn btn-quiet btn-sm header-hide-xs header-hide-md"
+                onClick={toggleLighterVersion}
+                aria-pressed={quality.tier === "C"}
+                title="Switch between the interactive 3D film and a lighter still-image version"
+              >
                 {quality.tier === "C" ? "3D version" : "Lighter version"}
-              </span>
-            </button>
+              </button>
+            )}
 
             <Link
               href="/trade/send-a-plan"
               id="header-cta-send-plan"
-              className="btn btn-sm header-hide-xs"
+              className="btn btn-quiet btn-sm header-hide-xs"
               onClick={() =>
                 trackEvent("cta_click", {
                   cta: "send-a-plan",
@@ -168,7 +172,7 @@ export function SiteHeader() {
             <Link href="/" onClick={() => setMenuOpen(false)}>
               The Film
             </Link>
-            {NAV_LINKS.map((item) => (
+            {[...NAV_LINKS, ...MORE_LINKS].map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -228,5 +232,18 @@ export function SiteHeader() {
         </div>
       )}
     </>
+  );
+}
+
+function SoundGlyph({ on }: { on: boolean }) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+      <path d="M3 7h2.5L9 4v10l-3.5-3H3z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
+      {on ? (
+        <path d="M12 6.5c.9.7 1.4 1.5 1.4 2.5s-.5 1.8-1.4 2.5M14 4.5c1.5 1.2 2.3 2.7 2.3 4.5S15.5 12.3 14 13.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+      ) : (
+        <path d="M12.5 7l4 4M16.5 7l-4 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+      )}
+    </svg>
   );
 }

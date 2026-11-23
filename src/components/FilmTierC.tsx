@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { TwoToneHeadline } from "./TwoToneHeadline";
 import {
   COLLECTIONS,
   COLLECTION_LIST,
@@ -72,20 +73,17 @@ export function FilmTierC({ quality }: FilmTierCProps) {
           borderBottom: "1px solid var(--border)",
         }}
       >
-        <div style={{ display: "flex", gap: "0.55rem", flexWrap: "wrap" }}>
-          <Link href="/trade/send-a-plan" className="film-pill-link">
-            Skip to trade
+        <span className="mono-label">
+          {reduced ? "Still images · Reduced motion is on" : "Lighter version · Still images"}
+        </span>
+        <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
+          <Link href="/trade/send-a-plan" className="film-skip-link">
+            For the trade
           </Link>
-          <Link href="/showroom" className="film-pill-link">
-            Skip to homeowners
-          </Link>
-          <Link href="/compose" className="film-pill-link">
-            Open configurator
+          <Link href="/showroom" className="film-skip-link">
+            For homeowners
           </Link>
         </div>
-        <span className="mono-label">
-          {reduced ? "Reduced motion · Stills mode" : "Lighter edition · Pre-rendered scenes"}
-        </span>
       </div>
 
       {/* Editorial Sequence of All 9 Film Chapters */}
@@ -105,16 +103,14 @@ export function FilmTierC({ quality }: FilmTierCProps) {
               }}
             >
               <div>
-                <p className="mono-label" style={{ color: "var(--amber-on-dark)", marginBottom: "0.65rem" }}>
-                  {scene.label}
-                </p>
+                <p className="film-eyebrow">{scene.label.replace(/^\d+ · /, "")}</p>
                 {scene.index === 0 ? (
                   <h1 className="display-serif" style={{ marginBottom: "1rem" }}>
                     {scene.headline}
                   </h1>
                 ) : (
                   <h2 className="h1-serif" style={{ marginBottom: "0.9rem" }}>
-                    {scene.headline}
+                    <TwoToneHeadline text={scene.headline} />
                   </h2>
                 )}
                 <p style={{ color: "#cfc8bd", maxWidth: "48ch", margin: "0 0 1.25rem" }}>

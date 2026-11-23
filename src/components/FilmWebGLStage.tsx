@@ -23,6 +23,7 @@ import {
 } from "@/engine/film-engine";
 import { QualityProfile, isSoftwareWebGLRenderer } from "@/engine/device-tier";
 import { useSite } from "./SiteProvider";
+import { TwoToneHeadline } from "./TwoToneHeadline";
 import { markConfiguratorUsed, trackEvent } from "@/lib/analytics";
 
 interface FilmWebGLStageProps {
@@ -341,32 +342,6 @@ export default function FilmWebGLStage({
           </div>
         )}
 
-        {/* Scene 7: Hairline White Architectural Plan-View CAD Overlay */}
-        {telemetry.planOverlayOpacity > 0.04 && (
-          <svg
-            aria-hidden="true"
-            viewBox="0 0 1200 720"
-            preserveAspectRatio="none"
-            style={{
-              position: "absolute",
-              inset: 0,
-              width: "100%",
-              height: "100%",
-              zIndex: 4,
-              pointerEvents: "none",
-              opacity: telemetry.planOverlayOpacity * 0.52,
-            }}
-          >
-            <line x1="90" y1="120" x2="820" y2="120" stroke="#f1eee7" strokeWidth="0.8" strokeDasharray="4 6" />
-            <line x1="90" y1="580" x2="820" y2="580" stroke="#f1eee7" strokeWidth="0.8" strokeDasharray="4 6" />
-            <line x1="90" y1="120" x2="90" y2="580" stroke="#f1eee7" strokeWidth="0.8" />
-            <line x1="820" y1="120" x2="820" y2="580" stroke="#f1eee7" strokeWidth="0.8" />
-            <text x="104" y="142" fill="#f1eee7" fontSize="12" fontFamily="monospace" letterSpacing="2">
-              PLAN VIEW · {ROOM_LAYOUTS[telemetry.activeLayout].footprintLabel.toUpperCase()} · {telemetry.activeCeiling} FT SYSTEM
-            </text>
-          </svg>
-        )}
-
         {/* Scene 6 Minimal Side HUD */}
         {telemetry.sceneIndex === 6 && (
           <div className="reconfig-hud" aria-live="off">
@@ -385,67 +360,52 @@ export default function FilmWebGLStage({
         {/* Persistent HUD Layer (Builders never trapped: Skip links from Frame 0!) */}
         <div className="film-hud-layer">
           <div className="film-quick-bar">
-            <div className="film-quick-links">
-              <Link
-                href="/trade/send-a-plan"
-                id="film-skip-trade"
-                className="film-pill-link"
-                onClick={() => trackEvent("cta_click", { cta: "skip-to-trade", location: "film-bar" })}
-              >
-                Skip to trade
-              </Link>
-              <Link
-                href="/showroom"
-                id="film-skip-homeowners"
-                className="film-pill-link"
-                onClick={() => trackEvent("cta_click", { cta: "skip-to-homeowners", location: "film-bar" })}
-              >
-                Skip to homeowners
-              </Link>
-              <Link
-                href="/compose"
-                className="film-pill-link"
-                onClick={() => trackEvent("cta_click", { cta: "open-compose", location: "film-bar" })}
-              >
-                Compose studio
-              </Link>
-            </div>
-
+            <span className="film-scene-count" aria-hidden="true">
+              {String(currentScene.index + 1).padStart(2, "0")}
+              <span className="film-scene-count-total"> / {String(FILM_SCENES.length).padStart(2, "0")}</span>
+            </span>
             <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
               {currentScene.isConceptRender && (
                 <span className="concept-render-tag">Concept render</span>
               )}
-              <span className="mono-label" style={{ color: "#d5cec4" }}>
-                {currentScene.label} · {Math.round(telemetry.progress * 100)}%
-              </span>
+              <a
+                href="#film-end"
+                id="film-skip"
+                className="film-skip-link"
+                onClick={() => trackEvent("cta_click", { cta: "skip-film", location: "film-bar" })}
+              >
+                Skip the film
+              </a>
             </div>
           </div>
 
           {/* Bottom Story Headline (Hidden in Scene 8 where Split Doors take full stage) */}
           {!telemetry.splitDoorsVisible && (
             <div
-              className="film-story-card"
+              key={currentScene.id}
+              className={`film-story-card${telemetry.sceneIndex === 7 ? " is-scene7" : ""}`}
               style={{
-                maxWidth: telemetry.sceneIndex === 7 ? "26rem" : "35rem",
+                maxWidth: telemetry.sceneIndex === 7 ? "24rem" : "36rem",
               }}
             >
               {telemetry.sceneIndex === 0 ? (
                 <>
-                  <p className="mono-label" style={{ color: "var(--amber-on-dark)", marginBottom: "0.55rem" }}>
+                  <p className="film-eyebrow">
                     {SITE_CONFIG.BRAND_NAME} · Dallas–Fort Worth
                   </p>
                   <h1 className="display-serif">{currentScene.headline}</h1>
                   <p>{currentScene.subline}</p>
-                  <p className="mono-label" style={{ marginTop: "1.1rem", color: "#b6aea3" }}>
-                    Scroll to assemble ↓
+                  <p className="film-scroll-cue" aria-hidden="true">
+                    <span className="film-scroll-cue-line" />
+                    Scroll to assemble
                   </p>
                 </>
               ) : (
                 <>
-                  <p className="mono-label" style={{ color: "var(--amber-on-dark)", marginBottom: "0.45rem" }}>
-                    {currentScene.label}
-                  </p>
-                  <h2>{currentScene.headline}</h2>
+                  <p className="film-eyebrow">{currentScene.label.replace(/^\d+ · /, "")}</p>
+                  <h2>
+                    <TwoToneHeadline text={currentScene.headline} />
+                  </h2>
                   <p>{currentScene.subline}</p>
                 </>
               )}
@@ -633,28 +593,30 @@ export default function FilmWebGLStage({
           </div>
         )}
 
+        {/* Right-Edge Progress Rail with Clickable & Keyboard-Accessible Scene Ticks */}
+        <nav className="scene-rail" aria-label="Film scenes">
+          {FILM_SCENES.map((scene) => (
+            <button
+              key={scene.id}
+              type="button"
+              className="scene-tick"
+              aria-current={telemetry.sceneIndex === scene.index ? "step" : undefined}
+              aria-label={`Jump to ${scene.label}: ${scene.headline}`}
+              onClick={() => scrollToProgress(scene.anchor)}
+            >
+              <span className="scene-tick-label">{scene.label}</span>
+              <span className="scene-tick-bar" aria-hidden="true" />
+            </button>
+          ))}
+        </nav>
+
         {/* Polite Live Region for Scene 7 Configurator Announcements */}
         <div className="sr-only" aria-live="polite" aria-atomic="true">
           {liveAnnouncement}
         </div>
       </div>
 
-      {/* Right-Edge Progress Rail with Clickable & Keyboard-Accessible Scene Ticks */}
-      <nav className="scene-rail" aria-label="Film scenes">
-        {FILM_SCENES.map((scene) => (
-          <button
-            key={scene.id}
-            type="button"
-            className="scene-tick"
-            aria-current={telemetry.sceneIndex === scene.index ? "step" : undefined}
-            aria-label={`Jump to ${scene.label}: ${scene.headline}`}
-            onClick={() => scrollToProgress(scene.anchor)}
-          >
-            <span className="scene-tick-label">{scene.label}</span>
-            <span className="scene-tick-bar" aria-hidden="true" />
-          </button>
-        ))}
-      </nav>
     </div>
   );
 }
+

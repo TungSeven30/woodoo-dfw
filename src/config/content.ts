@@ -28,7 +28,7 @@ export const FILM_SCENES: FilmSceneCopy[] = [
     end: 0.05,
     anchor: 0.02,
     headline: "It arrives flat.",
-    subline: "European frameless cabinetry. Packed to the millimetre. Built for Dallas–Fort Worth.",
+    subline: "European frameless cabinets, packed flat to the millimeter and supplied across Dallas–Fort Worth.",
     srDescription:
       "A single Premium Oak panel rests in dark space under warm raking light, showing continuous vertical wood grain.",
   },
@@ -41,7 +41,7 @@ export const FILM_SCENES: FilmSceneCopy[] = [
     anchor: 0.1,
     headline: "Every piece of a kitchen. Already here.",
     subline:
-      "Sides, backs, shelves, doors, drawer fronts, toe kicks, and fillers — milled, sorted, and stacked flat before a single box is raised.",
+      "Sides, backs, shelves, doors, drawer fronts, toe kicks, and fillers. Milled, labeled, and stacked flat before a single box goes up.",
     srDescription:
       "The camera pulls back to show dozens of cabinet components aligned in a compact flat-pack stack, each marked with an engraved part code.",
   },
@@ -65,9 +65,9 @@ export const FILM_SCENES: FilmSceneCopy[] = [
     start: 0.3,
     end: 0.4,
     anchor: 0.35,
-    headline: "Two millimetres. That's the whole gap.",
+    headline: "Two millimeters. That's the whole gap.",
     subline:
-      "Where framed cabinetry leaves wide strips of wood between doors, full-overlay geometry narrows every shadow line to an even 2 mm.",
+      "Framed cabinets leave a strip of wood between every pair of doors. Full-overlay doors close it to one even 2 mm line.",
     srDescription:
       "Macro view between two adjacent doors showing the exact 2 mm reveal separating full-overlay panels.",
   },
@@ -78,11 +78,11 @@ export const FILM_SCENES: FilmSceneCopy[] = [
     start: 0.4,
     end: 0.48,
     anchor: 0.44,
-    headline: "No frame. Nothing between you and your shelf.",
+    headline: "No frame. Nothing between you and the shelf.",
     subline:
-      "No face frame. No centre stile splitting wide platters in two. Factory-finished sides outside; uninterrupted shelf width inside.",
+      "No face frame and no center stile to split a wide platter. Finished sides outside, the full shelf width inside.",
     srDescription:
-      "The cabinet doors open to reveal a completely unobstructed frameless interior, contrasted with a translucent wireframe of a traditional face-frame centre stile.",
+      "The cabinet doors open to reveal a completely unobstructed frameless interior, contrasted with a translucent wireframe of a traditional face-frame center stile.",
   },
   {
     id: "kitchen",
@@ -93,7 +93,7 @@ export const FILM_SCENES: FilmSceneCopy[] = [
     anchor: 0.61,
     headline: "Then it becomes a kitchen.",
     subline:
-      "Base runs, tall pantry, stacked uppers, and 3-inch molding — scaled cleanly to 8, 9, and 10 ft North Texas ceilings.",
+      "Base runs, a tall pantry, stacked uppers, and 3-inch molding, sized for 8, 9, and 10 ft ceilings.",
     srDescription:
       "Multiple flat-packs assemble across the floor plan into a complete L-shaped kitchen in Premium Oak with stacked uppers and 3-inch molding. Concept render.",
     isConceptRender: true,
@@ -107,7 +107,7 @@ export const FILM_SCENES: FilmSceneCopy[] = [
     anchor: 0.74,
     headline: "One system. Every room.",
     subline:
-      "L-shape, galley, island, bath vanity. Three door profiles and five finishes reconfigured from the same modular kit of parts.",
+      "L-shape, galley, island, bath vanity. The same kit of parts, three door styles, five finishes.",
     srDescription:
       "Without cutting, the kitchen reconfigures from L-Shape in Premium Oak Traditional Shaker, to Galley in Iron Black Slim Shaker, to a 10-foot Island Kitchen in Classic Walnut Flat, and finally to a Bath Vanity and Linen Tower in Frosty White Flat. Concept render.",
     isConceptRender: true,
@@ -119,9 +119,9 @@ export const FILM_SCENES: FilmSceneCopy[] = [
     start: 0.82,
     end: 0.92,
     anchor: 0.88,
-    headline: "Five finishes. Three door styles. Fewer than you expected, on purpose.",
+    headline: "Five finishes. Three doors. Try yours.",
     subline:
-      "Discipline beats an endless swatch wall. Test layout, profile, finish, and ceiling height right here — or open the full studio.",
+      "Change the layout, door, finish, and ceiling height right here, or open the full studio.",
     srDescription:
       "Overhead architectural plan view of the 3D room with live controls to test layout, collection, finish, and 8, 9, or 10 foot ceiling heights. Concept render.",
     isConceptRender: true,
@@ -134,7 +134,7 @@ export const FILM_SCENES: FilmSceneCopy[] = [
     end: 1.0,
     anchor: 0.98,
     headline: "Open the door that fits your project.",
-    subline: "Direct paths for Dallas–Fort Worth trade partners and homeowners.",
+    subline: "One door for the trade. One for homeowners.",
     srDescription:
       "Two large 3D cabinet doors stand side by side: For the trade, leading to Send a plan and Trade accounts; and For my home, leading to Book a visit, the preview list, and kitchen composition.",
   },
@@ -247,13 +247,13 @@ export const TRADE_BENEFITS = [
 export const PRECISION_PILLARS = [
   {
     code: "SPEC 01 · FULL OVERLAY",
-    title: "Two millimetres. That's the whole gap.",
+    title: "Two millimeters. That's the whole gap.",
     body: "Traditional framed cabinets leave broad bands of face frame visible around every door. Frameless European geometry mounts full-overlay doors straight across the carcass, tightening the visual seam to an even 2 mm shadow line.",
   },
   {
     code: "SPEC 02 · FULL ACCESS",
-    title: "No face frame. No centre stile.",
-    body: "Remove the inner frame lip and vertical centre divider and a 36-inch cabinet finally behaves like 36 inches of storage. Wide trays slide straight in, and factory-finished exterior sides keep exposed ends crisp without extra skin panels.",
+    title: "No face frame. No center stile.",
+    body: "Remove the inner frame lip and vertical center divider and a 36-inch cabinet finally behaves like 36 inches of storage. Wide trays slide straight in, and factory-finished exterior sides keep exposed ends crisp without extra skin panels.",
   },
   {
     code: "SPEC 03 · VERTICAL SYSTEM",
@@ -270,7 +270,7 @@ export const PRECISION_PILLARS = [
 export const FAQ_ITEMS = [
   {
     q: "What is the practical difference between frameless and framed cabinets?",
-    a: "Framed cabinets nail a wooden border — and often a vertical centre stile — across the front of the box, narrowing what fits through the opening. Frameless European-style cabinets drop the face frame altogether. Full-overlay doors cover the box edge to edge with a uniform 2 mm reveal, giving you unobstructed interior access and factory-finished exterior sides.",
+    a: "Framed cabinets nail a wooden border — and often a vertical center stile — across the front of the box, narrowing what fits through the opening. Frameless European-style cabinets drop the face frame altogether. Full-overlay doors cover the box edge to edge with a uniform 2 mm reveal, giving you unobstructed interior access and factory-finished exterior sides.",
   },
   {
     q: "Which door styles and finishes are available?",
@@ -330,13 +330,13 @@ export const ABOUT_COPY = {
   eyebrow: "Chicago roots · Dallas–Fort Worth chapter",
   headline: "Built in Malaysia. Proven in Chicago. Opening in North Texas.",
   pullQuote:
-    "Good architecture rarely comes from four hundred paint chips. It comes from holding a two-millimetre shadow line straight across an entire wall.",
+    "Good architecture rarely comes from four hundred paint chips. It comes from holding a two-millimeter shadow line straight across an entire wall.",
   lead: `Anyone renovating a kitchen in Dallas–Fort Worth meets the same dead end: bargain boxes that show their shortcuts in the first winter, or bespoke European design studios priced out of reach for real projects. ${SITE_CONFIG.BRAND_NAME} occupies the clear middle ground — disciplined European frameless construction without the gallery markup.`,
   sections: [
     {
       chapter: "01 · THE DISCIPLINE OF RESTRAINT",
       title: "Three door styles. Five finishes. On purpose.",
-      body: "Most showrooms hand you a wall of four hundred door colours, then ask you to wait months while each order is pieced together. We hold tight to three architectural door profiles — Traditional Shaker, Slim Shaker, and Flat — across five finishes that live quietly alongside stone, plaster, and Texas light. Fewer variables mean sharper quality control and plain answers on stock.",
+      body: "Most showrooms hand you a wall of four hundred door colors, then ask you to wait months while each order is pieced together. We hold tight to three architectural door profiles — Traditional Shaker, Slim Shaker, and Flat — across five finishes that live quietly alongside stone, plaster, and Texas light. Fewer variables mean sharper quality control and plain answers on stock.",
     },
     {
       chapter: "02 · CLEAR PROCESS",

@@ -22,7 +22,7 @@ export default function TradePage() {
             Independent builders · Remodelers · Designers · Architects
           </p>
           <h1 className="h1-serif" style={{ maxWidth: "16ch", marginBottom: "1rem" }}>
-            Send us the plan. We&apos;ll send back every piece.
+            Send us the plan. <span className="tone-2">We&apos;ll send back every piece.</span>
           </h1>
           <p className="prose" style={{ marginBottom: "1.75rem" }}>
             A single missing filler can stall an entire job site. Our DFW trade team reviews your
@@ -35,9 +35,6 @@ export default function TradePage() {
             </Link>
             <a href="#trade-account" className="btn">
               Open a trade account
-            </a>
-            <a href="#referral-partner" className="btn">
-              Become a referral partner
             </a>
           </div>
         </div>
@@ -52,24 +49,12 @@ export default function TradePage() {
           <h2 className="h2-serif" style={{ marginBottom: "1.75rem" }}>
             Built around how North Texas jobs actually run.
           </h2>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(270px, 1fr))",
-              gap: "1.25rem",
-            }}
-          >
+          <div className="spec-list">
             {TRADE_BENEFITS.map((item, i) => (
-              <div key={item.title} className="arch-card">
-                <span className="mono-label" style={{ color: "var(--accent)" }}>
-                  0{i + 1}
-                </span>
-                <h3 className="h3-sans" style={{ margin: "0.4rem 0 0.5rem" }}>
-                  {item.title}
-                </h3>
-                <p style={{ margin: 0, color: "var(--fg-muted)", fontSize: "0.94rem" }}>
-                  {item.body}
-                </p>
+              <div key={item.title} className="spec-list-item">
+                <span className="spec-code">0{i + 1}</span>
+                <h3 className="h3-sans">{item.title}</h3>
+                <p>{item.body}</p>
               </div>
             ))}
           </div>

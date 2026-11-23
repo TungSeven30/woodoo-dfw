@@ -28,7 +28,7 @@ export function PrecisionHero3D() {
             macroZoom: inspectMode === "reveal",
           }}
           style={{ height: "100%" }}
-          ariaLabel="Interactive 3D frameless cabinet precision demonstration showing 2 mm reveal and open full-access interior without a centre stile. Concept render."
+          ariaLabel="Interactive 3D frameless cabinet precision demonstration showing 2 mm reveal and open full-access interior without a center stile. Concept render."
         />
       </div>
       <div

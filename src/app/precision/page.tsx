@@ -8,7 +8,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 export const metadata: Metadata = {
   title: "Frameless Precision & 2 mm Reveal",
   description:
-    "How European-style frameless construction delivers a 2 mm full-overlay reveal, full-access interiors without a centre stile, and 8, 9, and 10 ft ceiling systems.",
+    "How European-style frameless construction delivers a 2 mm full-overlay reveal, full-access interiors without a center stile, and 8, 9, and 10 ft ceiling systems.",
   alternates: { canonical: "/precision" },
 };
 
@@ -21,12 +21,11 @@ export default function PrecisionPage() {
             Engineering · Frameless system
           </p>
           <h1 className="h1-serif" style={{ maxWidth: "16ch", marginBottom: "1rem" }}>
-            Precision is the proof.
+            Look at the gaps. <span className="tone-2">Two millimeters, every one.</span>
           </h1>
           <p className="prose" style={{ marginBottom: "2rem" }}>
-            Real European frameless cabinetry does not hide gaps behind face frames. Full-overlay
-            doors align across the box with a 2 mm reveal, factory-finished sides, and zero centre
-            stile.
+            Frameless cabinets have no face frame to hide behind. Full-overlay doors cover the box
+            edge to edge, with a 2 mm reveal, finished sides, and no center stile.
           </p>
 
           <PrecisionHero3D />
@@ -35,24 +34,12 @@ export default function PrecisionPage() {
 
       <section className="section-pad hairline-bottom">
         <div className="container">
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-              gap: "1.5rem",
-            }}
-          >
+          <div className="spec-list">
             {PRECISION_PILLARS.map((pillar) => (
-              <article key={pillar.code} className="arch-card">
-                <p className="mono-label" style={{ color: "var(--accent)", marginBottom: "0.55rem" }}>
-                  {pillar.code}
-                </p>
-                <h2 className="h3-sans" style={{ marginBottom: "0.65rem" }}>
-                  {pillar.title}
-                </h2>
-                <p style={{ margin: 0, color: "var(--fg-muted)", fontSize: "0.96rem" }}>
-                  {pillar.body}
-                </p>
+              <article key={pillar.code} className="spec-list-item">
+                <p className="spec-code">{pillar.code}</p>
+                <h2 className="h3-sans">{pillar.title}</h2>
+                <p>{pillar.body}</p>
               </article>
             ))}
           </div>

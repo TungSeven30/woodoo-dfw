@@ -27,7 +27,7 @@ export default function HomePage() {
       </section>
 
       {/* Architectural Summary & Quick Directory below Scene 8 for crawlers and visitors scrolling past the Film */}
-      <section className="theme-dark section-pad hairline-top" aria-label="DFW overview and quick paths">
+      <section id="film-end" className="theme-dark section-pad hairline-top" aria-label="DFW overview and quick paths">
         <div className="container">
           <div
             style={{
