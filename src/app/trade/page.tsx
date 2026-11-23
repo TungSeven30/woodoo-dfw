@@ -76,6 +76,58 @@ export default function TradePage() {
         </div>
       </section>
 
+      {/* Flat-Pack vs. Assembled Builder Format Comparison */}
+      <section className="section-pad hairline-bottom">
+        <div className="container">
+          <p className="mono-label" style={{ marginBottom: "0.55rem" }}>
+            Supply format · Choose per project
+          </p>
+          <h2 className="h2-serif" style={{ marginBottom: "1.5rem" }}>
+            Flat-pack RTA or pre-assembled. Your call on every job.
+          </h2>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(290px, 1fr))",
+              gap: "1.5rem",
+            }}
+          >
+            <div className="arch-card" style={{ padding: "1.6rem" }}>
+              <span className="mono-label" style={{ color: "var(--accent)" }}>
+                Format A · Ready-to-assemble flat-pack
+              </span>
+              <h3 className="h2-serif" style={{ fontSize: "1.65rem", margin: "0.45rem 0 0.7rem" }}>
+                Built for tight job sites and freight protection.
+              </h3>
+              <p style={{ margin: "0 0 1rem", color: "var(--fg-muted)", fontSize: "0.95rem" }}>
+                Every side, shelf, door, toe kick, and filler arrives flat and packed tightly — easy
+                to carry through narrow townhome staircases, high-rise freight elevators, and active
+                remodel corridors without scuffing finished ends.
+              </p>
+              <p className="mono-label" style={{ margin: 0 }}>
+                Best for: Multi-story remodels · Tight staging footprints · LTL freight
+              </p>
+            </div>
+            <div className="arch-card" style={{ padding: "1.6rem" }}>
+              <span className="mono-label" style={{ color: "var(--accent)" }}>
+                Format B · Assembled boxes
+              </span>
+              <h3 className="h2-serif" style={{ fontSize: "1.65rem", margin: "0.45rem 0 0.7rem" }}>
+                Built for fast set-and-level crew days.
+              </h3>
+              <p style={{ margin: "0 0 1rem", color: "var(--fg-muted)", fontSize: "0.95rem" }}>
+                Cabinets arrive boxed and whole so your carpentry crew moves straight into wall
+                layout, scribing fillers, hanging stacked uppers, and setting 3-inch crown molding on
+                your schedule.
+              </p>
+              <p className="mono-label" style={{ margin: 0 }}>
+                Best for: Ground-floor new builds · Tight install calendars · Local pickup / white-glove
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Trade Account Application */}
       <section id="trade-account" className="section-pad hairline-bottom">
         <div className="container" style={{ maxWidth: "880px" }}>

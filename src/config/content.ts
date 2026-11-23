@@ -3,7 +3,7 @@ import { SITE_CONFIG } from "./site";
 /**
  * Editable copy repository for the entire DFW site.
  * Grounded strictly in business-facts-summary.md (Section 1, Section 8, Nov 2026 column of Section 4).
- * Voice: short sentences, concrete nouns, zero exclamation marks, zero showroom filler, zero invented stats.
+ * Voice: architectural clarity, concrete physical nouns, zero exclamation marks, zero showroom filler, zero invented stats.
  */
 
 export interface FilmSceneCopy {
@@ -28,7 +28,7 @@ export const FILM_SCENES: FilmSceneCopy[] = [
     end: 0.05,
     anchor: 0.02,
     headline: "It arrives flat.",
-    subline: "European frameless cabinetry for Dallas–Fort Worth.",
+    subline: "European frameless cabinetry. Packed to the millimetre. Built for Dallas–Fort Worth.",
     srDescription:
       "A single Premium Oak panel rests in dark space under warm raking light, showing continuous vertical wood grain.",
   },
@@ -41,7 +41,7 @@ export const FILM_SCENES: FilmSceneCopy[] = [
     anchor: 0.1,
     headline: "Every piece of a kitchen. Already here.",
     subline:
-      "Sides, backs, shelves, doors, drawer fronts, toe kicks, and fillers — packed flat and cut to fit.",
+      "Sides, backs, shelves, doors, drawer fronts, toe kicks, and fillers — milled, sorted, and stacked flat before a single box is raised.",
     srDescription:
       "The camera pulls back to show dozens of cabinet components aligned in a compact flat-pack stack, each marked with an engraved part code.",
   },
@@ -54,7 +54,7 @@ export const FILM_SCENES: FilmSceneCopy[] = [
     anchor: 0.26,
     headline: "It leaves whole.",
     subline:
-      "Ready-to-assemble flat-pack or assembled orders. Built in Malaysia. Supplied for Texas.",
+      "Order flat-packed for tight job sites or assembled for faster hangs. Manufactured in Malaysia. Supplied for North Texas.",
     srDescription:
       "Flat-pack panels lift into space along coordinated paths and lock together sequentially into a complete frameless base cabinet.",
   },
@@ -67,7 +67,7 @@ export const FILM_SCENES: FilmSceneCopy[] = [
     anchor: 0.35,
     headline: "Two millimetres. That's the whole gap.",
     subline:
-      "Full-overlay doors align edge to edge with a uniform 2 mm reveal across every run.",
+      "Where framed cabinetry leaves wide strips of wood between doors, full-overlay geometry narrows every shadow line to an even 2 mm.",
     srDescription:
       "Macro view between two adjacent doors showing the exact 2 mm reveal separating full-overlay panels.",
   },
@@ -80,7 +80,7 @@ export const FILM_SCENES: FilmSceneCopy[] = [
     anchor: 0.44,
     headline: "No frame. Nothing between you and your shelf.",
     subline:
-      "No face frame. No centre stile. Full-access interiors and factory-finished sides.",
+      "No face frame. No centre stile splitting wide platters in two. Factory-finished sides outside; uninterrupted shelf width inside.",
     srDescription:
       "The cabinet doors open to reveal a completely unobstructed frameless interior, contrasted with a translucent wireframe of a traditional face-frame centre stile.",
   },
@@ -93,7 +93,7 @@ export const FILM_SCENES: FilmSceneCopy[] = [
     anchor: 0.61,
     headline: "Then it becomes a kitchen.",
     subline:
-      "Base cabinets, tall pantry, wall runs, and stacked uppers built for 8, 9, and 10 ft ceilings with 3-inch molding.",
+      "Base runs, tall pantry, stacked uppers, and 3-inch molding — scaled cleanly to 8, 9, and 10 ft North Texas ceilings.",
     srDescription:
       "Multiple flat-packs assemble across the floor plan into a complete L-shaped kitchen in Premium Oak with stacked uppers and 3-inch molding. Concept render.",
     isConceptRender: true,
@@ -107,7 +107,7 @@ export const FILM_SCENES: FilmSceneCopy[] = [
     anchor: 0.74,
     headline: "One system. Every room.",
     subline:
-      "Kitchens, islands, and bath vanities — reconfigured across three door styles and five finishes.",
+      "L-shape, galley, island, bath vanity. Three door profiles and five finishes reconfigured from the same modular kit of parts.",
     srDescription:
       "Without cutting, the kitchen reconfigures from L-Shape in Premium Oak Traditional Shaker, to Galley in Iron Black Slim Shaker, to a 10-foot Island Kitchen in Classic Walnut Flat, and finally to a Bath Vanity and Linen Tower in Frosty White Flat. Concept render.",
     isConceptRender: true,
@@ -121,7 +121,7 @@ export const FILM_SCENES: FilmSceneCopy[] = [
     anchor: 0.88,
     headline: "Five finishes. Three door styles. Fewer than you expected, on purpose.",
     subline:
-      "Choose a room, door profile, finish, and ceiling height right here. Open the studio for full control.",
+      "Discipline beats an endless swatch wall. Test layout, profile, finish, and ceiling height right here — or open the full studio.",
     srDescription:
       "Overhead architectural plan view of the 3D room with live controls to test layout, collection, finish, and 8, 9, or 10 foot ceiling heights. Concept render.",
     isConceptRender: true,
@@ -134,7 +134,7 @@ export const FILM_SCENES: FilmSceneCopy[] = [
     end: 1.0,
     anchor: 0.98,
     headline: "Open the door that fits your project.",
-    subline: "Direct paths for DFW trade partners and homeowners.",
+    subline: "Direct paths for Dallas–Fort Worth trade partners and homeowners.",
     srDescription:
       "Two large 3D cabinet doors stand side by side: For the trade, leading to Send a plan and Trade accounts; and For my home, leading to Book a visit, the preview list, and kitchen composition.",
   },
@@ -183,64 +183,64 @@ export const PROCESS_STEPS = [
   {
     number: "01",
     title: "Product inspiration",
-    body: "Explore three door styles and five finishes online or in person. Fewer options make decisions clear.",
+    body: "Study three door profiles and five finishes online or in person. A tight catalog lets you decide on proportion and light instead of drowning in hundreds of near-identical swatches.",
   },
   {
     number: "02",
     title: "Open account",
-    body: "Builders, remodelers, and designers open a trade account. Homeowners book a consultation or join the preview list.",
+    body: "Builders, remodelers, architects, and designers open a trade account. Homeowners book a consultation or join the Dallas–Fort Worth showroom preview list.",
   },
   {
     number: "03",
     title: "Design consultation",
-    body: "Share room dimensions or architectural plans. A real person maps every cabinet box, filler, panel, and stacked upper to your ceiling height.",
+    body: "Share rough room dimensions or full architectural drawings. One person maps every cabinet box, filler strip, finished end panel, appliance clearance, and stacked upper to your ceiling height.",
   },
   {
     number: "04",
     title: "Quote and estimate",
-    body: "Receive a clear, itemized cabinet list and transparent quote checked by our DFW team before you commit.",
+    body: "Review a line-by-line cabinet schedule and plain-English quote verified by our DFW team before a single dollar moves.",
   },
   {
     number: "05",
     title: "Place order",
-    body: "Confirm your layout, finish, and delivery format — ready-to-assemble flat-pack or assembled.",
+    body: "Lock your layout, finish, and delivery format — compact ready-to-assemble flat-packs or fully assembled boxes.",
   },
   {
     number: "06",
     title: "Production and staging",
-    body: "Components are pulled, inspected, and staged cleanly so your order ships complete.",
+    body: "Every box, door, toe kick, filler, and 3-inch molding length is pulled, checked against your schedule, and staged complete.",
   },
   {
     number: "07",
     title: "Delivery, pickup and post-installation support",
-    body: "Choose warehouse pickup, LTL freight, or white-glove delivery. Customers arrange their own installation. Your installer, your schedule. We stay with you after delivery for adjustments and warranty questions.",
+    body: "Take local warehouse pickup, LTL freight, or white-glove delivery. Customers arrange their own installation. Your installer, your schedule. We stay reachable after the last screw is driven for adjustments and warranty support.",
   },
 ];
 
 export const TRADE_BENEFITS = [
   {
     title: "Preferred trade pricing",
-    body: "Structured pricing for independent DFW builders, remodelers, architects, and interior designers.",
+    body: "Structured trade pricing built for independent DFW builders, custom remodelers, architects, and interior designers.",
   },
   {
-    title: "Dedicated design consultant",
-    body: "One person reviews your plans, checks fillers and clearances, and provides priority quoting.",
+    title: "One human estimator on every plan",
+    body: "No automated black-box quote tools. A dedicated consultant checks wall clearances, filler strips, corner returns, and stacked upper heights by hand.",
   },
   {
-    title: "Complete kitchen supply",
-    body: "Cabinet boxes, panels, toe kicks, trim, and 3-inch molding planned together so a missing filler does not hold up an installer.",
+    title: "Nothing missing on install morning",
+    body: "Boxes, finished end panels, toe kicks, fillers, and 3-inch molding are audited together on one manifest so a missing trim piece never stalls a crew.",
   },
   {
-    title: "Flat-pack or assembled",
-    body: "Order compact RTA flat-packs for job-site efficiency or fully assembled boxes ready for your crew.",
+    title: "Flat-pack or assembled by job site",
+    body: "Pull compact flat-packs up tight stairs and narrow corridors, or order pre-assembled boxes when crew hours matter more than staging space.",
   },
   {
-    title: "Planning resources & appliance coordination",
-    body: "Clearances coordinated alongside partner appliance specifications and finish samples for client presentations.",
+    title: "Appliance & sample coordination",
+    body: "We check cutouts alongside partner appliance specifications and provide physical finish boards for client sign-off.",
   },
   {
     title: "Early collection access",
-    body: "Preview upcoming releases and feature completed projects on brand channels with client permission.",
+    body: "Preview upcoming releases ahead of public rollout and showcase finished builds on our channels with your client's approval.",
   },
 ];
 
@@ -248,57 +248,57 @@ export const PRECISION_PILLARS = [
   {
     code: "SPEC 01 · FULL OVERLAY",
     title: "Two millimetres. That's the whole gap.",
-    body: "Traditional framed cabinets leave wide strips of face frame exposed between doors. Frameless construction mounts full-overlay doors directly across the box, leaving a uniform 2 mm shadow reveal.",
+    body: "Traditional framed cabinets leave broad bands of face frame visible around every door. Frameless European geometry mounts full-overlay doors straight across the carcass, tightening the visual seam to an even 2 mm shadow line.",
   },
   {
     code: "SPEC 02 · FULL ACCESS",
     title: "No face frame. No centre stile.",
-    body: "Without an inner lip or vertical centre divider blocking wide base cabinets, the entire opening is usable from wall to wall. Factory-finished exterior sides keep exposed ends clean.",
+    body: "Remove the inner frame lip and vertical centre divider and a 36-inch cabinet finally behaves like 36 inches of storage. Wide trays slide straight in, and factory-finished exterior sides keep exposed ends crisp without extra skin panels.",
   },
   {
     code: "SPEC 03 · VERTICAL SYSTEM",
     title: "Built for 8, 9, and 10 ft ceilings.",
-    body: "North Texas homes rarely stop at an eight-foot soffit. Modular wall cabinets pair with stacked upper boxes and 3-inch molding to meet 8, 9, and 10 ft ceilings cleanly.",
+    body: "North Texas architecture rarely ends at an eight-foot drywall bulkhead. Modular wall cabinets pair with stacked upper boxes and 3-inch molding so cabinet runs meet 8, 9, and 10 ft ceilings cleanly.",
   },
   {
     code: "SPEC 04 · MANUFACTURED IN MALAYSIA",
-    title: "Standardized factory precision, flat-packed for transit.",
-    body: "Manufactured in Malaysia with specialist woodworking partners. Flat-pack geometry protects finished surfaces during freight and makes job-site staging straightforward.",
+    title: "Factory repeatability, packed flat for the road.",
+    body: "Manufactured in Malaysia with specialist woodworking partners. Flat-pack geometry shields finished surfaces through freight and lets crews stage an entire kitchen in the footprint of a hallway.",
   },
 ];
 
 export const FAQ_ITEMS = [
   {
-    q: "What is the difference between frameless and framed cabinets?",
-    a: "Framed cabinets attach a wooden face frame and often a vertical centre stile to the front of the box, narrowing the opening. Frameless European-style cabinets eliminate the face frame completely. Full-overlay doors cover the box with a 2 mm reveal, leaving a fully open interior and factory-finished sides.",
+    q: "What is the practical difference between frameless and framed cabinets?",
+    a: "Framed cabinets nail a wooden border — and often a vertical centre stile — across the front of the box, narrowing what fits through the opening. Frameless European-style cabinets drop the face frame altogether. Full-overlay doors cover the box edge to edge with a uniform 2 mm reveal, giving you unobstructed interior access and factory-finished exterior sides.",
   },
   {
     q: "Which door styles and finishes are available?",
-    a: "Three door styles across five finishes. Traditional Shaker comes in Premium Oak, Classic Walnut, Iron Black, and Frosty White. Slim Shaker comes in Premium Oak, Iron Black, and Frosty White. Flat comes in Ivory Oak, Classic Walnut, and Frosty White.",
+    a: "Three door profiles across five finishes, chosen intentionally. Traditional Shaker is available in Premium Oak, Classic Walnut, Iron Black, and Frosty White. Slim Shaker is available in Premium Oak, Iron Black, and Frosty White. Flat is available in Ivory Oak, Classic Walnut, and Frosty White.",
   },
   {
-    q: "How do sizes work for 8, 9, and 10-foot Texas ceilings?",
-    a: "Proportions are engineered specifically for 8, 9, and 10 ft ceilings using stacked upper cabinet configurations finished with 3-inch molding. Share your wall measurements and we map the exact cabinet list for your ceiling height.",
+    q: "How do proportions work for 8, 9, and 10-foot Texas ceilings?",
+    a: "Wall runs are modular by design: standard heights for 8 ft rooms, plus stacked upper boxes crowned by confirmed 3-inch molding for 9 ft and 10 ft ceilings. Send us your ceiling elevation and wall lengths and our team maps the exact cabinet stack.",
   },
   {
-    q: "Where are the cabinets manufactured?",
-    a: "Cabinets are manufactured in Malaysia in partnership with specialist woodworking facilities, with headquarters and main inventory operations in Elk Grove Village, Illinois, supporting the upcoming Dallas–Fort Worth showroom and local warehouse.",
+    q: "Where are the cabinets manufactured and stocked?",
+    a: "Cabinets are manufactured in Malaysia in partnership with specialist woodworking facilities, backed by headquarters and main inventory operations in Elk Grove Village, Illinois, supporting the upcoming Dallas–Fort Worth showroom and local warehouse.",
   },
   {
-    q: "Do you supply cabinets ready-to-assemble or already assembled?",
-    a: "Both options are available. You can order compact flat-pack RTA components for easier job-site transport, or fully assembled cabinets ready for your installer.",
+    q: "Can I order ready-to-assemble flat-packs or pre-assembled cabinets?",
+    a: "Both formats are supported. Choose compact flat-pack RTA components for easier transport into tight spaces, or pre-assembled boxes ready for your installer to set and level.",
   },
   {
-    q: "Do you install cabinets?",
-    a: "No. Customers arrange their own installation. Your installer, your schedule. We supply the design layout, cabinet package, delivery or pickup coordination, and post-installation support.",
+    q: "Do you handle cabinet installation?",
+    a: "No. Customers arrange their own installation. Your installer, your schedule. We stay focused on accurate design planning, complete cabinetry supply, delivery or warehouse pickup coordination, and post-installation support.",
   },
   {
-    q: "How does delivery work in Dallas–Fort Worth?",
-    a: "Orders support pickup once the DFW warehouse opens, LTL freight across the contiguous US, and white-glove delivery options. Specific DFW availability and scheduling are confirmed on every individual quote.",
+    q: "How do pickup and delivery work in Dallas–Fort Worth?",
+    a: "Orders support warehouse pickup once the DFW location opens, LTL freight across the contiguous US, and white-glove delivery options. Exact delivery timing and logistics are confirmed in writing on each quote.",
   },
   {
-    q: "Can builders and remodelers send architectural plans for a quote?",
-    a: "Yes. Use Send a plan to upload PDF, DWG, DXF, or sketch photos. A person on our team reviews the drawings, prepares an itemized cabinet list, and follows up directly.",
+    q: "Can builders and remodelers upload architectural plans directly?",
+    a: "Yes. Open Send a plan to upload PDF, DWG, DXF, or hand-sketch photos. A real person on our DFW team checks every cabinet box, filler, and trim item by hand and follows up directly.",
   },
 ];
 
@@ -329,23 +329,29 @@ export const PLACEHOLDER_TESTIMONIALS = [
 export const ABOUT_COPY = {
   eyebrow: "Chicago roots · Dallas–Fort Worth chapter",
   headline: "Built in Malaysia. Proven in Chicago. Opening in North Texas.",
-  lead: `Kitchen buyers in Dallas–Fort Worth face two tired options: low-grade boxes that show their shortcuts on day one, or luxury European design studios priced far outside most budgets. ${SITE_CONFIG.BRAND_NAME} exists in the clear middle ground.`,
+  pullQuote:
+    "Good architecture rarely comes from four hundred paint chips. It comes from holding a two-millimetre shadow line straight across an entire wall.",
+  lead: `Anyone renovating a kitchen in Dallas–Fort Worth meets the same dead end: bargain boxes that show their shortcuts in the first winter, or bespoke European design studios priced out of reach for real projects. ${SITE_CONFIG.BRAND_NAME} occupies the clear middle ground — disciplined European frameless construction without the gallery markup.`,
   sections: [
     {
-      title: "Fewer finishes, deeper discipline",
-      body: "Instead of hundreds of made-to-order door colours that slow down every remodel, the catalog holds tight to three door profiles and five finishes. Fewer decisions let you focus on layout, proportion, and natural light — and let our team give plain answers on availability.",
+      chapter: "01 · THE DISCIPLINE OF RESTRAINT",
+      title: "Three door styles. Five finishes. On purpose.",
+      body: "Most showrooms hand you a wall of four hundred door colours, then ask you to wait months while each order is pieced together. We hold tight to three architectural door profiles — Traditional Shaker, Slim Shaker, and Flat — across five finishes that live quietly alongside stone, plaster, and Texas light. Fewer variables mean sharper quality control and plain answers on stock.",
     },
     {
-      title: "An Apple experience from start to finish",
-      body: "Every homeowner and independent builder deserves straightforward pricing, verified part lists with nothing missing, and a single person who stays accountable from the first drawing through delivery and warranty follow-up.",
+      chapter: "02 · CLEAR PROCESS",
+      title: "An Apple experience from sketch to delivery.",
+      body: "Whether you build custom homes in Frisco or remodel a mid-century ranch in Richardson, you should never have to chase three people for an honest cabinet list. One named consultant checks every box, filler strip, finished end panel, and 3-inch crown return against your actual wall dimensions — then stays with you after delivery.",
     },
     {
-      title: "Showroom plus local warehouse",
-      body: "Backed by the operating playbook and distribution network established in Elk Grove Village, Illinois, the Dallas–Fort Worth branch pairs a tactile showroom with local warehouse support for Richardson, Plano, Frisco, McKinney, Allen, Dallas, and Fort Worth.",
+      chapter: "03 · OPERATING BACKBONE",
+      title: "Showroom plus local warehouse.",
+      body: "Backed by the operating playbook and distribution network proven in Elk Grove Village, Illinois, our Dallas–Fort Worth branch pairs a tactile design showroom with local warehouse support serving Richardson, Plano, Frisco, McKinney, Allen, Dallas, and Fort Worth.",
     },
     {
-      title: "Your installer, your schedule",
-      body: "We focus strictly on cabinetry precision, design support, and complete order fulfillment. Builders use their own crews and homeowners hire the installer they trust.",
+      chapter: "04 · HONEST BOUNDARIES",
+      title: "Your installer, your schedule.",
+      body: "We do not run installation crews or inflate cabinet pricing to cover job-site overhead. Builders stay in command of their own trades; homeowners hire the carpenter or general contractor they trust. We focus entirely on precision cabinetry, exact takeoff schedules, and complete fulfillment.",
     },
   ],
 };

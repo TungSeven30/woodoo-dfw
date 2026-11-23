@@ -23,6 +23,7 @@ import {
   buildFlatSlabDoorGeometry,
   buildHingeGeometry,
   buildPinGeometry,
+  buildPullHandleGeometry,
   buildShakerDoorGeometry,
   buildUnitPanelBoxGeometry,
 } from "./geometry";
@@ -67,6 +68,7 @@ interface PooledInstances {
   counterBox: THREE.InstancedMesh;
   metalPin: THREE.InstancedMesh;
   metalHinge: THREE.InstancedMesh;
+  bronzePull: THREE.InstancedMesh;
 }
 
 const MAX_INSTANCES = 260;
@@ -96,12 +98,13 @@ export class WoodooFilmEngine {
   private dustMaterial: THREE.ShaderMaterial | null = null;
   private lightConeMesh: THREE.Mesh | null = null;
 
-  // Architectural room stage (floor, back wall, pendants, bath mirror)
+  // Architectural room stage (floor, back wall, pendants, bath mirror, Scene 3 reveal baffle)
   private floorMesh!: THREE.Mesh;
   private backWallMesh!: THREE.Mesh;
   private pendantsGroup!: THREE.Group;
   private pendantBulbs: THREE.MeshStandardMaterial[] = [];
   private bathMirrorGroup!: THREE.Group;
+  private macroShadowBaffle!: THREE.Mesh;
 
   // Scene 0–4 Hero Cabinet & Engraved Codes & Scene 4 Ghost Wireframe
   private heroPanels: CabinetPanelSpec[] = [];
@@ -303,29 +306,71 @@ export class WoodooFilmEngine {
     plasterWall.receiveShadow = true;
     wallGroup.add(plasterWall);
 
-    // Subtle warm travertine backsplash band tucked cleanly behind kitchen counters (never protruding!)
+    // Subtle warm travertine backsplash band meeting cleanly in a razor inside-corner miter
     const splashMat = new THREE.MeshPhysicalMaterial({
       color: new THREE.Color("#dcd4c7"),
-      roughness: 0.45,
-      clearcoat: 0.15,
-      clearcoatRoughness: 0.5,
+      roughness: 0.44,
+      clearcoat: 0.18,
+      clearcoatRoughness: 0.45,
     });
-    const splashBack = new THREE.Mesh(new THREE.PlaneGeometry(2.65, 0.52), splashMat);
+    const ledMat = new THREE.MeshBasicMaterial({ color: "#ffe3b0" });
+
+    const splashBack = new THREE.Mesh(new THREE.PlaneGeometry(3.22, 0.54), splashMat);
     splashBack.name = "splashBack";
-    splashBack.position.set(0.05, 1.15, -1.39);
+    splashBack.position.set(0.18, 1.15, -1.39);
     splashBack.receiveShadow = true;
     wallGroup.add(splashBack);
 
-    const splashRight = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 0.52), splashMat);
+    // 3000K recessed under-cabinet LED task strip + warm grazing light along back run
+    const ledBack = new THREE.Mesh(new THREE.BoxGeometry(2.72, 0.014, 0.022), ledMat);
+    ledBack.name = "ledBack";
+    ledBack.position.set(0.12, 1.375, -1.24);
+    wallGroup.add(ledBack);
+
+    const underLightBack = new THREE.PointLight("#ffdba6", 1.85, 3.8, 1.8);
+    underLightBack.name = "underLightBack";
+    underLightBack.position.set(0.12, 1.31, -1.06);
+    wallGroup.add(underLightBack);
+
+    const splashRight = new THREE.Mesh(new THREE.PlaneGeometry(2.98, 0.54), splashMat);
     splashRight.name = "splashRight";
     splashRight.rotation.y = -Math.PI / 2;
-    splashRight.position.set(1.78, 1.15, 0.25);
+    splashRight.position.set(1.78, 1.15, 0.1);
     splashRight.receiveShadow = true;
     wallGroup.add(splashRight);
+
+    const ledRight = new THREE.Mesh(new THREE.BoxGeometry(0.022, 0.014, 1.74), ledMat);
+    ledRight.name = "ledRight";
+    ledRight.position.set(1.62, 1.375, 0.44);
+    wallGroup.add(ledRight);
+
+    const underLightRight = new THREE.PointLight("#ffdba6", 1.55, 3.4, 1.8);
+    underLightRight.name = "underLightRight";
+    underLightRight.position.set(1.44, 1.31, 0.44);
+    wallGroup.add(underLightRight);
+
+    // Flush honed quartz corner deck bridge closing the L-shape blind corner cleanly
+    const cornerBridge = new THREE.Mesh(
+      new THREE.BoxGeometry(0.68, 0.038, 0.68),
+      this.materials.counterMaterial
+    );
+    cornerBridge.name = "cornerBridge";
+    cornerBridge.position.set(1.44, 0.895, -1.06);
+    cornerBridge.receiveShadow = true;
+    wallGroup.add(cornerBridge);
 
     this.backWallMesh = wallGroup as unknown as THREE.Mesh;
     this.backWallMesh.visible = false;
     this.scene.add(this.backWallMesh);
+
+    // Obsidian architectural shadow reveal baffle positioned strictly behind the 2.000 mm Hero gap in Scene 3
+    this.macroShadowBaffle = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.045, 0.68),
+      new THREE.MeshBasicMaterial({ color: "#0b0908" })
+    );
+    this.macroShadowBaffle.position.set(0, 0.42, 12 * IN_TO_M + 0.002);
+    this.macroShadowBaffle.visible = false;
+    this.scene.add(this.macroShadowBaffle);
 
     // Architectural brass-stem & warm opal glass pendant lights (fade up in Scene 5–6)
     this.pendantsGroup = new THREE.Group();
@@ -396,6 +441,7 @@ export class WoodooFilmEngine {
     const flatSlab = buildFlatSlabDoorGeometry();
     const pinGeo = buildPinGeometry();
     const hingeGeo = buildHingeGeometry();
+    const pullGeo = buildPullHandleGeometry();
 
     const makePool = (
       geo: THREE.BufferGeometry,
@@ -421,6 +467,7 @@ export class WoodooFilmEngine {
       counterBox: makePool(unitBox, this.materials.counterMaterial, 48, true),
       metalPin: makePool(pinGeo, this.materials.metalMaterial, 40, false),
       metalHinge: makePool(hingeGeo, this.materials.metalMaterial, 24, false),
+      bronzePull: makePool(pullGeo, this.materials.bronzeMaterial, 128, false),
     };
   }
 
@@ -788,6 +835,7 @@ export class WoodooFilmEngine {
     counterBox: number;
     metalPin: number;
     metalHinge: number;
+    bronzePull: number;
   } {
     return {
       woodBox: 0,
@@ -798,6 +846,7 @@ export class WoodooFilmEngine {
       counterBox: 0,
       metalPin: 0,
       metalHinge: 0,
+      bronzePull: 0,
     };
   }
 
@@ -813,6 +862,12 @@ export class WoodooFilmEngine {
     if (zone === "counter") {
       if (counts.counterBox < 48) {
         this.pool.counterBox.setMatrixAt(counts.counterBox++, this._mat);
+      }
+      return;
+    }
+    if (zone === "bronze") {
+      if (counts.bronzePull < 128) {
+        this.pool.bronzePull.setMatrixAt(counts.bronzePull++, this._mat);
       }
       return;
     }
@@ -1427,14 +1482,22 @@ export class WoodooFilmEngine {
       this._camLook.set(lookX, 1.06, 0);
     }
 
-    // Toggle travertine backsplash panels strictly to match active layout (zero floating walls!)
+    // Toggle travertine backsplash panels & recessed 3000K under-cabinet LED strips strictly to match active layout
     const wallGrp = this.backWallMesh as unknown as THREE.Group;
     if (wallGrp.visible) {
-      const sb = wallGrp.getObjectByName("splashBack");
-      const sr = wallGrp.getObjectByName("splashRight");
-      if (sb) sb.visible = activeLayout === "l-shape" || activeLayout === "island" || activeLayout === "u-shape";
-      if (sr) sr.visible = activeLayout === "l-shape";
+      const showBack = activeLayout === "l-shape" || activeLayout === "island" || activeLayout === "u-shape" || activeLayout === "galley";
+      const showRight = activeLayout === "l-shape";
+      for (const n of ["splashBack", "ledBack", "underLightBack"]) {
+        const obj = wallGrp.getObjectByName(n);
+        if (obj) obj.visible = showBack;
+      }
+      for (const n of ["splashRight", "ledRight", "underLightRight", "cornerBridge"]) {
+        const obj = wallGrp.getObjectByName(n);
+        if (obj) obj.visible = showRight;
+      }
     }
+    // Show razor obsidian shadow reveal baffle strictly behind the 2 mm gap during Scene 3 macro dive
+    this.macroShadowBaffle.visible = sceneIndex === 3;
 
     // Apply camera & commit instanced pools
     this.camera.position.copy(this._camPos);

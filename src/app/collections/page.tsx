@@ -2,6 +2,7 @@ import React from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { COLLECTION_LIST, FINISHES, FINISH_ORDER } from "@/config/site";
+import { MaterialLightInspector } from "@/components/MaterialLightInspector";
 import { SiteFooter } from "@/components/SiteFooter";
 
 export const metadata: Metadata = {
@@ -159,55 +160,31 @@ export default function CollectionsPage() {
         </div>
       </section>
 
-      {/* Complete Five-Finish Reference Band */}
+      {/* Interactive Five-Finish Daylight Reference Band */}
       <section className="section-pad">
         <div className="container">
           <p className="mono-label" style={{ marginBottom: "0.55rem" }}>
-            Finish palette
+            Interactive finish palette · North Texas daylight study
           </p>
-          <h2 className="h2-serif" style={{ marginBottom: "1.75rem" }}>
+          <h2 className="h2-serif" style={{ marginBottom: "1.5rem" }}>
             Five finishes. Selected to age quietly.
           </h2>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))",
-              gap: "1rem",
-            }}
-          >
-            {FINISH_ORDER.map((fSlug) => {
+          <MaterialLightInspector
+            items={FINISH_ORDER.map((fSlug) => {
               const f = FINISHES[fSlug];
-              const usedIn = COLLECTION_LIST.filter((c) => c.finishes.includes(fSlug))
-                .map((c) => c.name)
-                .join(" · ");
-              return (
-                <div key={fSlug} className="arch-card" style={{ padding: "1rem" }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={f.swatchImage}
-                    alt={`${f.name} finish reference`}
-                    style={{
-                      width: "100%",
-                      aspectRatio: "1 / 1",
-                      objectFit: "cover",
-                      display: "block",
-                      marginBottom: "0.85rem",
-                      border: "1px solid var(--border)",
-                    }}
-                  />
-                  <h3 className="h3-sans" style={{ fontSize: "1.15rem", marginBottom: "0.25rem" }}>
-                    {f.name}
-                  </h3>
-                  <p style={{ margin: "0 0 0.5rem", fontSize: "0.88rem", color: "var(--fg-muted)" }}>
-                    {f.shortNote}
-                  </p>
-                  <span className="mono-label" style={{ fontSize: "0.68rem" }}>
-                    {usedIn}
-                  </span>
-                </div>
-              );
+              return {
+                slug: f.slug,
+                name: f.name,
+                shortNote: f.shortNote,
+                swatchHex: f.swatchHex,
+                swatchImage: f.swatchImage,
+                collections: COLLECTION_LIST.filter((c) => c.finishes.includes(fSlug)).map((c) => ({
+                  slug: c.slug,
+                  name: c.name,
+                })),
+              };
             })}
-          </div>
+          />
           <p className="mono-label" style={{ marginTop: "1.25rem" }}>
             Note: Swatches shown are digital wood references; inspect physical finish boards in person before ordering.
           </p>

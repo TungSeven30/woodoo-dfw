@@ -2,7 +2,9 @@
 
 > **It arrives flat. It leaves whole.**
 
-Launch website for the Dallas–Fort Worth branch of Woodoo Cabinetry: a continuous 9-scene scroll-driven 3D WebGL Film, real-time kitchen configurator (`/compose`), builder plan-upload & estimating workflow (`/trade/send-a-plan`), homeowner showroom preview booking (`/showroom`), and full server-rendered content architecture.
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/TungSeven30/woodoo-dfw&project-name=woodoo-dfw)
+
+Launch website for the Dallas–Fort Worth branch of Woodoo Cabinetry: a continuous 9-scene scroll-driven 3D WebGL Film, real-time kitchen configurator (`/compose`), interactive Framed-vs.-Frameless CAD precision workbench (`/precision`), Texas daylight finish study (`/collections`), builder plan-upload & estimating workflow (`/trade/send-a-plan`), homeowner showroom preview booking (`/showroom`), and full server-rendered content architecture.
 
 ---
 

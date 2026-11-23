@@ -26,6 +26,7 @@ export interface WoodMaterialSystem {
   interiorMaterial: THREE.MeshStandardMaterial;
   counterMaterial: THREE.MeshPhysicalMaterial;
   metalMaterial: THREE.MeshStandardMaterial;
+  bronzeMaterial: THREE.MeshPhysicalMaterial;
   ghostWireframeMaterial: THREE.MeshBasicMaterial;
   wipeUniforms: LightWipeUniforms;
   currentFinish: FinishSlug;
@@ -260,6 +261,16 @@ export function createWoodMaterialSystem(
     envMapIntensity: 1.0,
   });
 
+  // Warm brushed architectural bronze pulls & gooseneck fixtures
+  const bronzeMaterial = new THREE.MeshPhysicalMaterial({
+    color: new THREE.Color("#6b553b"),
+    roughness: 0.27,
+    metalness: 0.88,
+    clearcoat: 0.28,
+    clearcoatRoughness: 0.22,
+    envMapIntensity: 1.25,
+  });
+
   // Scene 4 ghosted face-frame comparison wireframe
   const ghostWireframeMaterial = new THREE.MeshBasicMaterial({
     color: new THREE.Color("#d18d43"),
@@ -274,6 +285,7 @@ export function createWoodMaterialSystem(
     interiorMaterial,
     counterMaterial,
     metalMaterial,
+    bronzeMaterial,
     ghostWireframeMaterial,
     wipeUniforms,
     currentFinish: "premium-oak",
@@ -406,6 +418,7 @@ export function createWoodMaterialSystem(
       interiorMaterial.dispose();
       counterMaterial.dispose();
       metalMaterial.dispose();
+      bronzeMaterial.dispose();
       ghostWireframeMaterial.dispose();
       for (const slug of FINISH_ORDER) {
         bank[slug].diff.dispose();
@@ -461,6 +474,7 @@ export function createWoodMaterialSystem(
       interiorMaterial.envMap = system.envMap;
       counterMaterial.envMap = system.envMap;
       metalMaterial.envMap = system.envMap;
+      bronzeMaterial.envMap = system.envMap;
       woodMaterial.needsUpdate = true;
       hdrTex.dispose();
       pmrem.dispose();

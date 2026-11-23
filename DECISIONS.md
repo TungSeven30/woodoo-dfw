@@ -105,15 +105,15 @@ Total scroll track length:
 
 | Metric | Measured Result | Section 12 Budget / Target | Status |
 | :--- | :--- | :--- | :---: |
-| **Initial JS — Content Page (`/collections`, gzip)** | **166.5 KB** | ≤ 170 KB | PASS |
-| **3D Engine Chunks (Three.js + KTX2 + Film/Studio, gzip)** | **192.0 KB** | ≤ 450 KB | PASS |
+| **Initial JS — Content Page (`/collections`, gzip)** | **143.9 KB** | ≤ 170 KB | PASS |
+| **3D Engine Chunks (Three.js + KTX2 + Film/Studio, gzip)** | **192.4 KB** | ≤ 450 KB | PASS |
 | **Scenes 0–2 Textures + HDRI (boot wire transfer)** | **0.57 MB** (`2.00 MB` all 5 KTX2 + `400.7 KB` HDRI) | ≤ 2.5 MB | PASS |
-| **Total Film Wire Transfer** | **2.71 MB** | ≤ 12.0 MB | PASS |
+| **Total Film Wire Transfer** | **2.32 MB** | ≤ 12.0 MB | PASS |
 | **Tier C Muted Loops (`loop-flight.mp4`, `loop-reconfig.mp4`)** | **495 KB** / **498 KB** | ≤ 1.5 MB each | PASS |
-| **Max WebGL Draw Calls (busiest scene, 0%–100%)** | **19** (Scene 2 backward scrub: **11**) | ≤ 150 | PASS |
-| **First 3D WebGL Frame (Tier A, CPU SwiftShader)** | **1.83 s** | ≤ 2.5 s on 4G | PASS |
-| **Content Page Lighthouse Desktop (`/collections`)** | Perf **97** · A11y **100** · BP **100** · SEO **100** · LCP **0.23 s** · TBT **152 ms** · CLS **0.0009** | Perf ≥ 90 · A11y 100 · BP ≥ 95 · SEO 100 · LCP ≤ 2 s · CLS ≤ 0.05 · TBT ≤ 200 ms | PASS |
-| **Content Page Lighthouse Mobile (`/collections`)** | Perf **93** · A11y **100** · BP **100** · SEO **100** · LCP **0.89 s** · CLS **0.0168** | Perf ≥ 90 · A11y 100 · BP ≥ 95 · SEO 100 · LCP ≤ 2 s · CLS ≤ 0.05 | PASS |
+| **Max WebGL Draw Calls (busiest scene, 0%–100%)** | **21** (incl. bronze pulls, LED wash, mitered backsplash; Scene 2 backward scrub: **11**) | ≤ 150 | PASS |
+| **First 3D WebGL Frame (Tier A, CPU SwiftShader)** | **1.50 s** (`1495 ms`) | ≤ 2.5 s on 4G | PASS |
+| **Content Page Lighthouse Desktop (`/collections`)** | Perf **100** · A11y **100** · BP **100** · SEO **100** · LCP **0.25 s** · TBT **12 ms** · CLS **0.0009** | Perf ≥ 90 · A11y 100 · BP ≥ 95 · SEO 100 · LCP ≤ 2 s · CLS ≤ 0.05 · TBT ≤ 200 ms | PASS |
+| **Content Page Lighthouse Mobile (`/collections`)** | Perf **96** · A11y **100** · BP **100** · SEO **100** · LCP **0.78 s** · CLS **0.0168** | Perf ≥ 90 · A11y 100 · BP ≥ 95 · SEO 100 · LCP ≤ 2 s · CLS ≤ 0.05 | PASS |
 | **Homepage Lighthouse (`/`)** | Desktop: A11y **100** · BP **100** · SEO **100** · LCP **1.67 s** · CLS **0.0015**; Mobile: A11y **100** · BP **100** · SEO **100** · CLS **0.0000** | Software-renderer graceful Tier C fallback active under headless SwiftShader | PASS |
 | **WCAG 2.2 AA `axe-core` Violations (10 views incl. live 3D HUD)** | **0 violations** | 0 violations | PASS |
 | **`prefers-reduced-motion` `<video>` Elements** | **0** (static Tier C stills only) | 0 | PASS |

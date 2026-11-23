@@ -30,7 +30,8 @@ export type PanelGeometryKind =
   | "door-slim-shaker"
   | "door-flat"
   | "hardware-pin"
-  | "hardware-hinge";
+  | "hardware-hinge"
+  | "hardware-pull";
 
 export interface CabinetPanelSpec {
   id: string;
@@ -56,8 +57,8 @@ export interface CabinetPanelSpec {
   hingeSide: "left" | "right" | null;
   /** Interior shelf index (0, 1, ...) for vertical re-spacing animation in Scene 4 */
   shelfIndex: number | null;
-  /** Material zone: wood veneer exterior, satin maple interior, honed stone counter, or brushed steel hardware */
-  materialZone: "wood" | "interior" | "counter" | "metal";
+  /** Material zone: wood veneer exterior, satin maple interior, honed stone counter, brushed steel, or architectural bronze */
+  materialZone: "wood" | "interior" | "counter" | "metal" | "bronze";
   /** Altitude lane offset in meters to prevent visible flight collisions */
   laneOffset: number;
   /** Whether this panel belongs to the primary hero cabinet (Scenes 0-4) */
@@ -366,6 +367,9 @@ export function generateCabinetPanels(
   const frontZ = dM / 2 + DOOR_T / 2 + 0.0015; // 1.5 mm bumper stand-off off carcass face
   const totalFrontW = wM - REVEAL_M; // 1 mm inset each side => 2.0 mm gap between neighboring boxes
 
+  const addPulls = !options.isHeroCabinet && !mergeSmall;
+  const pullZ = frontZ + DOOR_T / 2 + 0.013;
+
   if (placement.type === "drawer_base") {
     const count = placement.drawers ?? 3;
     // Standard European 3-drawer proportion: top shallow (22%), middle (39%), bottom deep (39%)
@@ -385,6 +389,17 @@ export function generateCabinetPanels(
         0.72 + idx * 0.06,
         { materialZone: "wood" }
       );
+      if (addPulls) {
+        addPanel(
+          `PULL-D${idx + 1}`,
+          "hardware",
+          "hardware-pull",
+          [Math.min(0.22, totalFrontW * 0.34), 0.011, 0.025],
+          [0, centerY + dh * 0.14, pullZ],
+          0.91,
+          { materialZone: "bronze" }
+        );
+      }
       cursorY -= dh + REVEAL_M;
     });
   } else if (isTall) {
@@ -415,6 +430,30 @@ export function generateCabinetPanels(
         0.82 + di * 0.05,
         { materialZone: "wood", hingeSide: side }
       );
+      if (addPulls) {
+        const pullX =
+          numDoors === 2
+            ? ox + (di === 0 ? eachW / 2 - 0.032 : -eachW / 2 + 0.032)
+            : ox + eachW / 2 - 0.032;
+        addPanel(
+          `PULL-TL-${di}`,
+          "hardware",
+          "hardware-pull",
+          [0.011, 0.22, 0.025],
+          [pullX, bottomElev + lowerH - 0.16, pullZ],
+          0.92,
+          { materialZone: "bronze" }
+        );
+        addPanel(
+          `PULL-TH-${di}`,
+          "hardware",
+          "hardware-pull",
+          [0.011, 0.22, 0.025],
+          [pullX, bottomElev + lowerH + REVEAL_M + 0.18, pullZ],
+          0.92,
+          { materialZone: "bronze" }
+        );
+      }
     });
   } else {
     // Base, Sink Base, Vanity, Wall
@@ -434,6 +473,17 @@ export function generateCabinetPanels(
         0.72,
         { materialZone: "wood" }
       );
+      if (addPulls && placement.type !== "sink_base") {
+        addPanel(
+          "PULL-TOP",
+          "hardware",
+          "hardware-pull",
+          [Math.min(0.2, totalFrontW * 0.32), 0.011, 0.025],
+          [0, bottomElev + boxH - topDrawerH / 2, pullZ],
+          0.91,
+          { materialZone: "bronze" }
+        );
+      }
     }
 
     const numDoors = placement.doors ?? (placement.widthIn >= 24 ? 2 : 1);
@@ -467,6 +517,24 @@ export function generateCabinetPanels(
         0.78 + di * 0.06,
         { materialZone: "wood", hingeSide: side }
       );
+      if (addPulls) {
+        const pullX =
+          numDoors === 2
+            ? ox + (di === 0 ? eachW / 2 - 0.032 : -eachW / 2 + 0.032)
+            : ox + eachW / 2 - 0.032;
+        const pullY = isWall
+          ? bottomElev + Math.min(0.14, doorAreaH * 0.22)
+          : bottomElev + doorAreaH - Math.min(0.14, doorAreaH * 0.22);
+        addPanel(
+          `PULL-${di === 0 ? "L" : "R"}`,
+          "hardware",
+          "hardware-pull",
+          [0.011, 0.16, 0.025],
+          [pullX, pullY, pullZ],
+          0.91 + di * 0.01,
+          { materialZone: "bronze" }
+        );
+      }
     });
   }
 

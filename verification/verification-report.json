@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-11-23T18:21:20.007Z",
-  "baseUrl": "http://127.0.0.1:3099",
+  "timestamp": "2026-11-23T19:10:56.721Z",
+  "baseUrl": "http://127.0.0.1:3000",
   "scrollTelemetry": [
     {
       "pct": 0,
@@ -28,7 +28,7 @@
       "sceneIndex": 3,
       "layout": "l-shape",
       "finish": "premium-oak",
-      "drawCalls": 11
+      "drawCalls": 12
     },
     {
       "pct": 45,
@@ -42,21 +42,21 @@
       "sceneIndex": 5,
       "layout": "l-shape",
       "finish": "premium-oak",
-      "drawCalls": 18
+      "drawCalls": 21
     },
     {
       "pct": 70,
       "sceneIndex": 6,
       "layout": "galley",
       "finish": "iron-black",
-      "drawCalls": 16
+      "drawCalls": 18
     },
     {
       "pct": 75,
       "sceneIndex": 6,
       "layout": "island",
       "finish": "classic-walnut",
-      "drawCalls": 19
+      "drawCalls": 20
     },
     {
       "pct": 80,
@@ -70,7 +70,7 @@
       "sceneIndex": 7,
       "layout": "vanity",
       "finish": "frosty-white",
-      "drawCalls": 19
+      "drawCalls": 20
     },
     {
       "pct": 98,
@@ -80,11 +80,11 @@
       "drawCalls": 13
     }
   ],
-  "maxDrawCalls": 19,
+  "maxDrawCalls": 21,
   "backwardScrubOk": true,
   "reducedMotionVideos": 0,
   "conversion": {
-    "sharedUrl": "http://127.0.0.1:3099/compose?layout=galley&collection=slim-shaker&finish=iron-black&ceiling=10",
+    "sharedUrl": "http://127.0.0.1:3000/compose?layout=galley&collection=slim-shaker&finish=iron-black&ceiling=10",
     "configSurvivedReload": true,
     "attachedConfigOnShowroom": true,
     "showroomConfirmed": true,
@@ -128,12 +128,12 @@
     {
       "route": "/compose",
       "violations": [],
-      "passes": 28
+      "passes": 29
     },
     {
       "route": "/precision",
       "violations": [],
-      "passes": 25
+      "passes": 29
     },
     {
       "route": "/trade",
@@ -226,27 +226,27 @@
     }
   ],
   "budgets": {
-    "initialJsContentPageGzipKB": 166.5,
+    "initialJsContentPageGzipKB": 143.9,
     "initialJsBudgetKB": 170,
-    "three3dChunksGzipKB": 192,
+    "three3dChunksGzipKB": 192.4,
     "three3dBudgetKB": 450,
     "all5FinishesKtx2MB": 2,
     "hdriKB": 400.7,
-    "scenes02TexturesMB": 0.57,
+    "scenes02TexturesMB": 0.18,
     "scenes02TexturesBudgetMB": 2.5,
-    "totalFilmTransferMB": 2.71,
+    "totalFilmTransferMB": 2.32,
     "totalFilmBudgetMB": 12,
     "tierCLoopFlightKB": 495,
     "tierCLoopReconfigKB": 497.7,
-    "maxDrawCalls": 19,
+    "maxDrawCalls": 21,
     "drawCallsBudget": 150,
-    "firstWebGLFrameMs": 1833,
+    "firstWebGLFrameMs": 1495,
     "consoleErrors": [],
     "largeChunks": [
       {
-        "file": "0bw7ow1wa9dnd.js",
-        "gzipKB": 176.7,
-        "is3D": true
+        "file": "01h4yp983yawx.js",
+        "gzipKB": 18.9,
+        "is3D": false
       },
       {
         "file": "0cz1d0mv5g_q7.js",
@@ -259,19 +259,19 @@
         "is3D": false
       },
       {
-        "file": "26fac-qvbz8jf.js",
-        "gzipKB": 18.4,
-        "is3D": false
-      },
-      {
-        "file": "2n09lj3c9mhbg.js",
-        "gzipKB": 15.2,
+        "file": "2rcznk2pehait.js",
+        "gzipKB": 15.3,
         "is3D": true
       },
       {
         "file": "3lbm-r_1xmrrq.js",
         "gzipKB": 69.8,
         "is3D": false
+      },
+      {
+        "file": "436s830ho7a5x.js",
+        "gzipKB": 177.1,
+        "is3D": true
       }
     ]
   }

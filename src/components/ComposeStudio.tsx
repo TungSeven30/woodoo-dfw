@@ -16,7 +16,7 @@ import {
   isValidFinishForCollection,
   resolveFinishForCollection,
 } from "@/config/site";
-import { LAYOUT_ORDER, ROOM_LAYOUTS } from "@/config/layouts";
+import { LAYOUT_ORDER, ROOM_LAYOUTS, summarizeLayoutSchedule } from "@/config/layouts";
 import type { StudioCanvasHandle } from "./StudioCanvas";
 import type { StudioViewMode } from "@/engine/studio-engine";
 import { markConfiguratorUsed, trackEvent } from "@/lib/analytics";
@@ -392,6 +392,79 @@ export function ComposeStudio() {
             style={{ width: "100%", marginTop: "0.45rem", accentColor: "#d18d43", cursor: "pointer" }}
           />
         </div>
+
+        {/* Live Parametric Concept Kit Schedule */}
+        {(() => {
+          const sched = summarizeLayoutSchedule(layout, ceiling);
+          return (
+            <details
+              style={{
+                border: "1px solid rgba(241, 238, 231, 0.16)",
+                background: "rgba(19, 17, 16, 0.5)",
+                padding: "0.75rem 0.9rem",
+              }}
+            >
+              <summary
+                className="mono-label"
+                style={{
+                  cursor: "pointer",
+                  color: "var(--paper)",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  listStyle: "none",
+                }}
+              >
+                <span>06 · Concept kit schedule</span>
+                <span style={{ color: "var(--amber-on-dark)" }}>
+                  {sched.cabinetCount + sched.stackedUpperCount} boxes
+                </span>
+              </summary>
+              <div style={{ marginTop: "0.75rem", display: "grid", gap: "0.38rem" }}>
+                {sched.items.map((item) => (
+                  <div
+                    key={`${item.code}-${item.dimensionsLabel}`}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      gap: "0.5rem",
+                      fontSize: "0.78rem",
+                      borderBottom: "1px solid rgba(241, 238, 231, 0.08)",
+                      paddingBottom: "0.3rem",
+                    }}
+                  >
+                    <span style={{ color: "#f1eee7", fontFamily: "var(--font-mono)" }}>
+                      {item.quantity}× {item.code}
+                    </span>
+                    <span style={{ color: "#b6aea3", textAlign: "right" }}>
+                      {item.role} · {item.dimensionsLabel}
+                    </span>
+                  </div>
+                ))}
+                {sched.moldingRuns > 0 && (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      fontSize: "0.78rem",
+                      paddingTop: "0.15rem",
+                    }}
+                  >
+                    <span style={{ color: "var(--amber-on-dark)", fontFamily: "var(--font-mono)" }}>
+                      CROWN
+                    </span>
+                    <span style={{ color: "#ddd6cb" }}>3&quot; crown molding ({ceiling} ft stack)</span>
+                  </div>
+                )}
+                <p style={{ margin: "0.45rem 0 0", fontSize: "0.72rem", color: "#9e968b", lineHeight: 1.45 }}>
+                  Stand-in 32 mm proportions (PLACEHOLDER_DIMS) for visual layout planning. No
+                  automated pricing — our DFW team verifies every box, filler, and panel from your
+                  wall measurements.
+                </p>
+              </div>
+            </details>
+          );
+        })()}
 
         {/* Save, Share, AR Export & Get Quoted */}
         <div

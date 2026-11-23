@@ -280,3 +280,29 @@ export function buildPinGeometry(): THREE.BufferGeometry {
   geo.rotateZ(Math.PI / 2);
   return geo;
 }
+
+/**
+ * Builds a minimalist architectural linear bar pull (unit 1x1x1 scaled) with
+ * proud grip bar (+Z) and two subtle standoffs meeting the door plane (-Z).
+ */
+export function buildPullHandleGeometry(): THREE.BufferGeometry {
+  const positions: number[] = [];
+  const normals: number[] = [];
+  const uvs: number[] = [];
+  const indices: number[] = [];
+
+  // Main sleek grip bar along +Z front
+  pushSubBox(positions, normals, uvs, indices, 0, 0, 0.28, 1.0, 1.0, 0.44, "vertical");
+  // Upper/left and lower/right standoffs reaching back to door face
+  pushSubBox(positions, normals, uvs, indices, -0.32, -0.32, -0.18, 0.36, 0.36, 0.56, "vertical");
+  pushSubBox(positions, normals, uvs, indices, 0.32, 0.32, -0.18, 0.36, 0.36, 0.56, "vertical");
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geo.setAttribute("normal", new THREE.Float32BufferAttribute(normals, 3));
+  geo.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+  geo.setIndex(indices);
+  geo.computeBoundingSphere();
+  geo.computeBoundingBox();
+  return geo;
+}

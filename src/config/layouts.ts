@@ -1,4 +1,4 @@
-import { CeilingHeightFt, CollectionSlug, FinishSlug, LayoutId } from "./site";
+import { CeilingHeightFt, CollectionSlug, FinishSlug, LayoutId, SITE_CONFIG } from "./site";
 
 export type CabinetType =
   | "base"
@@ -230,3 +230,103 @@ export const LAYOUT_ORDER: LayoutId[] = [
   "vanity",
   "u-shape",
 ];
+
+export interface LayoutScheduleItem {
+  code: string;
+  role: string;
+  dimensionsLabel: string;
+  quantity: number;
+}
+
+export interface LayoutScheduleSummary {
+  cabinetCount: number;
+  stackedUpperCount: number;
+  moldingRuns: number;
+  items: LayoutScheduleItem[];
+}
+
+/**
+ * Pure zero-Three.js concept cabinet schedule builder for /compose.
+ * Stand-in box dimensions reflect PLACEHOLDER_DIMS pending catalog verification.
+ */
+export function summarizeLayoutSchedule(
+  layoutId: LayoutId,
+  ceilingFt: CeilingHeightFt
+): LayoutScheduleSummary {
+  const layout = ROOM_LAYOUTS[layoutId];
+  const dims = SITE_CONFIG.PLACEHOLDER_DIMS;
+  const wallSpec = dims.wallHeightsByCeilingIn[ceilingFt];
+  const grouped = new Map<string, LayoutScheduleItem>();
+  let stackedUpperCount = 0;
+  let moldingRuns = 0;
+
+  const roleLabels: Record<CabinetType, string> = {
+    base: "Base cabinet",
+    drawer_base: "3-drawer base",
+    sink_base: "Sink base",
+    wall: "Wall cabinet",
+    tall: "Tall pantry",
+    vanity: "Bath vanity",
+    linen_tower: "Linen tower",
+    filler: "Filler strip",
+    end_panel: "Finished end panel",
+  };
+
+  for (const cab of layout.cabinets) {
+    const isWall = cab.type === "wall";
+    const isTall = cab.type === "tall" || cab.type === "linen_tower";
+    const defaultH = isWall
+      ? wallSpec.mainWallIn
+      : isTall
+        ? Math.min(ceilingFt * 12 - 3, ceilingFt === 8 ? 84 : ceilingFt === 9 ? 96 : 105)
+        : dims.baseHeightIn;
+    const defaultD = isWall
+      ? dims.wallDepthIn
+      : cab.type === "vanity" || cab.type === "linen_tower"
+        ? dims.vanityDepthIn
+        : dims.baseDepthIn;
+
+    const hIn = cab.heightIn ?? defaultH;
+    const dIn = cab.depthIn ?? defaultD;
+    const key = `${cab.skuPrefix}-${cab.widthIn}x${hIn}x${dIn}`;
+    const existing = grouped.get(key);
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      grouped.set(key, {
+        code: cab.skuPrefix,
+        role: roleLabels[cab.type],
+        dimensionsLabel: `${cab.widthIn}" W × ${hIn}" H × ${dIn}" D`,
+        quantity: 1,
+      });
+    }
+
+    if (isWall && cab.stackable && wallSpec.stackedUpperIn > 0) {
+      stackedUpperCount += 1;
+      const uCode = `WU${cab.widthIn}${wallSpec.stackedUpperIn}`;
+      const uKey = `STACK-${uCode}`;
+      const uEx = grouped.get(uKey);
+      if (uEx) {
+        uEx.quantity += 1;
+      } else {
+        grouped.set(uKey, {
+          code: uCode,
+          role: "Stacked upper box",
+          dimensionsLabel: `${cab.widthIn}" W × ${wallSpec.stackedUpperIn}" H × ${dIn}" D`,
+          quantity: 1,
+        });
+      }
+    }
+
+    if (isWall || cab.type === "tall") {
+      moldingRuns += 1;
+    }
+  }
+
+  return {
+    cabinetCount: layout.cabinets.length,
+    stackedUpperCount,
+    moldingRuns,
+    items: Array.from(grouped.values()),
+  };
+}

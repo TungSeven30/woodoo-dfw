@@ -25,6 +25,7 @@ import {
   buildFlatSlabDoorGeometry,
   buildHingeGeometry,
   buildPinGeometry,
+  buildPullHandleGeometry,
   buildShakerDoorGeometry,
   buildUnitPanelBoxGeometry,
 } from "./geometry";
@@ -85,6 +86,7 @@ export class WoodooStudioEngine {
     counterBox: THREE.InstancedMesh;
     metalPin: THREE.InstancedMesh;
     metalHinge: THREE.InstancedMesh;
+    bronzePull: THREE.InstancedMesh;
   };
 
   private state: StudioConfig;
@@ -204,11 +206,23 @@ export class WoodooStudioEngine {
 
       const splash = new THREE.Mesh(
         new THREE.PlaneGeometry(4.6, 0.54),
-        new THREE.MeshPhysicalMaterial({ color: "#dcd4c7", roughness: 0.45, clearcoat: 0.15 })
+        new THREE.MeshPhysicalMaterial({ color: "#dcd4c7", roughness: 0.44, clearcoat: 0.18 })
       );
       splash.position.set(0, 1.15, -1.42);
       splash.receiveShadow = true;
       this.scene.add(splash);
+
+      // 3000K architectural under-cabinet recessed LED strip & warm grazing light
+      const ledStrip = new THREE.Mesh(
+        new THREE.BoxGeometry(3.2, 0.014, 0.022),
+        new THREE.MeshBasicMaterial({ color: "#ffe3b0" })
+      );
+      ledStrip.position.set(0, 1.375, -1.25);
+      this.scene.add(ledStrip);
+
+      const ledWash = new THREE.PointLight("#ffdba6", 1.9, 4.2, 1.8);
+      ledWash.position.set(0, 1.31, -1.06);
+      this.scene.add(ledWash);
     }
 
     this.pendantsGroup = new THREE.Group();
@@ -259,6 +273,7 @@ export class WoodooStudioEngine {
       counterBox: makePool(buildUnitPanelBoxGeometry(), this.materials.counterMaterial, 48),
       metalPin: makePool(buildPinGeometry(), this.materials.metalMaterial, 40, false),
       metalHinge: makePool(buildHingeGeometry(), this.materials.metalMaterial, 24, false),
+      bronzePull: makePool(buildPullHandleGeometry(), this.materials.bronzeMaterial, 128, false),
     };
   }
 
@@ -546,6 +561,10 @@ export class WoodooStudioEngine {
       if (counts.counterBox < 48) this.pool.counterBox.setMatrixAt(counts.counterBox++, this._mat);
       return;
     }
+    if (zone === "bronze") {
+      if (counts.bronzePull < 128) this.pool.bronzePull.setMatrixAt(counts.bronzePull++, this._mat);
+      return;
+    }
     if (zone === "metal") {
       if (geomKind === "hardware-hinge") {
         if (counts.metalHinge < 24) this.pool.metalHinge.setMatrixAt(counts.metalHinge++, this._mat);
@@ -627,6 +646,7 @@ export class WoodooStudioEngine {
       counterBox: 0,
       metalPin: 0,
       metalHinge: 0,
+      bronzePull: 0,
     };
 
     if (this.state.mode === "confirm-pack") {

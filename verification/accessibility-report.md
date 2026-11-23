@@ -1,6 +1,6 @@
 # Accessibility & Keyboard Navigation Audit Report
 
-Generated: 2026-11-23T18:21:20.007Z
+Generated: 2026-11-23T19:10:56.721Z
 Total WCAG 2.2 AA axe-core violations across 10 audited views: **0**
 
 ## Automated axe-core Results (WCAG 2.0 / 2.1 / 2.2 AA)
@@ -11,8 +11,8 @@ Total WCAG 2.2 AA axe-core violations across 10 audited views: **0**
 | `/` | 0 | 25 |
 | `/collections` | 0 | 25 |
 | `/collections/traditional-shaker` | 0 | 25 |
-| `/compose` | 0 | 28 |
-| `/precision` | 0 | 25 |
+| `/compose` | 0 | 29 |
+| `/precision` | 0 | 29 |
 | `/trade` | 0 | 28 |
 | `/trade/send-a-plan` | 0 | 29 |
 | `/showroom` | 0 | 28 |
