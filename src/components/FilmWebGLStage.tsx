@@ -74,10 +74,10 @@ export default function FilmWebGLStage({
   });
 
   const [scene7, setScene7] = useState<Scene7ConfigState>({
-    layout: "l-shape",
-    collection: "traditional-shaker",
-    finish: "premium-oak",
-    ceiling: 9,
+    layout: "vanity",
+    collection: "flat",
+    finish: "frosty-white",
+    ceiling: 8,
   });
   const [liveAnnouncement, setLiveAnnouncement] = useState("");
   const [ready, setReady] = useState(false);
@@ -372,7 +372,15 @@ export default function FilmWebGLStage({
                 href="#film-end"
                 id="film-skip"
                 className="film-skip-link"
-                onClick={() => trackEvent("cta_click", { cta: "skip-film", location: "film-bar" })}
+                onClick={(e) => {
+                  e.preventDefault();
+                  trackEvent("cta_click", { cta: "skip-film", location: "film-bar" });
+                  const target = document.getElementById("film-end");
+                  if (!target) return;
+                  lenisRef.current?.scrollTo(target, { immediate: true });
+                  target.scrollIntoView({ block: "start" });
+                  target.focus({ preventScroll: true });
+                }}
               >
                 Skip the film
               </a>

@@ -48,26 +48,27 @@ export default function ContactPage() {
               <span className="mono-label">Showroom &amp; Warehouse</span>
               <p style={{ margin: "0.4rem 0 0", fontWeight: 500 }}>{address}</p>
             </div>
-            <div className="arch-card">
-              <span className="mono-label">Direct phone</span>
-              <p style={{ margin: "0.4rem 0 0", fontWeight: 500 }}>
-                {hasPhone ? SITE_CONFIG.PHONE : "Publishing prior to opening"}
-              </p>
-            </div>
-            <div className="arch-card">
-              <span className="mono-label">Email</span>
-              <p style={{ margin: "0.4rem 0 0", fontWeight: 500 }}>
-                {hasEmail ? SITE_CONFIG.EMAIL : "Use the direct form below"}
-              </p>
-            </div>
+            {/* Phone and email cards appear only once real details are configured. */}
+            {hasPhone && (
+              <div className="arch-card">
+                <span className="mono-label">Phone</span>
+                <p style={{ margin: "0.4rem 0 0", fontWeight: 500 }}>{SITE_CONFIG.PHONE}</p>
+              </div>
+            )}
+            {hasEmail && (
+              <div className="arch-card">
+                <span className="mono-label">Email</span>
+                <p style={{ margin: "0.4rem 0 0", fontWeight: 500 }}>{SITE_CONFIG.EMAIL}</p>
+              </div>
+            )}
           </div>
 
           <div style={{ display: "flex", gap: "0.65rem", flexWrap: "wrap", marginBottom: "2.25rem" }}>
             <Link href="/trade/send-a-plan" className="btn btn-primary btn-sm">
-              Builders: Send a plan
+              Send a plan
             </Link>
             <Link href="/showroom" className="btn btn-sm">
-              Homeowners: Preview list / Visit
+              Book a visit
             </Link>
           </div>
 

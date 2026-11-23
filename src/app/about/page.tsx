@@ -57,13 +57,7 @@ export default function AboutPage() {
               Explore collections
             </Link>
             <Link href="/precision" className="btn">
-              Inspect 2 mm precision
-            </Link>
-            <Link href="/trade/send-a-plan" className="btn">
-              Send a plan
-            </Link>
-            <Link href="/showroom" className="btn">
-              Join preview list
+              See the 2 mm reveal
             </Link>
           </div>
         </div>

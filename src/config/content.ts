@@ -328,10 +328,10 @@ export const PLACEHOLDER_TESTIMONIALS = [
 
 export const ABOUT_COPY = {
   eyebrow: "Chicago roots · Dallas–Fort Worth chapter",
-  headline: "Built in Malaysia. Proven in Chicago. Opening in North Texas.",
+  headline: "Made in Malaysia. Run from Chicago. Opening in North Texas.",
   pullQuote:
     "Good architecture rarely comes from four hundred paint chips. It comes from holding a two-millimeter shadow line straight across an entire wall.",
-  lead: `Anyone renovating a kitchen in Dallas–Fort Worth meets the same dead end: bargain boxes that show their shortcuts in the first winter, or bespoke European design studios priced out of reach for real projects. ${SITE_CONFIG.BRAND_NAME} occupies the clear middle ground — disciplined European frameless construction without the gallery markup.`,
+  lead: `Kitchen buyers in Dallas–Fort Worth usually choose between builder-grade boxes and custom European studios priced for a different budget. ${SITE_CONFIG.BRAND_NAME} occupies the clear middle ground — disciplined European frameless construction without the gallery markup.`,
   sections: [
     {
       chapter: "01 · THE DISCIPLINE OF RESTRAINT",
@@ -340,13 +340,13 @@ export const ABOUT_COPY = {
     },
     {
       chapter: "02 · CLEAR PROCESS",
-      title: "An Apple experience from sketch to delivery.",
+      title: "One person from sketch to delivery.",
       body: "Whether you build custom homes in Frisco or remodel a mid-century ranch in Richardson, you should never have to chase three people for an honest cabinet list. One named consultant checks every box, filler strip, finished end panel, and 3-inch crown return against your actual wall dimensions — then stays with you after delivery.",
     },
     {
       chapter: "03 · OPERATING BACKBONE",
       title: "Showroom plus local warehouse.",
-      body: "Backed by the operating playbook and distribution network proven in Elk Grove Village, Illinois, our Dallas–Fort Worth branch pairs a tactile design showroom with local warehouse support serving Richardson, Plano, Frisco, McKinney, Allen, Dallas, and Fort Worth.",
+      body: "Backed by the warehouse and team in Elk Grove Village, Illinois, our Dallas–Fort Worth branch pairs a tactile design showroom with local warehouse support serving Richardson, Plano, Frisco, McKinney, Allen, Dallas, and Fort Worth.",
     },
     {
       chapter: "04 · HONEST BOUNDARIES",

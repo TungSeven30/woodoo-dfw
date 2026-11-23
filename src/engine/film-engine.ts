@@ -121,11 +121,12 @@ export class WoodooFilmEngine {
   private morphItoV: MorphPair[] = [];
 
   // Scene 7 Live Interactive Morphing State
+  // Scene 7 opens on the room scene 6 ended with (the bath vanity), so the controls match what is on screen.
   private scene7State: Scene7ConfigState = {
-    layout: "l-shape",
-    collection: "traditional-shaker",
-    finish: "premium-oak",
-    ceiling: 9,
+    layout: "vanity",
+    collection: "flat",
+    finish: "frosty-white",
+    ceiling: 8,
   };
   private scene7PrevPanels: CabinetPanelSpec[] = [];
   private scene7TargetPanels: CabinetPanelSpec[] = [];
@@ -1258,7 +1259,7 @@ export class WoodooFilmEngine {
 
         const ghostAlpha = Math.sin(THREE.MathUtils.clamp((u4 - 0.18) / 0.62, 0, 1) * Math.PI);
         this.ghostFrameGroup.visible = ghostAlpha > 0.02;
-        this.materials.ghostWireframeMaterial.opacity = ghostAlpha * 0.82;
+        this.materials.ghostWireframeMaterial.opacity = ghostAlpha * 0.5;
 
         const shelfShift = Math.sin(THREE.MathUtils.clamp((u4 - 0.22) / 0.55, 0, 1) * Math.PI) * 0.06;
 
@@ -1472,13 +1473,14 @@ export class WoodooFilmEngine {
       const descend = THREE.MathUtils.smoothstep(u7, 0.85, 1.0);
       const topAmt = rise * (1 - descend);
 
-      const planH = isP ? 6.9 : 5.6;
+      // Elevated three-quarter view (not a plan): the room reads as a room, and sits left of the
+      // configurator panel on desktop / above the control drawer on phones.
       this._camPos.set(
-        THREE.MathUtils.lerp(0.9, isP ? 0 : -0.45, topAmt),
-        THREE.MathUtils.lerp(1.52, planH, topAmt),
-        THREE.MathUtils.lerp(3.25, 1.35, topAmt)
+        THREE.MathUtils.lerp(0.9, isP ? 0.9 : 1.9, topAmt),
+        THREE.MathUtils.lerp(1.52, isP ? 3.6 : 2.4, topAmt),
+        THREE.MathUtils.lerp(3.25, isP ? 6.2 : 5.0, topAmt)
       );
-      this._camLook.set(isP ? 0 : -0.25, 0.45, -0.25);
+      this._camLook.set(isP ? 0.1 : 0.45, isP ? 0.2 : 0.95, -0.3);
     }
     // =========================================================================
     // SCENE 8 (0.92 -> 1.00): THE SPLIT — TWO MONUMENTAL 3D CABINET DOORS
@@ -1538,7 +1540,7 @@ export class WoodooFilmEngine {
       }
 
       this._camPos.set(camX, camY, camZ);
-      this._camLook.set(lookX, isP ? -0.57 : 0.51, 0);
+      this._camLook.set(lookX, isP ? -0.8 : 0.51, 0);
     }
 
     // Toggle travertine backsplash panels & recessed 3000K under-cabinet LED strips strictly to match active layout

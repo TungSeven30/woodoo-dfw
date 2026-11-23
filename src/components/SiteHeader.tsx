@@ -111,7 +111,7 @@ export function SiteHeader() {
                 aria-pressed={quality.tier === "C"}
                 title="Switch between the interactive 3D film and a lighter still-image version"
               >
-                {quality.tier === "C" ? "3D version" : "Lighter version"}
+                {quality.tier === "C" ? "3D film" : "Still images"}
               </button>
             )}
 
@@ -225,7 +225,7 @@ export function SiteHeader() {
                   setMenuOpen(false);
                 }}
               >
-                {quality.tier === "C" ? "Switch to 3D version" : "Lighter version"}
+                {quality.tier === "C" ? "Switch to 3D film" : "Switch to still images"}
               </button>
             </div>
           </div>

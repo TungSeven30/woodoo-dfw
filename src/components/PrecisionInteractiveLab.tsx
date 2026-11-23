@@ -622,9 +622,8 @@ export function PrecisionInteractiveLab() {
               {cSpec.note}
             </p>
             <p style={{ fontSize: "0.86rem", color: "var(--fg-muted)", marginBottom: "1.5rem" }}>
-              Elevation diagram uses stand-in 32 mm proportions (PLACEHOLDER_DIMS) pending confirmation
-              of exact stocked box heights against the Woodoo catalog. Confirmed 3-inch crown molding
-              caps every 8, 9, and 10 ft run.
+              The elevation is illustrative. Exact box heights come with your quote. A 3-inch crown
+              molding caps every 8, 9, and 10 ft run.
             </p>
             <div style={{ display: "flex", gap: "0.65rem", flexWrap: "wrap" }}>
               <Link
