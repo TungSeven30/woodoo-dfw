@@ -14,7 +14,7 @@ fs.mkdirSync(TIER_C_DIR, { recursive: true });
 fs.mkdirSync(OG_DIR, { recursive: true });
 fs.mkdirSync(TMP_DIR, { recursive: true });
 
-const SCENE_T = [0.015, 0.10, 0.23, 0.355, 0.445, 0.61, 0.75, 0.87, 0.975];
+const SCENE_T = [0.015, 0.10, 0.285, 0.355, 0.445, 0.61, 0.75, 0.87, 0.975];
 
 async function run() {
   const browser = await chromium.launch({
@@ -104,7 +104,7 @@ async function run() {
         </defs>
         <rect width="1200" height="630" fill="url(#g)"/>
         <rect x="56" y="472" width="4" height="96" fill="#d18d43"/>
-        <text x="80" y="514" fill="#f1eee7" font-family="Georgia, serif" font-size="56">${label}</text>
+        <text x="80" y="514" fill="#f1eee7" font-family="Inter, Helvetica, Arial, sans-serif" font-weight="600" letter-spacing="-1.5" font-size="54">${label}</text>
         <text x="80" y="556" fill="#cfc8bd" font-family="sans-serif" font-size="24">${subtitle}</text>
         <text x="1144" y="592" text-anchor="end" fill="#b6aea3" font-family="monospace" font-size="16" letter-spacing="2">CONCEPT RENDER · DALLAS–FORT WORTH</text>
       </svg>
