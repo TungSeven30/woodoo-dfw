@@ -1,0 +1,278 @@
+{
+  "timestamp": "2026-11-23T18:21:20.007Z",
+  "baseUrl": "http://127.0.0.1:3099",
+  "scrollTelemetry": [
+    {
+      "pct": 0,
+      "sceneIndex": 0,
+      "layout": "l-shape",
+      "finish": "premium-oak",
+      "drawCalls": 5
+    },
+    {
+      "pct": 10,
+      "sceneIndex": 1,
+      "layout": "l-shape",
+      "finish": "premium-oak",
+      "drawCalls": 17
+    },
+    {
+      "pct": 25,
+      "sceneIndex": 2,
+      "layout": "l-shape",
+      "finish": "premium-oak",
+      "drawCalls": 11
+    },
+    {
+      "pct": 35,
+      "sceneIndex": 3,
+      "layout": "l-shape",
+      "finish": "premium-oak",
+      "drawCalls": 11
+    },
+    {
+      "pct": 45,
+      "sceneIndex": 4,
+      "layout": "l-shape",
+      "finish": "premium-oak",
+      "drawCalls": 16
+    },
+    {
+      "pct": 60,
+      "sceneIndex": 5,
+      "layout": "l-shape",
+      "finish": "premium-oak",
+      "drawCalls": 18
+    },
+    {
+      "pct": 70,
+      "sceneIndex": 6,
+      "layout": "galley",
+      "finish": "iron-black",
+      "drawCalls": 16
+    },
+    {
+      "pct": 75,
+      "sceneIndex": 6,
+      "layout": "island",
+      "finish": "classic-walnut",
+      "drawCalls": 19
+    },
+    {
+      "pct": 80,
+      "sceneIndex": 6,
+      "layout": "vanity",
+      "finish": "frosty-white",
+      "drawCalls": 18
+    },
+    {
+      "pct": 88,
+      "sceneIndex": 7,
+      "layout": "vanity",
+      "finish": "frosty-white",
+      "drawCalls": 19
+    },
+    {
+      "pct": 98,
+      "sceneIndex": 8,
+      "layout": "l-shape",
+      "finish": "premium-oak",
+      "drawCalls": 13
+    }
+  ],
+  "maxDrawCalls": 19,
+  "backwardScrubOk": true,
+  "reducedMotionVideos": 0,
+  "conversion": {
+    "sharedUrl": "http://127.0.0.1:3099/compose?layout=galley&collection=slim-shaker&finish=iron-black&ceiling=10",
+    "configSurvivedReload": true,
+    "attachedConfigOnShowroom": true,
+    "showroomConfirmed": true,
+    "planUploadMassingPreviewShown": true,
+    "planConfirmed": true,
+    "leadsPersistedInInbox": 2
+  },
+  "analytics": {
+    "uniqueEventsFired": [
+      "scene_reached",
+      "configurator_change",
+      "configurator_save",
+      "cta_click",
+      "form_start",
+      "form_submit",
+      "upload_success"
+    ],
+    "requiredAllPresent": true
+  },
+  "accessibility": [
+    {
+      "route": "/ (Live 3D Film · Scene 7 HUD & Rail)",
+      "violations": [],
+      "passes": 24
+    },
+    {
+      "route": "/",
+      "violations": [],
+      "passes": 25
+    },
+    {
+      "route": "/collections",
+      "violations": [],
+      "passes": 25
+    },
+    {
+      "route": "/collections/traditional-shaker",
+      "violations": [],
+      "passes": 25
+    },
+    {
+      "route": "/compose",
+      "violations": [],
+      "passes": 28
+    },
+    {
+      "route": "/precision",
+      "violations": [],
+      "passes": 25
+    },
+    {
+      "route": "/trade",
+      "violations": [],
+      "passes": 28
+    },
+    {
+      "route": "/trade/send-a-plan",
+      "violations": [],
+      "passes": 29
+    },
+    {
+      "route": "/showroom",
+      "violations": [],
+      "passes": 28
+    },
+    {
+      "route": "/faq",
+      "violations": [],
+      "passes": 25
+    }
+  ],
+  "truthAudit": {
+    "pagesChecked": 16,
+    "violations": []
+  },
+  "keyboardLog": [
+    {
+      "route": "/",
+      "tabSequence": [
+        "a (Skip to main content)",
+        "a (Woodoo Dallas)",
+        "a (Collections)",
+        "a (Compose)",
+        "a (Precision)",
+        "a (Trade)",
+        "a (Showroom)",
+        "a (Process)",
+        "a (About)",
+        "a (FAQ)",
+        "button#sound-toggle-btn (Sound off)",
+        "button#lighter-version-toggle (3D version)",
+        "a#header-cta-send-plan (Send a plan)",
+        "a#header-cta-book-visit (Book a visit)",
+        "a (Skip to trade)",
+        "a (Skip to homeowners)"
+      ]
+    },
+    {
+      "route": "/compose",
+      "tabSequence": [
+        "a (Skip to main content)",
+        "a (Woodoo Dallas)",
+        "a (Collections)",
+        "a (Compose)",
+        "a (Precision)",
+        "a (Trade)",
+        "a (Showroom)",
+        "a (Process)",
+        "a (About)",
+        "a (FAQ)",
+        "button#sound-toggle-btn (Sound off)",
+        "button#lighter-version-toggle (3D version)",
+        "a#header-cta-send-plan (Send a plan)",
+        "a#header-cta-book-visit (Book a visit)",
+        "button (Perspective)",
+        "button (Plan view)"
+      ]
+    },
+    {
+      "route": "/trade/send-a-plan",
+      "tabSequence": [
+        "a (Skip to main content)",
+        "a (Woodoo Dallas)",
+        "a (Collections)",
+        "a (Compose)",
+        "a (Precision)",
+        "a (Trade)",
+        "a (Showroom)",
+        "a (Process)",
+        "a (About)",
+        "a (FAQ)",
+        "button#sound-toggle-btn (Sound off)",
+        "button#lighter-version-toggle (3D version)",
+        "a#header-cta-send-plan (Send a plan)",
+        "a#header-cta-book-visit (Book a visit)",
+        "a (Trade)",
+        "input#plan-files-input ()"
+      ]
+    }
+  ],
+  "budgets": {
+    "initialJsContentPageGzipKB": 166.5,
+    "initialJsBudgetKB": 170,
+    "three3dChunksGzipKB": 192,
+    "three3dBudgetKB": 450,
+    "all5FinishesKtx2MB": 2,
+    "hdriKB": 400.7,
+    "scenes02TexturesMB": 0.57,
+    "scenes02TexturesBudgetMB": 2.5,
+    "totalFilmTransferMB": 2.71,
+    "totalFilmBudgetMB": 12,
+    "tierCLoopFlightKB": 495,
+    "tierCLoopReconfigKB": 497.7,
+    "maxDrawCalls": 19,
+    "drawCallsBudget": 150,
+    "firstWebGLFrameMs": 1833,
+    "consoleErrors": [],
+    "largeChunks": [
+      {
+        "file": "0bw7ow1wa9dnd.js",
+        "gzipKB": 176.7,
+        "is3D": true
+      },
+      {
+        "file": "0cz1d0mv5g_q7.js",
+        "gzipKB": 38.7,
+        "is3D": false
+      },
+      {
+        "file": "0gy1dczh8t-w0.js",
+        "gzipKB": 44.2,
+        "is3D": false
+      },
+      {
+        "file": "26fac-qvbz8jf.js",
+        "gzipKB": 18.4,
+        "is3D": false
+      },
+      {
+        "file": "2n09lj3c9mhbg.js",
+        "gzipKB": 15.2,
+        "is3D": true
+      },
+      {
+        "file": "3lbm-r_1xmrrq.js",
+        "gzipKB": 69.8,
+        "is3D": false
+      }
+    ]
+  }
+}

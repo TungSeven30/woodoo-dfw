@@ -1,0 +1,39 @@
+{
+  "timestamp": "2026-11-23T18:34:20.716Z",
+  "homeMobile": {
+    "performance": 45,
+    "accessibility": 100,
+    "bestPractices": 100,
+    "seo": 100,
+    "lcpMs": 7541,
+    "tbtMs": 3959,
+    "cls": 0
+  },
+  "homeDesktop": {
+    "performance": 61,
+    "accessibility": 100,
+    "bestPractices": 100,
+    "seo": 100,
+    "lcpMs": 1671,
+    "tbtMs": 1444,
+    "cls": 0.0015
+  },
+  "collectionsMobile": {
+    "performance": 93,
+    "accessibility": 100,
+    "bestPractices": 100,
+    "seo": 100,
+    "lcpMs": 887,
+    "tbtMs": 306,
+    "cls": 0.0168
+  },
+  "collectionsDesktop": {
+    "performance": 97,
+    "accessibility": 100,
+    "bestPractices": 100,
+    "seo": 100,
+    "lcpMs": 230,
+    "tbtMs": 152,
+    "cls": 0.0009
+  }
+}
