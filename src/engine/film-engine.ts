@@ -41,6 +41,7 @@ import {
 } from "./materials";
 import { AdaptiveQualityProbe, QualityProfile } from "./device-tier";
 import { CinematicPostComposer } from "./postprocess";
+import { ROOM_COLORS, makeOakFloorTexture, makeWindowCookie } from "./room-look";
 import type { CabinetrySoundEngine } from "./sound";
 
 export interface Scene7ConfigState {
@@ -100,6 +101,7 @@ export class WoodooFilmEngine {
 
   // Lighting & Atmosphere
   private keyLight!: THREE.DirectionalLight;
+  private windowLight: THREE.SpotLight | null = null;
   private fillLight!: THREE.DirectionalLight;
   private rimLight!: THREE.SpotLight;
   private ambientLight!: THREE.HemisphereLight;
@@ -186,7 +188,7 @@ export class WoodooFilmEngine {
   private _spinE = new THREE.Euler();
   private _rotQ = new THREE.Quaternion();
   private _adjStart: [number, number, number] = [0, 0, 0];
-  private readonly _roomFloor = new THREE.Color("#5a4636");
+  private readonly _roomFloor = new THREE.Color("#f2ece4");
   private _scale = new THREE.Vector3();
   private _camPos = new THREE.Vector3();
   private _camLook = new THREE.Vector3();
@@ -434,6 +436,23 @@ export class WoodooFilmEngine {
     this.scene.add(this.rimLight);
     this.scene.add(this.rimLight.target);
 
+    // Late daylight through a four-pane window (desktop only: it adds a shadow map). It lands
+    // on the wall and counters in soft panes, as in the concept photos.
+    if (this.quality.tier === "A") {
+      this.windowLight = new THREE.SpotLight("#ffe6c4", 0, 0, 0.42, 0.25, 0);
+      this.windowLight.position.set(-4.2, 3.6, 2.6);
+      this.windowLight.target.position.set(0.4, 1.0, -1.4);
+      this.windowLight.map = makeWindowCookie();
+      this.windowLight.castShadow = true;
+      this.windowLight.shadow.mapSize.set(1024, 1024);
+      this.windowLight.shadow.bias = -0.0006;
+      this.windowLight.shadow.normalBias = 0.02;
+      this.windowLight.shadow.camera.near = 1;
+      this.windowLight.shadow.camera.far = 14;
+      this.scene.add(this.windowLight);
+      this.scene.add(this.windowLight.target);
+    }
+
     // Soft warm studio hemisphere fill
     this.ambientLight = new THREE.HemisphereLight("#f3f1ed", "#15120f", 0.34);
     this.scene.add(this.ambientLight);
@@ -446,8 +465,10 @@ export class WoodooFilmEngine {
    * horizon glow, so objects sit in graded light instead of a flat black void.
    */
   private studioSweep: THREE.Mesh | null = null;
-  private readonly _roomHorizon = new THREE.Color("#6e6357");
-  private readonly _roomFog = new THREE.Color("#4a4239");
+  private readonly _roomHorizon = new THREE.Color(ROOM_COLORS.horizon);
+  private readonly _roomTop = new THREE.Color("#cfc6b9");
+  private readonly _roomFog = new THREE.Color(ROOM_COLORS.fog);
+  private readonly _roomHemiGround = new THREE.Color(ROOM_COLORS.hemiGround);
   private studioSweepMat: THREE.ShaderMaterial | null = null;
   private buildStudioSweep(): void {
     this.studioSweepMat = new THREE.ShaderMaterial({
@@ -494,10 +515,15 @@ export class WoodooFilmEngine {
     // Architectural honed micro-cement floor plane
     const floorGeo = new THREE.PlaneGeometry(28, 28);
     floorGeo.rotateX(-Math.PI / 2);
+    // Pale wide-plank oak. In the dark object scenes the tint keeps it near black; in the rooms
+    // it lifts to the light floor of the concept photos.
     const floorMat = new THREE.MeshStandardMaterial({
       color: new THREE.Color("#1a1715"),
-      roughness: 0.78,
-      metalness: 0.05,
+      map: makeOakFloorTexture(this.renderer, [22, 22]),
+      roughness: 0.5,
+      metalness: 0.0,
+      envMap: this.materials.roomEnvMap,
+      envMapIntensity: 0.35,
     });
     this.floorMesh = new THREE.Mesh(floorGeo, floorMat);
     this.floorMesh.position.y = -0.002;
@@ -507,7 +533,7 @@ export class WoodooFilmEngine {
     // Warm architectural plaster wall + honed limestone backsplash strip for Scenes 5–7
     const wallGroup = new THREE.Group();
     const wallMat = new THREE.MeshStandardMaterial({
-      color: new THREE.Color("#8a7f72"),
+      color: new THREE.Color(ROOM_COLORS.wall),
       roughness: 0.92,
       metalness: 0.0,
     });
@@ -517,12 +543,8 @@ export class WoodooFilmEngine {
     wallGroup.add(plasterWall);
 
     // Subtle warm travertine backsplash band meeting cleanly in a razor inside-corner miter
-    const splashMat = new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color("#dcd4c7"),
-      roughness: 0.44,
-      clearcoat: 0.18,
-      clearcoatRoughness: 0.45,
-    });
+    // Full marble slab backsplash, the same stone as the counter
+    const splashMat = this.materials.counterMaterial;
     const ledMat = new THREE.MeshBasicMaterial({ color: "#ffe3b0" });
 
     const splashBack = new THREE.Mesh(new THREE.PlaneGeometry(3.22, 0.54), splashMat);
@@ -634,9 +656,10 @@ export class WoodooFilmEngine {
       new THREE.PlaneGeometry(1.75, 0.88),
       new THREE.MeshPhysicalMaterial({
         color: "#d9dce0",
-        roughness: 0.08,
-        metalness: 0.92,
-        clearcoat: 1.0,
+        roughness: 0.04,
+        metalness: 1.0,
+        envMap: this.materials.roomEnvMap,
+        envMapIntensity: 0.9,
       })
     );
     const mirrorGlow = new THREE.Mesh(
@@ -1521,7 +1544,7 @@ export class WoodooFilmEngine {
       sceneIndex = 6;
       const u6 = (t - 0.65) / 0.17;
       this.backWallMesh.visible = true;
-      (this.floorMesh.material as THREE.MeshStandardMaterial).color.set("#5a4636");
+      (this.floorMesh.material as THREE.MeshStandardMaterial).color.copy(this._roomFloor);
 
       if (u6 < 0.34) {
         const local = THREE.MathUtils.smoothstep(u6, 0.08, 0.28);
@@ -1724,16 +1747,20 @@ export class WoodooFilmEngine {
     // the ambient fill lifts there; the hero object scenes stay contrasty.
     const roomAmt = THREE.MathUtils.smoothstep(t, 0.47, 0.55) * (1 - THREE.MathUtils.smoothstep(t, 0.91, 0.94));
     this.updateRoomProps(activeLayout, activeCeiling, roomAmt, dt);
-    this.ambientLight.intensity = THREE.MathUtils.lerp(0.34, 0.62, roomAmt) + this.lowLightBoost * roomAmt;
-    this.keyLight.intensity = THREE.MathUtils.lerp(2.7, 3.1, roomAmt);
-    this.fillLight.intensity = THREE.MathUtils.lerp(0.42, 0.7, roomAmt);
+    this.ambientLight.intensity = THREE.MathUtils.lerp(0.34, 0.8, roomAmt) + this.lowLightBoost * roomAmt;
+    this.ambientLight.groundColor.set("#15120f").lerp(this._roomHemiGround, roomAmt);
+    this.keyLight.intensity = THREE.MathUtils.lerp(2.7, 2.6, roomAmt);
+    this.fillLight.intensity = THREE.MathUtils.lerp(0.42, 0.55, roomAmt);
+    if (this.windowLight) this.windowLight.intensity = 5.5 * roomAmt;
     // Rooms read as a warm, lit interior instead of cabinets floating in a black void.
     if (this.studioSweepMat) {
       (this.studioSweepMat.uniforms.uHorizon.value as THREE.Color).set("#2a2622").lerp(this._roomHorizon, roomAmt);
+      (this.studioSweepMat.uniforms.uTop.value as THREE.Color).set("#0b0a09").lerp(this._roomTop, roomAmt);
+      (this.studioSweepMat.uniforms.uFloor.value as THREE.Color).set("#0d0c0b").lerp(this._roomFog, roomAmt);
     }
     if (this.scene.fog instanceof THREE.FogExp2) {
       this.scene.fog.color.set("#100f0e").lerp(this._roomFog, roomAmt);
-      this.scene.fog.density = THREE.MathUtils.lerp(0.04, 0.022, roomAmt);
+      this.scene.fog.density = THREE.MathUtils.lerp(0.04, 0.014, roomAmt);
     }
 
     // Apply camera & commit instanced pools
@@ -1756,7 +1783,7 @@ export class WoodooFilmEngine {
     }
     if (!this.warmedEnv && this.materials.envMap) {
       this.warmedEnv = true;
-      setRoomPropEnvMap(this.propMats, this.materials.envMap);
+      setRoomPropEnvMap(this.propMats, this.materials.roomEnvMap);
       this.scheduleWarmUp();
     }
     this.beforeRenderLights();

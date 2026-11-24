@@ -220,10 +220,9 @@ h4 {
 /* Real part codes and dimensions keep the engraved monospace. */
 .spec-code {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  letter-spacing: 0;
   color: var(--fg-muted);
 }
 
@@ -1190,7 +1189,15 @@ body.flatpack-egg .film-overlay-panel {
 .compose-viewport {
   position: relative;
   min-height: 62vh;
-  background: #161412;
+  /* Same tone as the lit room in the 3D view, so loading does not flash dark */
+  background: #d9d1c5;
+}
+
+/* View switcher sits over the bright room: give the idle chips a dark fill to stay legible */
+.compose-viewport .chip-btn:not([aria-pressed="true"]) {
+  background: rgba(22, 20, 18, 0.72);
+  border-color: rgba(241, 238, 231, 0.18);
+  color: #efe9de;
 }
 
 .compose-sidebar {

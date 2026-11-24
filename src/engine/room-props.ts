@@ -28,7 +28,7 @@ export interface RoomPropMaterials {
 
 export function createRoomPropMaterials(): RoomPropMaterials {
   return {
-    steel: new THREE.MeshStandardMaterial({ color: "#c9cbcc", metalness: 0.82, roughness: 0.3 }),
+    steel: new THREE.MeshStandardMaterial({ color: "#b4b7b9", metalness: 0.9, roughness: 0.34 }),
     darkSteel: new THREE.MeshStandardMaterial({ color: "#6f7376", metalness: 0.8, roughness: 0.36 }),
     blackGlass: new THREE.MeshStandardMaterial({ color: "#0c0c0d", metalness: 0.2, roughness: 0.12 }),
     iron: new THREE.MeshStandardMaterial({ color: "#1c1b1a", metalness: 0.45, roughness: 0.55 }),
