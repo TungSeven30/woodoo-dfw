@@ -244,7 +244,8 @@ export function ComposeStudio() {
             Three door styles. <span className="tone-2">Five finishes.</span>
           </h1>
           <p style={{ margin: 0, fontSize: "0.9rem", color: "#b6aea3" }}>
-            Drag to orbit. Every change re-assembles the cabinetry in real time. Pricing and
+            Drag to look around, pinch or Ctrl + scroll to zoom. Every change re-assembles the
+            cabinetry in real time. Pricing and
             availability are prepared directly by our DFW team from your measurements.
           </p>
         </div>

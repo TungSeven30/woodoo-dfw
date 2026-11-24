@@ -147,6 +147,19 @@ export class CinematicPostComposer {
     this.material.uniforms.uTexelSize.value.set(1 / rtW, 1 / rtH);
   }
 
+  public getResolutionScale(): number {
+    return this.resolutionScale;
+  }
+
+  public setResolutionScale(scale: number, width: number, height: number): void {
+    this.resolutionScale = scale;
+    this.resize(width, height);
+  }
+
+  public getTarget(): THREE.WebGLRenderTarget {
+    return this.target;
+  }
+
   public render(
     scene: THREE.Scene,
     camera: THREE.Camera,

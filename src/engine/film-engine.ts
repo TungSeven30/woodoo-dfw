@@ -1,3 +1,10 @@
+import {
+  buildRoomProps,
+  createRoomPropMaterials,
+  disposeRoomProps,
+  setRoomPropEnvMap,
+  setRoomPropsAppear,
+} from "./room-props";
 import * as THREE from "three";
 import {
   CeilingHeightFt,
@@ -78,6 +85,8 @@ const MAX_INSTANCES = 260;
  * Zero camera cuts. Scroll progress t in [0, 1] is the deterministic timeline.
  * Scrubbing backward smoothly un-builds and re-builds every cabinet and room.
  */
+const FilmUpAxis = new THREE.Vector3(0, 1, 0);
+
 export class WoodooFilmEngine {
   private canvas: HTMLCanvasElement;
   private renderer: THREE.WebGLRenderer;
@@ -173,6 +182,11 @@ export class WoodooFilmEngine {
   private _mat = new THREE.Matrix4();
   private _pos = new THREE.Vector3();
   private _quat = new THREE.Quaternion();
+  private _spinQ = new THREE.Quaternion();
+  private _spinE = new THREE.Euler();
+  private _rotQ = new THREE.Quaternion();
+  private _adjStart: [number, number, number] = [0, 0, 0];
+  private readonly _roomFloor = new THREE.Color("#5a4636");
   private _scale = new THREE.Vector3();
   private _camPos = new THREE.Vector3();
   private _camLook = new THREE.Vector3();
@@ -244,8 +258,139 @@ export class WoodooFilmEngine {
       this.buildVolumetricDust();
     }
 
+    // Appliances, sink and plants for the room scenes (hidden until the room appears).
+    this.propsGroup = buildRoomProps(this.propMats, "l-shape", 9);
+    setRoomPropsAppear(this.propsGroup, 0);
+    this.scene.add(this.propsGroup);
+
+    // Keep the number of lights constant so materials never recompile mid-scroll.
+    this.pinToggledLights();
+    this.scheduleWarmUp();
+
     this.lastTime = performance.now();
     this.loop();
+  }
+
+  /**
+   * three.js builds one shader program per light count. Lights that live inside groups we
+   * show and hide would change that count mid-scroll and force every lit material to
+   * recompile (a visible hitch). Move those lights to the scene root, follow an anchor left
+   * in their old place, and fade them to zero instead of hiding them.
+   */
+  private propMats = createRoomPropMaterials();
+  private propsGroup!: THREE.Group;
+  private propsKey = "l-shape:9";
+  private propsRise = 1;
+
+  /** Show the room's appliances and plants with the room; rebuild them when the layout changes. */
+  private updateRoomProps(layout: LayoutId, ceiling: CeilingHeightFt, roomAmt: number, dt: number): void {
+    const key = `${layout}:${ceiling}`;
+    if (key !== this.propsKey) {
+      this.propsKey = key;
+      disposeRoomProps(this.propsGroup);
+      this.propsGroup = buildRoomProps(this.propMats, layout, ceiling);
+      this.scene.add(this.propsGroup);
+      this.propsRise = 0;
+    }
+    this.propsRise = Math.min(1, this.propsRise + dt / 0.7);
+    if (this.manualStepping) this.propsRise = 1;
+    setRoomPropsAppear(this.propsGroup, Math.min(roomAmt, this.propsRise));
+  }
+
+  private pinnedLights: { light: THREE.Light; anchor: THREE.Object3D; saved: number }[] = [];
+  private pinToggledLights(): void {
+    const found: THREE.Light[] = [];
+    this.scene.traverse((o) => {
+      const l = o as THREE.Light;
+      if (l.isLight && o.parent && o.parent !== this.scene && !(l as THREE.DirectionalLight).isDirectionalLight) {
+        found.push(l);
+      }
+    });
+    for (const light of found) {
+      const anchor = new THREE.Object3D();
+      anchor.name = light.name;
+      light.name = light.name ? `${light.name}:pinned` : "";
+      anchor.userData.light = light;
+      anchor.position.copy(light.position);
+      light.parent!.add(anchor);
+      this.scene.attach(light);
+      this.pinnedLights.push({ light, anchor, saved: light.intensity });
+    }
+  }
+
+  private beforeRenderLights(): void {
+    for (const rec of this.pinnedLights) {
+      rec.anchor.getWorldPosition(rec.light.position);
+      let shown = true;
+      for (let o: THREE.Object3D | null = rec.anchor; o; o = o.parent) {
+        if (!o.visible) {
+          shown = false;
+          break;
+        }
+      }
+      rec.saved = rec.light.intensity;
+      if (!shown) rec.light.intensity = 0;
+    }
+  }
+
+  private afterRenderLights(): void {
+    for (const rec of this.pinnedLights) rec.light.intensity = rec.saved;
+  }
+
+  /**
+   * Compile every material up front (including ones that only appear late in the film) and
+   * again once the studio lighting map arrives, so nothing compiles while the visitor scrolls.
+   */
+  private warmedEnv = false;
+  private scheduleWarmUp(): void {
+    const idle =
+      (window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number })
+        .requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 120));
+    idle(() => this.warmUp(), { timeout: 600 });
+  }
+
+  private warmUp(): void {
+    if (this.disposed) return;
+    try {
+      const target = this.post ? this.post.getTarget() : null;
+      const prev = this.renderer.getRenderTarget();
+      this.renderer.setRenderTarget(target);
+      void this.renderer.compileAsync(this.scene, this.camera).catch(() => undefined);
+      this.renderer.setRenderTarget(prev);
+    } catch {
+      // Warm-up is best effort only.
+    }
+    this.warmRenderPending = true;
+  }
+
+  /**
+   * One extra draw, inside a normal frame, with every hidden object shown. This also builds the
+   * shadow-map shaders and uploads textures for things that only appear late in the film.
+   * The real frame is drawn right after it, so the visitor never sees this pass.
+   */
+  private warmRenderPending = false;
+  private warmRender(): void {
+    this.warmRenderPending = false;
+    const hidden: THREE.Object3D[] = [];
+    this.scene.traverse((o) => {
+      if (!o.visible && !(o as THREE.Light).isLight) {
+        hidden.push(o);
+        o.visible = true;
+      }
+    });
+    try {
+      this.beforeRenderLights();
+      const prev = this.renderer.getRenderTarget();
+      this.renderer.setRenderTarget(this.post ? this.post.getTarget() : null);
+      this.renderer.shadowMap.needsUpdate = true;
+      this.renderer.render(this.scene, this.camera);
+      this.renderer.setRenderTarget(prev);
+      this.afterRenderLights();
+    } catch {
+      // best effort
+    }
+    for (const o of hidden) o.visible = false;
+    this.renderer.shadowMap.needsUpdate = true;
   }
 
   private buildLighting(): void {
@@ -1030,7 +1175,7 @@ export class WoodooFilmEngine {
         g.visible = true;
         g.position.set(spec.xIn * IN_TO_M, 1.98, spec.zIn * IN_TO_M);
         this.pendantBulbs[i].emissiveIntensity = intensity * 1.45;
-        const pt = g.getObjectByName("pendantLight") as THREE.PointLight | undefined;
+        const pt = g.getObjectByName("pendantLight")?.userData.light as THREE.PointLight | undefined;
         if (pt) pt.intensity = intensity * 2.2;
       }
     }
@@ -1094,8 +1239,8 @@ export class WoodooFilmEngine {
         const hoverX = THREE.MathUtils.lerp(isP ? 0 : 0.24, heroDoor.flatPos[0], THREE.MathUtils.smoothstep(u0, 0.48, 1.0));
         this._pos.set(hoverX, hoverY + Math.sin(elapsedSec * 0.8) * 0.012 * (1 - u0), 0);
 
-        const spinQ = new THREE.Quaternion().setFromEuler(
-          new THREE.Euler(
+        const spinQ = this._spinQ.setFromEuler(
+          this._spinE.set(
             THREE.MathUtils.lerp(0.08, -Math.PI / 2, THREE.MathUtils.smoothstep(u0, 0.55, 1.0)),
             THREE.MathUtils.lerp(-0.42 + Math.sin(elapsedSec * 0.4) * 0.12, 0, THREE.MathUtils.smoothstep(u0, 0.45, 1.0)),
             0.03 * (1 - u0)
@@ -1172,7 +1317,10 @@ export class WoodooFilmEngine {
           // Doors and drawer fronts approach cleanly from +Z front & outward flanks so they NEVER clip carcass shelves!
           let arcH = 0.46 + (i % 4) * 0.15;
           let arcSide = (i % 2 === 0 ? 1 : -1) * (0.28 + (i % 3) * 0.1);
-          const adjustedStart: [number, number, number] = [...p.flatPos];
+          const adjustedStart = this._adjStart;
+          adjustedStart[0] = p.flatPos[0];
+          adjustedStart[1] = p.flatPos[1];
+          adjustedStart[2] = p.flatPos[2];
           if (p.category === "door" || p.category === "drawer") {
             arcH = p.category === "drawer" ? 0.62 : 0.34;
             arcSide = p.hingeSide === "left" ? -0.52 : p.hingeSide === "right" ? 0.52 : 0;
@@ -1286,7 +1434,7 @@ export class WoodooFilmEngine {
               p.assembledPos[1],
               hingeZ - dx * sinA + dz * cosA
             );
-            const rotQ = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), ang);
+            const rotQ = this._rotQ.setFromAxisAngle(FilmUpAxis, ang);
             this._quat.multiply(rotQ);
           } else if (p.category === "shelf" && p.shelfIndex !== null) {
             this._pos.y += p.shelfIndex === 0 ? -shelfShift : shelfShift;
@@ -1320,7 +1468,7 @@ export class WoodooFilmEngine {
       this.backWallMesh.visible = true;
       (this.floorMesh.material as THREE.MeshStandardMaterial).color
         .set("#1a1715")
-        .lerp(new THREE.Color("#5a4636"), THREE.MathUtils.smoothstep(u5, 0.1, 0.7));
+        .lerp(this._roomFloor, THREE.MathUtils.smoothstep(u5, 0.1, 0.7));
 
       // Complete entire kitchen assembly cleanly by u5 = 0.72, starting with energetic arrival right at t=0.50!
       for (let i = 0; i < this.panelsLShape.length; i++) {
@@ -1565,6 +1713,7 @@ export class WoodooFilmEngine {
     // Per-scene light balance: the rooms (scenes 5–7) carry darker finishes and more area, so
     // the ambient fill lifts there; the hero object scenes stay contrasty.
     const roomAmt = THREE.MathUtils.smoothstep(t, 0.47, 0.55) * (1 - THREE.MathUtils.smoothstep(t, 0.91, 0.94));
+    this.updateRoomProps(activeLayout, activeCeiling, roomAmt, dt);
     this.ambientLight.intensity = THREE.MathUtils.lerp(0.34, 0.62, roomAmt);
     this.keyLight.intensity = THREE.MathUtils.lerp(2.7, 3.1, roomAmt);
     this.fillLight.intensity = THREE.MathUtils.lerp(0.42, 0.7, roomAmt);
@@ -1583,16 +1732,24 @@ export class WoodooFilmEngine {
     this.camera.lookAt(this._camLook);
     this.commitPools(counts);
 
-    // Update shadow map on demand whenever geometry, camera scroll, or doors animate
-    if (
-      this.manualStepping ||
-      Math.abs(t - this.lastShadowScroll) > 0.0004 ||
-      this.scene7MorphAnim < 0.99 ||
-      sceneIndex === 8
-    ) {
+    // Update the shadow map only when something moved. While moving, every other frame is
+    // enough (a one-frame-old shadow is invisible), and always once the scene settles.
+    const moving =
+      Math.abs(t - this.lastShadowScroll) > 0.0004 || this.scene7MorphAnim < 0.99 || sceneIndex === 8;
+    this.shadowFrame = (this.shadowFrame + 1) % 2;
+    if (this.manualStepping || (moving && this.shadowFrame === 0) || (!moving && this.shadowDirty)) {
       this.renderer.shadowMap.needsUpdate = true;
       this.lastShadowScroll = t;
+      this.shadowDirty = moving;
+    } else if (moving) {
+      this.shadowDirty = true;
     }
+    if (!this.warmedEnv && this.materials.envMap) {
+      this.warmedEnv = true;
+      setRoomPropEnvMap(this.propMats, this.materials.envMap);
+      this.scheduleWarmUp();
+    }
+    this.beforeRenderLights();
 
     // Render frame (direct or via single-pass cinematic post-processing)
     let totalDrawCalls = 0;
@@ -1606,6 +1763,7 @@ export class WoodooFilmEngine {
       this.renderer.render(this.scene, this.camera);
       totalDrawCalls = this.renderer.info.render.calls;
     }
+    this.afterRenderLights();
 
     if (!this.firstFrameMarked) {
       this.firstFrameMarked = true;
@@ -1635,6 +1793,22 @@ export class WoodooFilmEngine {
   }
 
   private manualStepping = false;
+  private beforeFrame: ((timeMs: number) => void) | null = null;
+
+  /** Run a callback (the smooth-scroll tick) at the start of every engine frame, in step with rendering. */
+  public setBeforeFrame(cb: ((timeMs: number) => void) | null): void {
+    this.beforeFrame = cb;
+  }
+
+  /** When the film is scrolled out of view, keep ticking scroll but stop drawing frames. */
+  private offscreen = false;
+  public setOffscreen(offscreen: boolean): void {
+    this.offscreen = offscreen;
+  }
+  private shadowFrame = 0;
+  private shadowDirty = false;
+  private frameTimes: number[] = [];
+  private lastDprStep = 0;
 
   public setManualStepping(enabled: boolean): void {
     this.manualStepping = enabled;
@@ -1669,18 +1843,59 @@ export class WoodooFilmEngine {
       }
       if (this.dustPoints) this.dustPoints.visible = false;
       if (this.lightConeMesh) this.lightConeMesh.visible = false;
+      // Without post-processing every shader changes (tone mapping moves on-screen): warm again.
+      this.scheduleWarmUp();
     }
 
-    // Ultra-responsive inertial catch-up (< 1 frame perceived lag behind Lenis scroll!)
+    this.beforeFrame?.(now);
+    if (this.offscreen) {
+      this.frameTimes.length = 0;
+      return;
+    }
+    this.adaptResolution(deltaMs, now);
+
+    // Frame-rate independent catch-up toward the (already smoothed) scroll position.
     const diff = this.scrollTarget - this.scrollCurrent;
     if (Math.abs(diff) < 0.00015) {
       this.scrollCurrent = this.scrollTarget;
     } else {
-      this.scrollCurrent += diff * Math.min(1, dt * 18);
+      this.scrollCurrent += diff * (1 - Math.exp(-dt * 16));
     }
 
+    if (this.warmRenderPending) this.warmRender();
     this.evaluateFrame(this.scrollCurrent, dt, this.clock.getElapsedTime());
   };
+
+  /**
+   * Keeps watching frame times after the start-up probe. If the last second runs slower than
+   * about 50 fps, render at a slightly lower resolution (never below 1x). It only steps down,
+   * so the picture does not pulse between sharp and soft.
+   */
+  private adaptResolution(deltaMs: number, now: number): void {
+    if (document.hidden) {
+      this.frameTimes.length = 0;
+      return;
+    }
+    if (deltaMs < 250) this.frameTimes.push(deltaMs);
+    if (this.frameTimes.length < 60 || now - this.lastDprStep < 1500) return;
+    const sorted = this.frameTimes.slice().sort((a, b) => a - b);
+    const p75 = sorted[Math.floor(sorted.length * 0.75)];
+    this.frameTimes.length = 0;
+    if (p75 <= 20) return;
+    const c = this.canvas;
+    const w = c.clientWidth || window.innerWidth;
+    const h = c.clientHeight || window.innerHeight;
+    // With post-processing the scene renders into an offscreen buffer sized by its own scale,
+    // so that scale is the lever; otherwise the device pixel ratio is.
+    if (this.post && this.post.getResolutionScale() > 0.6) {
+      this.lastDprStep = now;
+      this.post.setResolutionScale(Math.max(0.6, this.post.getResolutionScale() - 0.15), w, h);
+    } else if (this.renderer.getPixelRatio() > 1) {
+      this.lastDprStep = now;
+      this.renderer.setPixelRatio(Math.max(1, this.renderer.getPixelRatio() - 0.25));
+      this.resize(w, h);
+    }
+  }
 
   public captureDataUrl(): string {
     return this.canvas.toDataURL("image/png");

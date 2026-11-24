@@ -1,3 +1,10 @@
+import {
+  buildRoomProps,
+  createRoomPropMaterials,
+  disposeRoomProps,
+  setRoomPropEnvMap,
+  setRoomPropsAppear,
+} from "./room-props";
 import * as THREE from "three";
 import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter.js";
 import {
@@ -63,6 +70,8 @@ const MAX_POOL = 260;
  * - /precision interactive 2 mm reveal & frameless interior hero
  * - Form submission 3D flat-pack assembly confirmation animation
  */
+const StudioUpAxis = new THREE.Vector3(0, 1, 0);
+
 export class WoodooStudioEngine {
   private canvas: HTMLCanvasElement;
   private renderer: THREE.WebGLRenderer;
@@ -157,6 +166,7 @@ export class WoodooStudioEngine {
     this.applyViewPreset(this.state.view, true);
     this.rebuildGeometry(true);
     this.attachPointerControls();
+    window.setTimeout(() => this.warmUp(), 300);
 
     this.lastTime = performance.now();
     this.loop();
@@ -216,7 +226,8 @@ export class WoodooStudioEngine {
         new THREE.MeshBasicMaterial({ color: "#ffe3b0" })
       );
       ledStrip.position.set(0, 1.375, -1.25);
-      this.scene.add(ledStrip);
+      // The strip has a fixed width, so it floated free of shorter runs; keep only its light.
+      void ledStrip;
 
       const ledWash = new THREE.PointLight("#ffdba6", 1.9, 4.2, 1.8);
       ledWash.position.set(0, 1.31, -1.06);
@@ -237,11 +248,26 @@ export class WoodooStudioEngine {
       cord.position.y = 0.65;
       const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.09, 18, 14), bulbMat);
       const pt = new THREE.PointLight("#ffd69e", 1.8, 4.5, 1.8);
+      pt.name = "pendantLight";
       g.add(cord, bulb, pt);
-      g.visible = false;
+      this.setPendantShown(g, false);
       this.pendantsGroup.add(g);
     }
     this.scene.add(this.pendantsGroup);
+  }
+
+  /**
+   * Hide a pendant by hiding its meshes and dimming its light to zero. Hiding the whole group
+   * would change the scene's light count, which makes three.js recompile every material.
+   */
+  private setPendantShown(g: THREE.Object3D, shown: boolean): void {
+    for (const child of g.children) {
+      if ((child as THREE.PointLight).isLight) {
+        (child as THREE.PointLight).intensity = shown ? 1.8 : 0;
+      } else {
+        child.visible = shown;
+      }
+    }
   }
 
   private setupPool(): void {
@@ -359,15 +385,25 @@ export class WoodooStudioEngine {
       this.morphProgress = 0.0;
     }
 
+    // Appliances, sink, plants: rebuild for the new layout and let them rise in after the cabinets.
+    const propsKey = `${this.state.layout}:${this.state.ceiling}`;
+    if (this.state.mode === "configurator" && propsKey !== this.propsKey) {
+      this.propsKey = propsKey;
+      if (this.propsGroup) disposeRoomProps(this.propsGroup);
+      this.propsGroup = buildRoomProps(this.propMats, this.state.layout, this.state.ceiling);
+      this.propsRiseFrom = immediate ? -1 : this.morphProgress;
+      this.scene.add(this.propsGroup);
+    }
+
     // Update pendants in configurator mode
     if (this.state.mode === "configurator") {
       const layout = ROOM_LAYOUTS[this.state.layout];
       this.pendantsGroup.children.forEach((g, idx) => {
         const spec = layout.pendants[idx];
         if (!spec) {
-          g.visible = false;
+          this.setPendantShown(g, false);
         } else {
-          g.visible = true;
+          this.setPendantShown(g, true);
           g.position.set(spec.xIn * IN_TO_M, 1.98, spec.zIn * IN_TO_M);
         }
       });
@@ -379,6 +415,7 @@ export class WoodooStudioEngine {
   }
 
   public updateConfig(partial: Partial<StudioConfig>): StudioConfig {
+    this.settledFrames = 0;
     const nextCollection = partial.collection ?? this.state.collection;
     const nextFinish = resolveFinishForCollection(
       nextCollection,
@@ -437,6 +474,7 @@ export class WoodooStudioEngine {
   }
 
   public resize(width: number, height: number): void {
+    this.settledFrames = 0;
     const w = Math.max(1, width);
     const h = Math.max(1, height);
     this.camera.aspect = w / h;
@@ -527,6 +565,9 @@ export class WoodooStudioEngine {
     };
     const onWheel = (e: WheelEvent) => {
       if (this.state.mode !== "configurator") return;
+      // Plain scrolling keeps scrolling the page. Trackpad pinch (sent as ctrl+wheel) or
+      // ctrl/cmd + wheel zooms the camera.
+      if (!e.ctrlKey && !e.metaKey) return;
       e.preventDefault();
       this.targetDist = THREE.MathUtils.clamp(this.targetDist + e.deltaY * 0.003, 1.8, 7.6);
     };
@@ -534,12 +575,14 @@ export class WoodooStudioEngine {
     this.canvas.addEventListener("pointerdown", onDown);
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
     this.canvas.addEventListener("wheel", onWheel, { passive: false });
 
     const prevDispose = this.dispose.bind(this);
     this.dispose = () => {
       this.canvas.removeEventListener("pointerdown", onDown);
       window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointercancel", onUp);
       window.removeEventListener("pointerup", onUp);
       this.canvas.removeEventListener("wheel", onWheel);
       prevDispose();
@@ -718,11 +761,37 @@ export class WoodooStudioEngine {
             p.assembledPos[1],
             hingeZ - dx * Math.sin(ang) + dz * Math.cos(ang)
           );
-          this._quat.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), ang));
+          this._quat.multiply(this._doorQ.setFromAxisAngle(StudioUpAxis, ang));
         }
 
         this.pushToPool(counts, p.materialZone, p.geometryKind, this._pos, this._quat, this._scale);
       }
+    }
+
+    if (this.propsGroup) {
+      if (this.morphProgress >= 1) this.propsRiseFrom = -1;
+      setRoomPropsAppear(this.propsGroup, this.propsRiseFrom < 0 ? 1 : (this.morphProgress - 0.45) / 0.55);
+    }
+
+    // Render on demand: once everything has settled, stop redrawing an unchanged picture
+    // (saves battery and keeps laptops cool). A slow 2 fps refresh still picks up textures
+    // that finish loading in the background.
+    const settled =
+      this.morphProgress >= 1 &&
+      !this.isDragging &&
+      (this.state.mode !== "confirm-pack" || this.confirmTimer >= 1) &&
+      Math.abs(this.orbitYaw - this.targetYaw) < 1e-4 &&
+      Math.abs(this.orbitPitch - this.targetPitch) < 1e-4 &&
+      Math.abs(this.orbitDist - this.targetDist) < 1e-4 &&
+      Math.abs(this.doorOpenSmooth - (this.state.doorsOpen ? 1.55 : 0)) < 1e-4;
+    this.settledFrames = settled ? this.settledFrames + 1 : 0;
+    if (this.settledFrames > 45 && now - this.lastRenderAt < 500) return;
+    this.lastRenderAt = now;
+
+    if (!this.warmedEnv && this.materials.envMap) {
+      this.warmedEnv = true;
+      setRoomPropEnvMap(this.propMats, this.materials.envMap);
+      this.warmUp();
     }
 
     (Object.keys(counts) as Array<keyof typeof counts>).forEach((k) => {
@@ -732,6 +801,24 @@ export class WoodooStudioEngine {
 
     this.renderer.render(this.scene, this.camera);
   };
+
+  private propMats = createRoomPropMaterials();
+  private propsGroup: THREE.Group | null = null;
+  private propsKey = "";
+  private propsRiseFrom = -1;
+  private settledFrames = 0;
+  private lastRenderAt = 0;
+  private warmedEnv = false;
+  private _doorQ = new THREE.Quaternion();
+
+  /** Compile all materials ahead of time so the first layout or finish change does not stall. */
+  private warmUp(): void {
+    try {
+      void this.renderer.compileAsync(this.scene, this.camera).catch(() => undefined);
+    } catch {
+      // best effort
+    }
+  }
 
   public dispose(): void {
     this.disposed = true;

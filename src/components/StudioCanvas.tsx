@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useImperativeHandle, useRef } from "react";
+import React, { useEffect, useImperativeHandle, useRef, useState } from "react";
 import { StudioConfig, WoodooStudioEngine } from "@/engine/studio-engine";
 import { useSite } from "./SiteProvider";
 
@@ -26,6 +26,8 @@ export const StudioCanvas = React.forwardRef<StudioCanvasHandle, StudioCanvasPro
     const { quality, soundEngine, setCursorHint } = useSite();
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const engineRef = useRef<WoodooStudioEngine | null>(null);
+    // Bumped when the browser restores a lost WebGL context, to rebuild the engine.
+    const [generation, setGeneration] = useState(0);
 
     useImperativeHandle(ref, () => ({
       exportStill: () => engineRef.current?.exportHighResStill() ?? null,
@@ -49,14 +51,23 @@ export const StudioCanvas = React.forwardRef<StudioCanvasHandle, StudioCanvasPro
       });
       ro.observe(canvas);
 
+      // Phones can drop the GPU context (backgrounded tab, memory pressure). Ask the browser to
+      // restore it, then rebuild the scene instead of leaving a black box.
+      const onLost = (e: Event) => e.preventDefault();
+      const onRestored = () => setGeneration((g) => g + 1);
+      canvas.addEventListener("webglcontextlost", onLost);
+      canvas.addEventListener("webglcontextrestored", onRestored);
+
       return () => {
+        canvas.removeEventListener("webglcontextlost", onLost);
+        canvas.removeEventListener("webglcontextrestored", onRestored);
         ro.disconnect();
         engine.dispose();
         engineRef.current = null;
       };
       // Re-instantiate only if scene mode or tier changes; all other config props live-morph!
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [config.mode, quality.tier, quality.reducedMotion]);
+    }, [config.mode, quality.tier, quality.reducedMotion, generation]);
 
     useEffect(() => {
       engineRef.current?.setSoundEngine(soundEngine);
@@ -134,6 +145,8 @@ export const StudioCanvas = React.forwardRef<StudioCanvasHandle, StudioCanvasPro
             height: "100%",
             display: "block",
             cursor: config.mode === "confirm-pack" ? "default" : "grab",
+            // Vertical swipes still scroll the page on phones; horizontal drags orbit.
+            touchAction: "pan-y",
           }}
         />
         {ariaLabel && <span className="sr-only">{ariaLabel}</span>}
