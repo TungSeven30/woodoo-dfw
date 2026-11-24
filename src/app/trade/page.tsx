@@ -5,6 +5,7 @@ import { SITE_CONFIG } from "@/config/site";
 import { TRADE_BENEFITS } from "@/config/content";
 import { TradeAccountForm } from "@/components/LeadForms";
 import { SiteFooter } from "@/components/SiteFooter";
+import { Media } from "@/components/Media";
 
 export const metadata: Metadata = {
   title: "Trade Program for DFW Builders",
@@ -16,22 +17,20 @@ export const metadata: Metadata = {
 export default function TradePage() {
   return (
     <div className="page-shell">
-      <section className="section-pad hairline-bottom">
+      <section className="page-hero">
         <div className="container">
-          <p className="mono-label" style={{ marginBottom: "0.7rem" }}>
-            Independent builders · Remodelers · Designers · Architects
-          </p>
-          <h1 className="h1-serif" style={{ maxWidth: "16ch", marginBottom: "1rem" }}>
+          <p className="mono-label">Builders · Remodelers · Designers · Architects</p>
+          <h1 className="display-serif" style={{ maxWidth: "15ch", marginTop: "0.6rem" }}>
             Send us the plan. <span className="tone-2">We&apos;ll send back every piece.</span>
           </h1>
-          <p className="prose" style={{ marginBottom: "1.75rem" }}>
-            A single missing filler can stall an entire job site. Our DFW trade team reviews your
-            drawings by hand, checks boxes, panels, toe kicks, and 3-inch molding together, and
-            gives plain answers on pricing and availability.
+          <p className="lede">
+            One missing filler can stall a job. A person on our DFW team checks your drawings by hand,
+            box by box, panel by panel, down to the toe kicks and molding, and gives you plain answers
+            on price and availability.
           </p>
-          <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+          <div className="btn-row">
             <Link href="/trade/send-a-plan" className="btn btn-primary">
-              Send a plan now
+              Send a plan
             </Link>
             <a href="#trade-account" className="btn">
               Open a trade account
@@ -40,14 +39,15 @@ export default function TradePage() {
         </div>
       </section>
 
+      <div className="container">
+        <Media name="flatpack" shape="wide" priority sizes="100vw" />
+      </div>
+
       {/* Trade Benefits */}
       <section className="section-pad hairline-bottom">
         <div className="container">
-          <p className="mono-label" style={{ marginBottom: "0.55rem" }}>
-            Trade program benefits
-          </p>
-          <h2 className="h2-serif" style={{ marginBottom: "1.75rem" }}>
-            Built around how North Texas jobs actually run.
+          <h2 className="h2-serif" style={{ maxWidth: "20ch", marginBottom: "1.75rem" }}>
+            The trade program. <span className="tone-2">Built around how jobs actually run.</span>
           </h2>
           <div className="spec-list">
             {TRADE_BENEFITS.map((item, i) => (
@@ -61,52 +61,27 @@ export default function TradePage() {
         </div>
       </section>
 
-      {/* Flat-Pack vs. Assembled Builder Format Comparison */}
+      {/* Flat-pack vs. assembled */}
       <section className="section-pad hairline-bottom">
         <div className="container">
-          <p className="mono-label" style={{ marginBottom: "0.55rem" }}>
-            Supply format · Choose per project
-          </p>
-          <h2 className="h2-serif" style={{ marginBottom: "1.5rem" }}>
-            Flat-pack RTA or pre-assembled. Your call on every job.
+          <h2 className="h2-serif" style={{ maxWidth: "20ch", marginBottom: "2rem" }}>
+            Flat-pack or assembled. <span className="tone-2">Your call, job by job.</span>
           </h2>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(290px, 1fr))",
-              gap: "1.5rem",
-            }}
-          >
-            <div className="arch-card" style={{ padding: "1.6rem" }}>
-              <span className="mono-label" style={{ color: "var(--accent)" }}>
-                Format A · Ready-to-assemble flat-pack
-              </span>
-              <h3 className="h2-serif" style={{ fontSize: "1.65rem", margin: "0.45rem 0 0.7rem" }}>
-                Built for tight job sites and freight protection.
-              </h3>
-              <p style={{ margin: "0 0 1rem", color: "var(--fg-muted)", fontSize: "0.95rem" }}>
-                Every side, shelf, door, toe kick, and filler arrives flat and packed tightly — easy
-                to carry through narrow townhome staircases, high-rise freight elevators, and active
-                remodel corridors without scuffing finished ends.
-              </p>
-              <p className="mono-label" style={{ margin: 0 }}>
-                Best for: Multi-story remodels · Tight staging footprints · LTL freight
+          <div className="detail-pair">
+            <div>
+              <Media name="flatpack" shape="land" sizes="(max-width: 900px) 100vw, 45vw" />
+              <h3 className="h3-sans">Flat-pack</h3>
+              <p>
+                Every side, shelf, door and filler arrives flat and packed tight. Easy to carry up
+                stairs and through a house that is still being lived in.
               </p>
             </div>
-            <div className="arch-card" style={{ padding: "1.6rem" }}>
-              <span className="mono-label" style={{ color: "var(--accent)" }}>
-                Format B · Assembled boxes
-              </span>
-              <h3 className="h2-serif" style={{ fontSize: "1.65rem", margin: "0.45rem 0 0.7rem" }}>
-                Built for fast set-and-level crew days.
-              </h3>
-              <p style={{ margin: "0 0 1rem", color: "var(--fg-muted)", fontSize: "0.95rem" }}>
-                Cabinets arrive boxed and whole so your carpentry crew moves straight into wall
-                layout, scribing fillers, hanging stacked uppers, and setting 3-inch crown molding on
+            <div>
+              <Media name="kitchen-walnut-flat" shape="land" sizes="(max-width: 900px) 100vw, 45vw" />
+              <h3 className="h3-sans">Assembled</h3>
+              <p>
+                Boxes arrive whole, so your crew goes straight to layout, fillers and molding on
                 your schedule.
-              </p>
-              <p className="mono-label" style={{ margin: 0 }}>
-                Best for: Ground-floor new builds · Tight install calendars · Local pickup / white-glove
               </p>
             </div>
           </div>

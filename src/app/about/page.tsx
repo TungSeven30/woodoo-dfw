@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ABOUT_COPY, LOCAL_DFW_COMMUNITIES } from "@/config/content";
 import { SITE_CONFIG } from "@/config/site";
 import { SiteFooter } from "@/components/SiteFooter";
+import { Media } from "@/components/Media";
 
 export const metadata: Metadata = {
   title: "About Our DFW Branch",
@@ -15,8 +16,8 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <div className="page-shell">
-      <section className="section-pad hairline-bottom">
-        <div className="container" style={{ maxWidth: "1040px" }}>
+      <section className="page-hero">
+        <div className="container">
           <p className="mono-label" style={{ color: "var(--accent)", marginBottom: "0.75rem" }}>
             {ABOUT_COPY.eyebrow}
           </p>
@@ -63,42 +64,55 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Architectural Monograph Chapters */}
-      <section className="section-pad hairline-bottom">
-        <div className="container" style={{ maxWidth: "1040px" }}>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(310px, 1fr))",
-              gap: "1.5rem",
-            }}
-          >
+      <div className="container">
+        <Media name="kitchen-white-shaker" shape="wide" priority sizes="100vw" />
+      </div>
+
+      <section className="section-pad">
+        <div className="container">
+          <div className="spec-list">
             {ABOUT_COPY.sections.map((sec) => (
-              <article key={sec.title} className="arch-card" style={{ padding: "1.65rem" }}>
-                <span className="mono-label" style={{ color: "var(--accent)" }}>
-                  {sec.chapter}
-                </span>
-                <h2 className="h2-serif" style={{ fontSize: "1.75rem", margin: "0.55rem 0 0.85rem" }}>
-                  {sec.title}
-                </h2>
-                <p style={{ margin: 0, color: "var(--fg-muted)", lineHeight: 1.65 }}>{sec.body}</p>
+              <article key={sec.title} className="spec-list-item">
+                <p className="spec-code">{sec.chapter}</p>
+                <h2 className="h3-sans">{sec.title}</h2>
+                <p>{sec.body}</p>
               </article>
             ))}
           </div>
         </div>
       </section>
 
+      <div className="container">
+        <div className="feature hairline-top">
+          <Media name="bath-walnut" shape="port" sizes="(max-width: 900px) 100vw, 55vw" />
+          <div className="feature-body">
+            <h2 className="h2-serif">
+              Kitchens and baths. <span className="tone-2">One system for both.</span>
+            </h2>
+            <p>
+              The same frameless boxes, door styles and finishes run from the kitchen to the
+              vanity, so a whole house can match.
+            </p>
+            <div className="btn-row">
+              <Link href="/collections" className="btn btn-primary">
+                See the collections
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* North Texas Service Footprint */}
       <section className="section-pad">
-        <div className="container" style={{ maxWidth: "1040px" }}>
+        <div className="container">
           <div
-            className="arch-card"
+            className="hairline-top"
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
               gap: "1.75rem",
-              alignItems: "center",
-              padding: "clamp(1.4rem, 3vw, 2.25rem)",
+              alignItems: "start",
+              paddingTop: "2.5rem",
             }}
           >
             <div>
@@ -124,8 +138,9 @@ export default function AboutPage() {
                     key={city}
                     className="mono-label"
                     style={{
-                      padding: "0.35rem 0.65rem",
-                      border: "1px solid var(--border-strong)",
+                      padding: "0.4rem 0.8rem",
+                      borderRadius: 999,
+                      background: "var(--bg-surface)",
                       color: "var(--fg)",
                     }}
                   >

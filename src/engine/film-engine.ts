@@ -291,6 +291,8 @@ export class WoodooFilmEngine {
    * horizon glow, so objects sit in graded light instead of a flat black void.
    */
   private studioSweep: THREE.Mesh | null = null;
+  private readonly _roomHorizon = new THREE.Color("#6e6357");
+  private readonly _roomFog = new THREE.Color("#4a4239");
   private studioSweepMat: THREE.ShaderMaterial | null = null;
   private buildStudioSweep(): void {
     this.studioSweepMat = new THREE.ShaderMaterial({
@@ -350,7 +352,7 @@ export class WoodooFilmEngine {
     // Warm architectural plaster wall + honed limestone backsplash strip for Scenes 5–7
     const wallGroup = new THREE.Group();
     const wallMat = new THREE.MeshStandardMaterial({
-      color: new THREE.Color("#4a443d"),
+      color: new THREE.Color("#8a7f72"),
       roughness: 0.92,
       metalness: 0.0,
     });
@@ -1318,7 +1320,7 @@ export class WoodooFilmEngine {
       this.backWallMesh.visible = true;
       (this.floorMesh.material as THREE.MeshStandardMaterial).color
         .set("#1a1715")
-        .lerp(new THREE.Color("#2b2621"), THREE.MathUtils.smoothstep(u5, 0.1, 0.7));
+        .lerp(new THREE.Color("#5a4636"), THREE.MathUtils.smoothstep(u5, 0.1, 0.7));
 
       // Complete entire kitchen assembly cleanly by u5 = 0.72, starting with energetic arrival right at t=0.50!
       for (let i = 0; i < this.panelsLShape.length; i++) {
@@ -1361,7 +1363,7 @@ export class WoodooFilmEngine {
       sceneIndex = 6;
       const u6 = (t - 0.65) / 0.17;
       this.backWallMesh.visible = true;
-      (this.floorMesh.material as THREE.MeshStandardMaterial).color.set("#2b2621");
+      (this.floorMesh.material as THREE.MeshStandardMaterial).color.set("#5a4636");
 
       if (u6 < 0.34) {
         const local = THREE.MathUtils.smoothstep(u6, 0.08, 0.28);
@@ -1566,6 +1568,14 @@ export class WoodooFilmEngine {
     this.ambientLight.intensity = THREE.MathUtils.lerp(0.34, 0.62, roomAmt);
     this.keyLight.intensity = THREE.MathUtils.lerp(2.7, 3.1, roomAmt);
     this.fillLight.intensity = THREE.MathUtils.lerp(0.42, 0.7, roomAmt);
+    // Rooms read as a warm, lit interior instead of cabinets floating in a black void.
+    if (this.studioSweepMat) {
+      (this.studioSweepMat.uniforms.uHorizon.value as THREE.Color).set("#2a2622").lerp(this._roomHorizon, roomAmt);
+    }
+    if (this.scene.fog instanceof THREE.FogExp2) {
+      this.scene.fog.color.set("#100f0e").lerp(this._roomFog, roomAmt);
+      this.scene.fog.density = THREE.MathUtils.lerp(0.04, 0.022, roomAmt);
+    }
 
     // Apply camera & commit instanced pools
     if (this.studioSweep) this.studioSweep.position.copy(this._camPos);

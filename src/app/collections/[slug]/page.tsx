@@ -8,9 +8,15 @@ import {
   CollectionSlug,
   FINISHES,
 } from "@/config/site";
-import { LAYOUT_ORDER, ROOM_LAYOUTS } from "@/config/layouts";
+import { Media } from "@/components/Media";
+import { COLLECTION_IMAGE, type ImageKey } from "@/config/images";
+
+const SECOND_IMAGE: Record<CollectionSlug, ImageKey | null> = {
+  "traditional-shaker": "kitchen-white-shaker",
+  "slim-shaker": null,
+  flat: "kitchen-walnut-flat",
+};
 import { buildProductJsonLd } from "@/lib/seo";
-import { CollectionHero3D } from "@/components/CollectionHero3D";
 import { SiteFooter } from "@/components/SiteFooter";
 
 export function generateStaticParams() {
@@ -45,6 +51,8 @@ export default async function CollectionDetailPage({
   const col = COLLECTIONS[slug as CollectionSlug];
   const productLd = buildProductJsonLd(col.slug);
 
+  const second = SECOND_IMAGE[col.slug];
+
   return (
     <div className="page-shell">
       <script
@@ -52,131 +60,105 @@ export default async function CollectionDetailPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productLd) }}
       />
 
-      <section className="section-pad hairline-bottom">
+      <section className="page-hero">
         <div className="container">
-          <p className="mono-label" style={{ marginBottom: "0.6rem" }}>
+          <p className="mono-label">
             <Link href="/collections" style={{ color: "inherit" }}>
               Collections
             </Link>{" "}
             / {col.styleTag}
           </p>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-end",
-              flexWrap: "wrap",
-              gap: "1.25rem",
-              marginBottom: "2rem",
-            }}
-          >
-            <div>
-              <h1 className="h1-serif" style={{ marginBottom: "0.75rem" }}>
-                {col.name}
-              </h1>
-              <p className="prose" style={{ margin: 0 }}>
-                {col.summary} {col.profileNote}
-              </p>
-            </div>
-            <div style={{ display: "flex", gap: "0.65rem", flexWrap: "wrap" }}>
-              <Link href="/trade/send-a-plan" className="btn btn-primary">
-                Send a plan
-              </Link>
-              <Link href="/showroom" className="btn">
-                Book a visit
-              </Link>
-            </div>
-          </div>
-
-          <CollectionHero3D slug={col.slug} />
-        </div>
-      </section>
-
-      {/* Confirmed Construction Details */}
-      <section className="section-pad hairline-bottom">
-        <div className="container">
-          <p className="mono-label" style={{ marginBottom: "0.55rem" }}>
-            Confirmed specifications
-          </p>
-          <h2 className="h2-serif" style={{ marginBottom: "1.75rem" }}>
-            Frameless construction across every box.
-          </h2>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))",
-              gap: "1.15rem",
-            }}
-          >
-            <div className="arch-card">
-              <span className="mono-label">Reveal</span>
-              <h3 className="h3-sans" style={{ margin: "0.35rem 0 0.4rem" }}>2 mm full overlay</h3>
-              <p style={{ margin: 0, color: "var(--fg-muted)", fontSize: "0.92rem" }}>
-                Doors sit full-overlay across the frameless box with a uniform 2 mm gap.
-              </p>
-            </div>
-            <div className="arch-card">
-              <span className="mono-label">Interior access</span>
-              <h3 className="h3-sans" style={{ margin: "0.35rem 0 0.4rem" }}>No face frame or center stile</h3>
-              <p style={{ margin: 0, color: "var(--fg-muted)", fontSize: "0.92rem" }}>
-                Unobstructed interior width paired with factory-finished exterior sides.
-              </p>
-            </div>
-            <div className="arch-card">
-              <span className="mono-label">Vertical fit</span>
-              <h3 className="h3-sans" style={{ margin: "0.35rem 0 0.4rem" }}>8, 9, and 10 ft ceilings</h3>
-              <p style={{ margin: 0, color: "var(--fg-muted)", fontSize: "0.92rem" }}>
-                Modular wall runs and stacked uppers topped with 3-inch molding.
-              </p>
-            </div>
-            <div className="arch-card">
-              <span className="mono-label">Supply format</span>
-              <h3 className="h3-sans" style={{ margin: "0.35rem 0 0.4rem" }}>Flat-pack RTA or assembled</h3>
-              <p style={{ margin: 0, color: "var(--fg-muted)", fontSize: "0.92rem" }}>
-                Manufactured in Malaysia. Customers arrange their own installation.
-              </p>
-            </div>
+          <h1 className="display-serif" style={{ marginTop: "0.6rem" }}>
+            {col.name}
+          </h1>
+          <p className="lede">{col.summary}</p>
+          <ul className="swatch-row" aria-label={`${col.name} finishes`}>
+            {col.finishes.map((fSlug) => (
+              <li key={fSlug}>
+                <span
+                  className="swatch-dot"
+                  style={{ backgroundImage: `url(${FINISHES[fSlug].swatchImage})` }}
+                  aria-hidden="true"
+                />
+                {FINISHES[fSlug].name}
+              </li>
+            ))}
+          </ul>
+          <div className="btn-row">
+            <Link href="/showroom" className="btn btn-primary">
+              Book a visit
+            </Link>
+            <Link href="/trade/send-a-plan" className="btn">
+              Send a plan
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* Jump straight into room layouts */}
+      <div className="container">
+        <Media name={COLLECTION_IMAGE[col.slug]} shape="wide" priority sizes="100vw" />
+      </div>
+
       <section className="section-pad">
         <div className="container">
-          <p className="mono-label" style={{ marginBottom: "0.55rem" }}>
-            Test in room layouts
-          </p>
-          <h2 className="h2-serif" style={{ marginBottom: "1.5rem" }}>
-            Open {col.name} in the 3D studio.
+          <h2 className="h2-serif" style={{ maxWidth: "20ch", marginBottom: "2rem" }}>
+            Look closer. <span className="tone-2">The details are the point.</span>
           </h2>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-              gap: "1rem",
-            }}
-          >
-            {LAYOUT_ORDER.map((lid) => {
-              const room = ROOM_LAYOUTS[lid];
-              return (
-                <Link
-                  key={lid}
-                  href={`/compose?layout=${lid}&collection=${col.slug}&finish=${col.defaultFinish}&ceiling=${room.defaultCeiling}`}
-                  className="arch-card"
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
-                  <span className="mono-label" style={{ color: "var(--accent)" }}>
-                    {room.footprintLabel}
-                  </span>
-                  <h3 className="h3-sans" style={{ margin: "0.35rem 0 0.4rem" }}>
-                    {room.name}
-                  </h3>
-                  <p style={{ margin: 0, fontSize: "0.88rem", color: "var(--fg-muted)" }}>
-                    Launch {col.name} in {FINISHES[col.defaultFinish].name} →
-                  </p>
-                </Link>
-              );
-            })}
+          <div className="detail-pair">
+            <div>
+              <Media name="detail-reveal" shape="port" sizes="(max-width: 900px) 100vw, 45vw" />
+              <h3 className="h3-sans">An even 2 mm gap</h3>
+              <p>Doors sit full overlay on the box, so the gap between them is the same thin line everywhere.</p>
+            </div>
+            <div>
+              <Media name="detail-interior" shape="port" sizes="(max-width: 900px) 100vw, 45vw" />
+              <h3 className="h3-sans">Nothing in the way</h3>
+              <p>No face frame and no center stile. Open both doors and the whole shelf is yours.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {second ? (
+        <div className="container">
+          <Media name={second} shape="wide" sizes="100vw" />
+        </div>
+      ) : null}
+
+      <section className="section-pad">
+        <div className="container">
+          <div className="spec-list">
+            <article className="spec-list-item">
+              <p className="spec-code">Reveal</p>
+              <h3 className="h3-sans">2 mm, full overlay</h3>
+              <p>Doors cover the frameless box edge to edge with a uniform 2 mm gap.</p>
+            </article>
+            <article className="spec-list-item">
+              <p className="spec-code">Interior</p>
+              <h3 className="h3-sans">No face frame, no center stile</h3>
+              <p>Full-width access to every shelf, with factory-finished sides.</p>
+            </article>
+            <article className="spec-list-item">
+              <p className="spec-code">Height</p>
+              <h3 className="h3-sans">8, 9, and 10 ft ceilings</h3>
+              <p>Stacked uppers finished with 3-inch molding for a built-in look.</p>
+            </article>
+            <article className="spec-list-item">
+              <p className="spec-code">Format</p>
+              <h3 className="h3-sans">Flat-pack or assembled</h3>
+              <p>Made in Malaysia. You choose your installer and your schedule.</p>
+            </article>
+          </div>
+          <div className="btn-row" style={{ marginTop: "2.5rem" }}>
+            <Link
+              href={`/compose?collection=${col.slug}&finish=${col.defaultFinish}&layout=l-shape&ceiling=9`}
+              className="btn btn-primary"
+            >
+              Plan a kitchen with {col.name}
+            </Link>
+            <Link href="/collections" className="btn">
+              See all collections
+            </Link>
           </div>
         </div>
       </section>
