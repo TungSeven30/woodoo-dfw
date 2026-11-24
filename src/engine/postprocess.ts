@@ -27,8 +27,10 @@ export class CinematicPostComposer {
     this.renderer = renderer;
     this.resolutionScale = resolutionScale;
 
-    const rtW = Math.max(2, Math.floor(width * resolutionScale));
-    const rtH = Math.max(2, Math.floor(height * resolutionScale));
+    // Size the offscreen buffer in device pixels, not CSS pixels, so retina screens stay sharp.
+    const pr = renderer.getPixelRatio();
+    const rtW = Math.max(2, Math.floor(width * pr * resolutionScale));
+    const rtH = Math.max(2, Math.floor(height * pr * resolutionScale));
 
     this.target = new THREE.WebGLRenderTarget(rtW, rtH, {
       type: THREE.HalfFloatType,
@@ -141,8 +143,9 @@ export class CinematicPostComposer {
   }
 
   public resize(width: number, height: number): void {
-    const rtW = Math.max(2, Math.floor(width * this.resolutionScale));
-    const rtH = Math.max(2, Math.floor(height * this.resolutionScale));
+    const pr = this.renderer.getPixelRatio();
+    const rtW = Math.max(2, Math.floor(width * pr * this.resolutionScale));
+    const rtH = Math.max(2, Math.floor(height * pr * this.resolutionScale));
     this.target.setSize(rtW, rtH);
     this.material.uniforms.uTexelSize.value.set(1 / rtW, 1 / rtH);
   }

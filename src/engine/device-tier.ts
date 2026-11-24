@@ -157,9 +157,11 @@ export function detectInitialQualityProfile(): QualityProfile {
     return {
       tier: "B",
       reducedMotion: false,
-      dpr: Math.min(window.devicePixelRatio || 1, 1.5),
+      // Phones: render at up to 2x the CSS size directly to the screen (sharp), and skip the
+      // offscreen post pass and extra point lights instead (those cost more than pixels).
+      dpr: Math.min(window.devicePixelRatio || 1, 2),
       shadowMapSize: 1024,
-      enablePostProcessing: true,
+      enablePostProcessing: false,
       enableDoF: false,
       enableVolumetrics: false,
       mergeSmallParts: true,

@@ -20,7 +20,7 @@ export function Media({
   const img = IMAGES[name];
   return (
     <figure className={`media media-${shape} ${className}`.trim()}>
-      <Image src={img.src} alt={img.alt} fill sizes={sizes} priority={priority} />
+      <Image src={img.src} alt={img.alt} fill sizes={sizes} priority={priority} quality={85} />
       {img.concept ? <figcaption className="media-tag">Concept render</figcaption> : null}
     </figure>
   );

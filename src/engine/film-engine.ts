@@ -221,7 +221,7 @@ export class WoodooFilmEngine {
     this.renderer.toneMapping = THREE.NeutralToneMapping;
     this.renderer.toneMappingExposure = 0.94;
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.shadowMap.type = quality.tier === "A" ? THREE.PCFSoftShadowMap : THREE.PCFShadowMap;
     this.renderer.shadowMap.autoUpdate = false;
     this.renderer.shadowMap.needsUpdate = true;
 
@@ -313,10 +313,20 @@ export class WoodooFilmEngine {
       anchor.userData.light = light;
       anchor.position.copy(light.position);
       light.parent!.add(anchor);
+      if (this.quality.tier !== "A") {
+        // Phones and tablets: every point light is shaded for every pixel of every lit
+        // surface. Drop these accent lights there (the bulbs and LED strips still glow) and
+        // lift the ambient fill a little to compensate.
+        light.removeFromParent();
+        continue;
+      }
       this.scene.attach(light);
       this.pinnedLights.push({ light, anchor, saved: light.intensity });
     }
+    if (this.quality.tier !== "A") this.lowLightBoost = 0.18;
   }
+
+  private lowLightBoost = 0;
 
   private beforeRenderLights(): void {
     for (const rec of this.pinnedLights) {
@@ -1714,7 +1724,7 @@ export class WoodooFilmEngine {
     // the ambient fill lifts there; the hero object scenes stay contrasty.
     const roomAmt = THREE.MathUtils.smoothstep(t, 0.47, 0.55) * (1 - THREE.MathUtils.smoothstep(t, 0.91, 0.94));
     this.updateRoomProps(activeLayout, activeCeiling, roomAmt, dt);
-    this.ambientLight.intensity = THREE.MathUtils.lerp(0.34, 0.62, roomAmt);
+    this.ambientLight.intensity = THREE.MathUtils.lerp(0.34, 0.62, roomAmt) + this.lowLightBoost * roomAmt;
     this.keyLight.intensity = THREE.MathUtils.lerp(2.7, 3.1, roomAmt);
     this.fillLight.intensity = THREE.MathUtils.lerp(0.42, 0.7, roomAmt);
     // Rooms read as a warm, lit interior instead of cabinets floating in a black void.
@@ -1832,9 +1842,13 @@ export class WoodooFilmEngine {
     this.smoothFps = this.smoothFps * 0.9 + (1000 / deltaMs) * 0.1;
 
     // Adaptive quality check during first 2 seconds
-    const probeRes = this.probe.recordFrame(deltaMs, now);
+    let probeRes = this.probe.recordFrame(deltaMs, now);
+    // Already on the light path (no post pass): a slow start-up probe, which also covers
+    // texture loading, should cost half a step of sharpness, not snap straight to 1x.
+    if (probeRes === "step-down-tier-b" && !this.post) probeRes = "step-down-dpr";
     if (probeRes === "step-down-dpr") {
-      this.renderer.setPixelRatio(1);
+      this.renderer.setPixelRatio(Math.max(1, this.renderer.getPixelRatio() - 0.5));
+      this.resize(this.canvas.clientWidth || window.innerWidth, this.canvas.clientHeight || window.innerHeight);
     } else if (probeRes === "step-down-tier-b") {
       this.renderer.setPixelRatio(1);
       if (this.post) {
