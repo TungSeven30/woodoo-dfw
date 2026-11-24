@@ -55,6 +55,26 @@ export const IMAGES = {
     alt: "Showroom with three kitchen displays and a table of door samples",
     concept: true,
   },
+  assembled: {
+    src: "/images/assembled.jpg",
+    alt: "Assembled oak cabinets in protective wrap, lined up on a job site",
+    concept: true,
+  },
+  "plan-table": {
+    src: "/images/plan-table.jpg",
+    alt: "A kitchen floor plan on a table with door samples, a tape measure and a laptop",
+    concept: true,
+  },
+  consultation: {
+    src: "/images/consultation.jpg",
+    alt: "A design table with door samples and finish swatches in a bright showroom corner",
+    concept: true,
+  },
+  "loading-dock": {
+    src: "/images/loading-dock.jpg",
+    alt: "Pallets of flat-packed cabinet cartons staged next to a box truck",
+    concept: true,
+  },
 } as const;
 
 export type ImageKey = keyof typeof IMAGES;

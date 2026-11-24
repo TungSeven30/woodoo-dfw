@@ -8,6 +8,7 @@ import {
 } from "@/config/site";
 import { TradeAccountForm } from "@/components/LeadForms";
 import { SiteFooter } from "@/components/SiteFooter";
+import { Media } from "@/components/Media";
 
 export const metadata: Metadata = {
   title: "Contact the DFW Team",
@@ -23,55 +24,56 @@ export default function ContactPage() {
 
   return (
     <div className="page-shell">
-      <section className="section-pad hairline-bottom">
-        <div className="container" style={{ maxWidth: "920px" }}>
-          <p className="mono-label" style={{ marginBottom: "0.65rem" }}>
-            Dallas–Fort Worth
-          </p>
-          <h1 className="h1-serif" style={{ marginBottom: "1rem" }}>
-            Talk with a person.
-          </h1>
-          <p className="prose" style={{ marginBottom: "1.75rem" }}>
-            Have a specific question about collections, finishes, delivery, or opening timing in
-            North Texas? Write directly below, or jump straight to Send a plan or Book a visit.
-          </p>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-              gap: "1rem",
-              marginBottom: "2.25rem",
-            }}
-          >
-            <div className="arch-card">
-              <span className="mono-label">Showroom &amp; Warehouse</span>
-              <p style={{ margin: "0.4rem 0 0", fontWeight: 500 }}>{address}</p>
-            </div>
-            {/* Phone and email cards appear only once real details are configured. */}
-            {hasPhone && (
-              <div className="arch-card">
-                <span className="mono-label">Phone</span>
-                <p style={{ margin: "0.4rem 0 0", fontWeight: 500 }}>{SITE_CONFIG.PHONE}</p>
+      <section className="page-hero">
+        <div className="container feature" style={{ paddingBlock: 0 }}>
+          <div className="feature-body">
+            <p className="mono-label">Dallas–Fort Worth</p>
+            <h1 className="display-serif" style={{ marginTop: "0.6rem" }}>
+              Talk with <span className="tone-2">a person.</span>
+            </h1>
+            <p className="lede">
+              Questions about collections, finishes, delivery or the DFW opening? Write to us below.
+              A person reads every message.
+            </p>
+            <dl className="fact-row" style={{ gridTemplateColumns: "1fr", margin: "0 0 1.5rem" }}>
+              <div>
+                <dt>Showroom and warehouse</dt>
+                <dd>{address}</dd>
               </div>
-            )}
-            {hasEmail && (
-              <div className="arch-card">
-                <span className="mono-label">Email</span>
-                <p style={{ margin: "0.4rem 0 0", fontWeight: 500 }}>{SITE_CONFIG.EMAIL}</p>
-              </div>
-            )}
+              {hasPhone && (
+                <div>
+                  <dt>Phone</dt>
+                  <dd>
+                    <a href={`tel:${SITE_CONFIG.PHONE}`}>{SITE_CONFIG.PHONE}</a>
+                  </dd>
+                </div>
+              )}
+              {hasEmail && (
+                <div>
+                  <dt>Email</dt>
+                  <dd>
+                    <a href={`mailto:${SITE_CONFIG.EMAIL}`}>{SITE_CONFIG.EMAIL}</a>
+                  </dd>
+                </div>
+              )}
+            </dl>
           </div>
+          <Media name="consultation" shape="port" priority sizes="(max-width: 900px) 100vw, 45vw" />
+        </div>
+      </section>
 
-          <div style={{ display: "flex", gap: "0.65rem", flexWrap: "wrap", marginBottom: "2.25rem" }}>
-            <Link href="/trade/send-a-plan" className="btn btn-primary btn-sm">
-              Send a plan
-            </Link>
-            <Link href="/showroom" className="btn btn-sm">
-              Book a visit
-            </Link>
+      <section className="section-pad hairline-top">
+        <div className="container form-split">
+          <div>
+            <h2 className="h2-serif">
+              Send a message. <span className="tone-2">We&apos;ll write back.</span>
+            </h2>
+            <p className="prose" style={{ marginTop: "1rem" }}>
+              Have drawings already? <Link href="/trade/send-a-plan">Send a plan</Link> instead and
+              we&apos;ll return a full cabinet list. Want to see the finishes?{" "}
+              <Link href="/showroom">Book a visit</Link>.
+            </p>
           </div>
-
           <TradeAccountForm mode="contact" />
         </div>
       </section>

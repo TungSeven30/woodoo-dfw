@@ -1364,3 +1364,54 @@ body.flatpack-egg .film-overlay-panel {
 @media (prefers-reduced-motion: reduce) { .path-card:hover .media img { transform: none; } }
 .finish-strip img { box-shadow: inset 0 0 0 1px var(--border); outline: 1px solid var(--border); outline-offset: -1px; }
 .fact-row { margin-bottom: clamp(2.5rem, 5vw, 4rem); }
+
+.sticky-aside { position: sticky; top: calc(var(--header-h) + 1.5rem); }
+@media (max-width: 900px) { .sticky-aside { position: static; } }
+.step-list { list-style: none; counter-reset: step; margin: 1.75rem 0 0; padding: 0; display: grid; gap: 1.1rem; }
+.step-list li { counter-increment: step; position: relative; padding-left: 2.4rem; color: var(--fg-muted); }
+.step-list li strong { color: var(--fg); font-weight: 600; }
+.step-list li::before {
+  content: counter(step);
+  position: absolute; left: 0; top: 0.05rem;
+  width: 1.6rem; height: 1.6rem; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--fg); color: var(--bg);
+  font-size: 0.8rem; font-weight: 600;
+}
+.media-tag { font-size: 0.66rem; padding: 0.22rem 0.5rem; background: rgba(19, 17, 16, 0.38); right: 0.7rem; bottom: 0.7rem; }
+@media (max-width: 760px) { .finish-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+/* Process phases */
+.process-steps { list-style: none; margin: 1.5rem 0 0; padding: 0; display: grid; }
+.process-steps li { padding: 1.1rem 0; border-top: 1px solid var(--border); }
+.process-steps li:last-child { padding-bottom: 0; }
+.process-steps .process-num { display: block; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.04em; color: var(--fg-muted); margin-bottom: 0.3rem; font-variant-numeric: tabular-nums; }
+.process-steps .h3-sans { margin: 0 0 0.35rem; }
+.process-steps p { margin: 0; color: var(--fg-muted); max-width: 56ch; }
+
+/* FAQ */
+.faq-list { border-bottom: 1px solid var(--border); max-width: 880px; }
+.faq-item { border-top: 1px solid var(--border); }
+.faq-item summary {
+  list-style: none; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center; gap: 1.5rem;
+  padding: 1.35rem 0;
+  font-size: clamp(1.05rem, 1.4vw, 1.2rem); font-weight: 560; letter-spacing: -0.01em; color: var(--fg);
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
+.faq-icon { position: relative; flex: 0 0 auto; width: 1.75rem; height: 1.75rem; border-radius: 50%; border: 1px solid var(--border); }
+.faq-icon::before, .faq-icon::after { content: ""; position: absolute; left: 50%; top: 50%; width: 0.7rem; height: 1.5px; background: var(--fg); transform: translate(-50%, -50%); transition: transform 240ms var(--ease-join); }
+.faq-icon::after { transform: translate(-50%, -50%) rotate(90deg); }
+.faq-item[open] .faq-icon::after { transform: translate(-50%, -50%) rotate(0deg); }
+.faq-item p { margin: 0 0 1.5rem; color: var(--fg-muted); max-width: 66ch; }
+
+/* Compose viewer chrome */
+.compose-stamp {
+  position: absolute; top: 1rem; left: 1rem; pointer-events: none;
+  padding: 0.4rem 0.8rem; border-radius: 999px;
+  background: rgba(19, 17, 16, 0.55); backdrop-filter: blur(8px);
+  color: #f1eee7; font-size: 0.8rem; font-weight: 500; letter-spacing: -0.005em;
+}
+.compose-viewport .concept-render-tag { top: 1rem; bottom: auto !important; }
+@media (max-width: 760px) { .compose-stamp { display: none; } }

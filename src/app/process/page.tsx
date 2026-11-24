@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PROCESS_STEPS } from "@/config/content";
 import { SiteFooter } from "@/components/SiteFooter";
+import { Media } from "@/components/Media";
+import type { ImageKey } from "@/config/images";
 
 export const metadata: Metadata = {
   title: "Our Seven-Step Process",
@@ -11,23 +13,44 @@ export const metadata: Metadata = {
   alternates: { canonical: "/process" },
 };
 
+const PHASES: { label: string; title: string; tone: string; image: ImageKey; steps: string[] }[] = [
+  {
+    label: "Choose",
+    title: "See it, touch it,",
+    tone: "pick a direction.",
+    image: "consultation",
+    steps: ["01", "02"],
+  },
+  {
+    label: "Plan",
+    title: "Every piece on paper",
+    tone: "before anything ships.",
+    image: "plan-table",
+    steps: ["03", "04", "05"],
+  },
+  {
+    label: "Deliver",
+    title: "Checked, staged,",
+    tone: "and handed over complete.",
+    image: "loading-dock",
+    steps: ["06", "07"],
+  },
+];
+
 export default function ProcessPage() {
   return (
     <div className="page-shell">
-      <section className="section-pad hairline-bottom">
+      <section className="page-hero">
         <div className="container">
-          <p className="mono-label" style={{ marginBottom: "0.7rem" }}>
-            Start to finish
-          </p>
-          <h1 className="h1-serif" style={{ maxWidth: "16ch", marginBottom: "1rem" }}>
-            Seven steps. One point of contact.
+          <p className="mono-label">Start to finish</p>
+          <h1 className="display-serif" style={{ maxWidth: "15ch", marginTop: "0.6rem" }}>
+            Seven steps. <span className="tone-2">One person the whole way.</span>
           </h1>
-          <p className="prose" style={{ marginBottom: "1.6rem" }}>
-            Clear finish choices, verified part lists, plain answers on price and stock, and a
-            person who stays with your project through delivery and post-installation support.
-            Customers arrange their own installation. Your installer, your schedule.
+          <p className="lede">
+            Clear finish choices, a checked parts list, and plain answers on price and stock. You
+            arrange your own installer, on your own schedule.
           </p>
-          <div style={{ display: "flex", gap: "0.7rem", flexWrap: "wrap" }}>
+          <div className="btn-row">
             <Link href="/trade/send-a-plan" className="btn btn-primary">
               Send a plan
             </Link>
@@ -38,48 +61,34 @@ export default function ProcessPage() {
         </div>
       </section>
 
-      <section className="section-pad">
-        <div className="container" style={{ maxWidth: "960px" }}>
-          <ol
-            style={{
-              listStyle: "none",
-              margin: 0,
-              padding: 0,
-              display: "grid",
-              gap: "1rem",
-            }}
+      <div className="container">
+        {PHASES.map((phase, idx) => (
+          <section
+            key={phase.label}
+            className={`feature hairline-top${idx % 2 === 1 ? " is-flip" : ""}`}
+            aria-labelledby={`phase-${phase.label}`}
           >
-            {PROCESS_STEPS.map((step) => (
-              <li
-                key={step.number}
-                className="arch-card"
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "84px 1fr",
-                  gap: "1.25rem",
-                  alignItems: "start",
-                }}
-              >
-                <span
-                  className="h2-serif"
-                  style={{ color: "var(--accent)", lineHeight: 1 }}
-                  aria-hidden="true"
-                >
-                  {step.number}
-                </span>
-                <div>
-                  <h2 className="h3-sans" style={{ marginBottom: "0.45rem" }}>
-                    {step.title}
-                  </h2>
-                  <p style={{ margin: 0, color: "var(--fg-muted)", maxWidth: "60ch" }}>
-                    {step.body}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
+            <Media name={phase.image} shape="land" sizes="(max-width: 900px) 100vw, 55vw" />
+            <div className="feature-body">
+              <p className="mono-label">{phase.label}</p>
+              <h2 id={`phase-${phase.label}`} className="h2-serif">
+                {phase.title} <span className="tone-2">{phase.tone}</span>
+              </h2>
+              <ol className="process-steps">
+                {PROCESS_STEPS.filter((s) => phase.steps.includes(s.number)).map((step) => (
+                  <li key={step.number}>
+                    <span className="process-num" aria-hidden="true">
+                      {step.number}
+                    </span>
+                    <h3 className="h3-sans">{step.title}</h3>
+                    <p>{step.body}</p>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </section>
+        ))}
+      </div>
 
       <SiteFooter />
     </div>

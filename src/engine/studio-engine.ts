@@ -141,8 +141,9 @@ export class WoodooStudioEngine {
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color("#161412");
-    this.scene.fog = new THREE.FogExp2("#161412", 0.036);
+    const configurator = initial.mode === "configurator";
+    this.scene.background = new THREE.Color(configurator ? "#4a4239" : "#161412");
+    this.scene.fog = new THREE.FogExp2(configurator ? "#4a4239" : "#161412", configurator ? 0.022 : 0.036);
 
     this.camera = new THREE.PerspectiveCamera(38, w / Math.max(1, h), 0.015, 45);
     this.materials = createWoodMaterialSystem(this.renderer);
@@ -189,7 +190,11 @@ export class WoodooStudioEngine {
   private setupStage(): void {
     const floor = new THREE.Mesh(
       new THREE.PlaneGeometry(24, 24).rotateX(-Math.PI / 2),
-      new THREE.MeshStandardMaterial({ color: "#221e1b", roughness: 0.82, metalness: 0.04 })
+      new THREE.MeshStandardMaterial({
+        color: this.state.mode === "configurator" ? "#5a4636" : "#221e1b",
+        roughness: 0.82,
+        metalness: 0.04,
+      })
     );
     floor.position.y = -0.002;
     floor.receiveShadow = true;
@@ -198,19 +203,12 @@ export class WoodooStudioEngine {
     if (this.state.mode === "configurator") {
       const backWall = new THREE.Mesh(
         new THREE.PlaneGeometry(14, 5.4),
-        new THREE.MeshStandardMaterial({ color: "#322d28", roughness: 0.9 })
+        new THREE.MeshStandardMaterial({ color: "#8a7f72", roughness: 0.92 })
       );
       backWall.position.set(0, 2.65, -1.45);
       backWall.receiveShadow = true;
       this.scene.add(backWall);
 
-      const splash = new THREE.Mesh(
-        new THREE.PlaneGeometry(4.6, 0.54),
-        new THREE.MeshPhysicalMaterial({ color: "#dcd4c7", roughness: 0.44, clearcoat: 0.18 })
-      );
-      splash.position.set(0, 1.15, -1.42);
-      splash.receiveShadow = true;
-      this.scene.add(splash);
 
       // 3000K architectural under-cabinet recessed LED strip & warm grazing light
       const ledStrip = new THREE.Mesh(
@@ -326,11 +324,11 @@ export class WoodooStudioEngine {
     } else if (view === "walk-around") {
       this.targetYaw = 0.28;
       this.targetPitch = 0.14;
-      this.targetDist = this.state.layout === "vanity" ? 2.6 : 3.45;
+      this.targetDist = this.state.layout === "vanity" ? 3.3 : 4.6;
     } else {
       this.targetYaw = -0.44;
-      this.targetPitch = 0.32;
-      this.targetDist = this.state.layout === "vanity" ? 3.2 : 4.55;
+      this.targetPitch = 0.27;
+      this.targetDist = this.state.layout === "vanity" ? 4.4 : 6.7;
     }
     if (immediate) {
       this.orbitYaw = this.targetYaw;
@@ -621,10 +619,14 @@ export class WoodooStudioEngine {
           : 0.46;
     const lookZ = this.state.mode === "configurator" ? -0.3 : 0;
 
+    // Narrow (phone) viewports need the camera further back to fit the whole run.
+    const fit =
+      this.state.mode === "configurator" ? Math.pow(Math.max(1, 1.35 / this.camera.aspect), 0.7) : 1;
+    const dist = this.orbitDist * fit;
     this.camera.position.set(
-      Math.sin(this.orbitYaw) * Math.cos(this.orbitPitch) * this.orbitDist,
-      lookY + Math.sin(this.orbitPitch) * this.orbitDist,
-      lookZ + Math.cos(this.orbitYaw) * Math.cos(this.orbitPitch) * this.orbitDist
+      Math.sin(this.orbitYaw) * Math.cos(this.orbitPitch) * dist,
+      lookY + Math.sin(this.orbitPitch) * dist,
+      lookZ + Math.cos(this.orbitYaw) * Math.cos(this.orbitPitch) * dist
     );
     this.camera.lookAt(0, lookY, lookZ);
 

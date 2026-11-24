@@ -40,7 +40,7 @@ export default function TradePage() {
       </section>
 
       <div className="container">
-        <Media name="flatpack" shape="wide" priority sizes="100vw" />
+        <Media name="loading-dock" shape="wide" priority sizes="100vw" />
       </div>
 
       {/* Trade Benefits */}
@@ -77,7 +77,7 @@ export default function TradePage() {
               </p>
             </div>
             <div>
-              <Media name="kitchen-walnut-flat" shape="land" sizes="(max-width: 900px) 100vw, 45vw" />
+              <Media name="assembled" shape="land" sizes="(max-width: 900px) 100vw, 45vw" />
               <h3 className="h3-sans">Assembled</h3>
               <p>
                 Boxes arrive whole, so your crew goes straight to layout, fillers and molding on
@@ -90,35 +90,31 @@ export default function TradePage() {
 
       {/* Trade Account Application */}
       <section id="trade-account" className="section-pad hairline-bottom">
-        <div className="container" style={{ maxWidth: "880px" }}>
-          <p className="mono-label" style={{ marginBottom: "0.55rem" }}>
-            Trade application
-          </p>
-          <h2 className="h2-serif" style={{ marginBottom: "0.75rem" }}>
-            Apply for a DFW trade account.
-          </h2>
-          <p className="prose" style={{ marginBottom: "1.75rem" }}>
-            Open for independent builders, remodelers, interior designers, and architects across
-            Dallas, Fort Worth, Richardson, Plano, Frisco, McKinney, and Allen.
-          </p>
+        <div className="container form-split">
+          <div className="sticky-aside">
+            <p className="mono-label" style={{ marginBottom: "0.55rem" }}>
+              Trade application
+            </p>
+            <h2 className="h2-serif" style={{ marginBottom: "0.75rem" }}>
+              Apply for a DFW trade account.
+            </h2>
+            <p style={{ color: "var(--fg-muted)", margin: 0 }}>
+              Open to independent builders, remodelers, interior designers and architects across
+              Dallas, Fort Worth, Richardson, Plano, Frisco, McKinney and Allen.
+            </p>
+            <details id="referral-partner" className="faq-item" style={{ marginTop: "2rem" }}>
+              <summary>
+                <span>Realtor or referral partner?</span>
+                <span className="faq-icon" aria-hidden="true" />
+              </summary>
+              <p>
+                Send clients who are upgrading a builder-grade kitchen. They get to see the
+                cabinets in person, with one design contact through delivery.
+              </p>
+              <TradeAccountForm mode="referral-partner" />
+            </details>
+          </div>
           <TradeAccountForm mode="trade-account" />
-        </div>
-      </section>
-
-      {/* Realtor & Referral Partners */}
-      <section id="referral-partner" className="section-pad hairline-bottom">
-        <div className="container" style={{ maxWidth: "880px" }}>
-          <p className="mono-label" style={{ marginBottom: "0.55rem" }}>
-            Realtors &amp; referral partners
-          </p>
-          <h2 className="h2-serif" style={{ marginBottom: "0.75rem" }}>
-            Send your clients somewhere you trust.
-          </h2>
-          <p className="prose" style={{ marginBottom: "1.75rem" }}>
-            Help buyers upgrading builder-grade kitchens see European frameless cabinetry in person,
-            with a single design point of contact through delivery.
-          </p>
-          <TradeAccountForm mode="referral-partner" />
         </div>
       </section>
 

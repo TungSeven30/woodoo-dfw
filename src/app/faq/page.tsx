@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FAQ_ITEMS } from "@/config/content";
 import { buildFaqJsonLd } from "@/lib/seo";
 import { SiteFooter } from "@/components/SiteFooter";
+import { Media } from "@/components/Media";
 
 export const metadata: Metadata = {
   title: "Cabinetry FAQ — Frameless & DFW",
@@ -22,66 +23,57 @@ export default function FaqPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
       />
 
-      <section className="section-pad hairline-bottom">
-        <div className="container" style={{ maxWidth: "900px" }}>
-          <p className="mono-label" style={{ marginBottom: "0.65rem" }}>
-            Frequently asked questions
-          </p>
-          <h1 className="h1-serif" style={{ marginBottom: "1rem" }}>
-            Plain answers.
+      <section className="page-hero">
+        <div className="container">
+          <p className="mono-label">Questions</p>
+          <h1 className="display-serif" style={{ maxWidth: "14ch", marginTop: "0.6rem" }}>
+            Plain answers. <span className="tone-2">No fine print.</span>
           </h1>
-          <p className="prose" style={{ marginBottom: "1.5rem" }}>
-            How European frameless cabinets compare with framed boxes, how our 8, 9, and 10 ft
-            systems stack, where cabinets are manufactured, and how installation works.
+          <p className="lede">
+            Frameless versus framed, how the 8, 9 and 10 ft systems stack, where the cabinets are
+            made, and how installation works.
           </p>
-          <div style={{ display: "flex", gap: "0.7rem", flexWrap: "wrap" }}>
-            <Link href="/trade/send-a-plan" className="btn btn-primary">
-              Send a plan
-            </Link>
-            <Link href="/showroom" className="btn">
-              Book a visit
-            </Link>
+        </div>
+      </section>
+
+      <section className="section-pad" style={{ paddingTop: 0 }}>
+        <div className="container">
+          <div className="faq-list">
+            {FAQ_ITEMS.map((item, idx) => (
+              <details key={item.q} open={idx === 0} className="faq-item">
+                <summary>
+                  <span>{item.q}</span>
+                  <span className="faq-icon" aria-hidden="true" />
+                </summary>
+                <p>{item.a}</p>
+              </details>
+            ))}
           </div>
         </div>
       </section>
 
-      <section className="section-pad">
-        <div className="container" style={{ maxWidth: "900px", display: "grid", gap: "1rem" }}>
-          {FAQ_ITEMS.map((item, idx) => (
-            <details
-              key={item.q}
-              open={idx < 3}
-              className="arch-card"
-              style={{ cursor: "pointer" }}
-            >
-              <summary
-                className="h3-sans"
-                style={{
-                  listStyle: "none",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  gap: "1rem",
-                }}
-              >
-                <span>{item.q}</span>
-                <span className="mono-label" aria-hidden="true">
-                  0{idx + 1}
-                </span>
-              </summary>
-              <p
-                style={{
-                  margin: "0.9rem 0 0",
-                  color: "var(--fg-muted)",
-                  maxWidth: "66ch",
-                }}
-              >
-                {item.a}
-              </p>
-            </details>
-          ))}
+      <div className="container">
+        <div className="feature hairline-top">
+          <Media name="showroom" shape="land" sizes="(max-width: 900px) 100vw, 55vw" />
+          <div className="feature-body">
+            <h2 className="h2-serif">
+              Still wondering? <span className="tone-2">Ask a person.</span>
+            </h2>
+            <p>
+              Send a plan and we will check every cabinet, filler and trim piece. Or come see the
+              finishes and talk it through.
+            </p>
+            <div className="btn-row">
+              <Link href="/trade/send-a-plan" className="btn btn-primary">
+                Send a plan
+              </Link>
+              <Link href="/contact" className="btn">
+                Contact us
+              </Link>
+            </div>
+          </div>
         </div>
-      </section>
+      </div>
 
       <SiteFooter />
     </div>
