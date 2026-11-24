@@ -16,7 +16,7 @@ import {
   isValidFinishForCollection,
   resolveFinishForCollection,
 } from "@/config/site";
-import { FILM_SCENES, RECONFIGURE_BEATS } from "@/config/content";
+import { FILM_LOOKS, FILM_SCENES } from "@/config/content";
 import { LAYOUT_ORDER, ROOM_LAYOUTS } from "@/config/layouts";
 import { QualityProfile } from "@/engine/device-tier";
 
@@ -119,9 +119,9 @@ export function FilmTierC({ quality }: FilmTierCProps) {
 
                 {scene.index === 6 && (
                   <div style={{ display: "grid", gap: "0.6rem", marginTop: "1rem" }}>
-                    {RECONFIGURE_BEATS.map((beat) => (
+                    {FILM_LOOKS.map((beat) => (
                       <div
-                        key={beat.layout}
+                        key={beat.finish}
                         style={{
                           padding: "0.7rem 0.9rem",
                           border: "1px solid var(--border)",
@@ -129,7 +129,7 @@ export function FilmTierC({ quality }: FilmTierCProps) {
                         }}
                       >
                         <span className="mono-label" style={{ color: "var(--amber-on-dark)" }}>
-                          {ROOM_LAYOUTS[beat.layout].shortName} · {beat.ceiling} ft
+                          {COLLECTIONS[beat.collection].name} · {FINISHES[beat.finish].name}
                         </span>
                         <p style={{ margin: "0.2rem 0 0", fontSize: "0.92rem", color: "#e6dfd5" }}>
                           {beat.line}

@@ -30,7 +30,7 @@ export const FILM_SCENES: FilmSceneCopy[] = [
     headline: "It arrives flat.",
     subline: "European frameless cabinets, packed flat to the millimeter and supplied across Dallas–Fort Worth.",
     srDescription:
-      "A single Premium Oak panel rests in dark space under warm raking light, showing continuous vertical wood grain.",
+      "Close view of a stack of Premium Oak cabinet panels lying flat on a pale oak floor in a bright kitchen, the grain catching window light.",
   },
   {
     id: "flat-pack",
@@ -43,7 +43,7 @@ export const FILM_SCENES: FilmSceneCopy[] = [
     subline:
       "Sides, backs, shelves, doors, drawer fronts, toe kicks, and fillers. Milled, labeled, and stacked flat before a single box goes up.",
     srDescription:
-      "The camera pulls back to show dozens of cabinet components aligned in a compact flat-pack stack, each marked with an engraved part code.",
+      "The camera pulls back to show the whole flat-pack stack for one base cabinet: sides, bottom, back, shelf, rail, toe kick and two doors.",
   },
   {
     id: "flight",
@@ -56,7 +56,7 @@ export const FILM_SCENES: FilmSceneCopy[] = [
     subline:
       "Order flat-packed for tight job sites or assembled for faster hangs. Manufactured in Malaysia. Supplied for North Texas.",
     srDescription:
-      "Flat-pack panels lift into space along coordinated paths and lock together sequentially into a complete frameless base cabinet.",
+      "The panels lift off the stack one by one and settle into place as a complete two-door frameless base cabinet in Premium Oak.",
   },
   {
     id: "reveal",
@@ -82,7 +82,7 @@ export const FILM_SCENES: FilmSceneCopy[] = [
     subline:
       "No face frame and no center stile to split a wide platter. Finished sides outside, the full shelf width inside.",
     srDescription:
-      "The cabinet doors open to reveal a completely unobstructed frameless interior, contrasted with a translucent wireframe of a traditional face-frame center stile.",
+      "Both doors swing open to show the full-width frameless interior, with plates on the shelf and glasses below, and no center stile.",
   },
   {
     id: "kitchen",
@@ -95,21 +95,21 @@ export const FILM_SCENES: FilmSceneCopy[] = [
     subline:
       "Base runs, a tall pantry, stacked uppers, and 3-inch molding, sized for 8, 9, and 10 ft ceilings.",
     srDescription:
-      "Multiple flat-packs assemble across the floor plan into a complete L-shaped kitchen in Premium Oak with stacked uppers and 3-inch molding. Concept render.",
+      "The camera pulls back from one island cabinet to the whole kitchen: Premium Oak Slim Shaker bases, a tall pantry, white uppers stacked to the ceiling, a marble island and a window wall. Concept render.",
     isConceptRender: true,
   },
   {
     id: "reconfigure",
     index: 6,
-    label: "06 · Four rooms",
+    label: "06 · Four looks",
     start: 0.65,
     end: 0.82,
     anchor: 0.74,
-    headline: "One system. Every room.",
+    headline: "Same kitchen. Four different rooms.",
     subline:
-      "L-shape, galley, island, bath vanity. The same kit of parts, three door styles, five finishes.",
+      "The same cabinet boxes in three door styles and five finishes. Change the fronts and the whole room changes with them.",
     srDescription:
-      "Without cutting, the kitchen reconfigures from L-Shape in Premium Oak Traditional Shaker, to Galley in Iron Black Slim Shaker, to a 10-foot Island Kitchen in Classic Walnut Flat, and finally to a Bath Vanity and Linen Tower in Frosty White Flat. Concept render.",
+      "The same kitchen shown four ways: Slim Shaker in Premium Oak with white uppers, Flat in Ivory Oak, Traditional Shaker in Iron Black, and Flat in Classic Walnut. Concept render.",
     isConceptRender: true,
   },
   {
@@ -121,9 +121,9 @@ export const FILM_SCENES: FilmSceneCopy[] = [
     anchor: 0.88,
     headline: "Five finishes. Three doors. Try yours.",
     subline:
-      "Change the layout, door, finish, and ceiling height right here, or open the full studio.",
+      "Pick a look here, then plan your own layout, door, finish and ceiling height in the studio.",
     srDescription:
-      "Overhead architectural plan view of the 3D room with live controls to test layout, collection, finish, and 8, 9, or 10 foot ceiling heights. Concept render.",
+      "A wide view of the finished kitchen with four looks to pick from and a link to the full design studio. Concept render.",
     isConceptRender: true,
   },
   {
@@ -136,46 +136,31 @@ export const FILM_SCENES: FilmSceneCopy[] = [
     headline: "Open the door that fits your project.",
     subline: "One door for the trade. One for homeowners.",
     srDescription:
-      "Two large 3D cabinet doors stand side by side: For the trade, leading to Send a plan and Trade accounts; and For my home, leading to Book a visit, the preview list, and kitchen composition.",
+      "Two tall pantry doors stand side by side: For the trade, leading to Send a plan and Trade accounts; and For my home, leading to Book a visit, the preview list, and the design studio.",
   },
 ];
 
-export const RECONFIGURE_BEATS = [
+/** The four looks rendered for chapter 6 of the film, in the order they appear. */
+export const FILM_LOOKS = [
   {
-    tStart: 0.65,
-    tEnd: 0.692,
-    layout: "l-shape" as const,
-    collection: "traditional-shaker" as const,
-    finish: "premium-oak" as const,
-    ceiling: 9 as const,
-    line: "L-shape. Traditional Shaker in Premium Oak.",
-  },
-  {
-    tStart: 0.692,
-    tEnd: 0.735,
-    layout: "galley" as const,
     collection: "slim-shaker" as const,
-    finish: "iron-black" as const,
-    ceiling: 9 as const,
-    line: "Galley. Slim Shaker in Iron Black.",
+    finish: "premium-oak" as const,
+    line: "Warm oak bases, white uppers stacked to the ceiling.",
   },
   {
-    tStart: 0.735,
-    tEnd: 0.778,
-    layout: "island" as const,
+    collection: "flat" as const,
+    finish: "ivory-oak" as const,
+    line: "Pale oak on flat doors, broken only by the 2 mm gaps.",
+  },
+  {
+    collection: "traditional-shaker" as const,
+    finish: "iron-black" as const,
+    line: "Deep black frames against white marble.",
+  },
+  {
     collection: "flat" as const,
     finish: "classic-walnut" as const,
-    ceiling: 10 as const,
-    line: "Island kitchen. Flat Classic Walnut stacked to ten feet.",
-  },
-  {
-    tStart: 0.778,
-    tEnd: 0.82,
-    layout: "vanity" as const,
-    collection: "flat" as const,
-    finish: "frosty-white" as const,
-    ceiling: 8 as const,
-    line: "Bath vanity and linen tower. Flat Frosty White.",
+    line: "Dark walnut from the floor to the molding.",
   },
 ];
 

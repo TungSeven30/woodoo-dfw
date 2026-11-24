@@ -35,7 +35,8 @@ export function SiteHeader() {
     });
   };
 
-  const isDarkStage = pathname === "/" || pathname === "/compose";
+  // The home film is bright now, so only the compose studio keeps the dark header.
+  const isDarkStage = pathname === "/compose";
   const isFilm = pathname === "/";
 
   useEffect(() => {
