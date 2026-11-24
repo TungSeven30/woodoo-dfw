@@ -101,11 +101,22 @@ export function createEngravedCodeTexture(partCode: string, dimensionsLabel: str
  * warm studio HDRI reflections, edge-banding shading, Scene 0 grain draw-on,
  * and the physical world-space Light-Wipe finish transition shader.
  */
+const _edgeTo = new THREE.Color();
+
 export function createWoodMaterialSystem(
   renderer: THREE.WebGLRenderer,
   onScene0Ready?: () => void
 ): WoodMaterialSystem {
   const texLoader = new THREE.TextureLoader();
+  const uploadNow = (...textures: THREE.Texture[]) => {
+    for (const t of textures) {
+      try {
+        renderer.initTexture(t);
+      } catch {
+        // Upload on first use instead.
+      }
+    }
+  };
   let ktx2Loader: KTX2Loader | null = null;
   try {
     ktx2Loader = new KTX2Loader();
@@ -293,9 +304,19 @@ export function createWoodMaterialSystem(
     envMap: null,
 
     setFinishImmediate(finish: FinishSlug) {
+      const set = bank[finish];
+      // Called every frame by the render loops: skip when nothing changed.
+      if (
+        system.currentFinish === finish &&
+        system.prevFinish === finish &&
+        woodMaterial.map === set.diff &&
+        wipeUniforms.uWipeProgress.value === 1.0
+      ) {
+        return;
+      }
+      const hadMaps = Boolean(woodMaterial.map && woodMaterial.normalMap && woodMaterial.roughnessMap);
       system.prevFinish = finish;
       system.currentFinish = finish;
-      const set = bank[finish];
       const spec = FINISHES[finish];
       woodMaterial.map = set.diff;
       woodMaterial.normalMap = set.nor;
@@ -308,7 +329,8 @@ export function createWoodMaterialSystem(
       wipeUniforms.uWipeProgress.value = 1.0;
       wipeUniforms.uWipeIntensity.value = 0.0;
       wipeUniforms.uEdgeTint.value.set(spec.edgeHex);
-      woodMaterial.needsUpdate = true;
+      // Swapping one texture for another needs no recompile; only gaining maps does.
+      if (!hadMaps) woodMaterial.needsUpdate = true;
     },
 
     setFinishTransition(from: FinishSlug, to: FinishSlug, progress: number) {
@@ -347,7 +369,7 @@ export function createWoodMaterialSystem(
       woodMaterial.normalScale.set(ns, ns);
       wipeUniforms.uEdgeTint.value
         .set(specFrom.edgeHex)
-        .lerp(new THREE.Color(specTo.edgeHex), p);
+        .lerp(_edgeTo.set(specTo.edgeHex), p);
     },
 
     setGrainDrawOn(progress: number) {
@@ -385,6 +407,8 @@ export function createWoodMaterialSystem(
           loadSingle("rough", false),
         ]);
         const old = bank[finish];
+        // Upload to the GPU now, while nothing is moving, not on first use mid-scroll.
+        uploadNow(diff, nor, rough);
         bank[finish] = { diff, nor, rough, upgraded: true };
         if (system.currentFinish === finish) {
           woodMaterial.map = diff;
@@ -445,6 +469,7 @@ export function createWoodMaterialSystem(
           bank[slug].diff = configureTexture(diff, true);
           bank[slug].nor = configureTexture(nor, false);
           bank[slug].rough = configureTexture(rough, false);
+          uploadNow(bank[slug].diff, bank[slug].nor, bank[slug].rough);
           if (system.currentFinish === slug) {
             system.setFinishImmediate(slug);
           }

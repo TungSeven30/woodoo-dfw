@@ -239,7 +239,7 @@ export const COLLECTIONS: Record<CollectionSlug, CollectionSpec> = {
     name: "Traditional Shaker",
     styleTag: "Classic",
     summary:
-      "Balanced five-piece proportions on a frameless full-overlay box. Familiar lines, exact 2 mm gaps.",
+      "The classic five-piece door: a recessed center panel inside a frame of stiles and rails. Familiar, warm, and set with even 2 mm gaps.",
     profileNote:
       "Sturdy stiles and rails framing a recessed center panel, paired with factory-finished sides and no face frame.",
     finishes: ["premium-oak", "classic-walnut", "iron-black", "frosty-white"],
@@ -257,7 +257,7 @@ export const COLLECTIONS: Record<CollectionSlug, CollectionSpec> = {
     name: "Slim Shaker",
     styleTag: "Modern",
     summary:
-      "A narrower border around the recessed panel. Quiet shadow geometry built for contemporary North Texas homes.",
+      "The same recessed panel inside a narrow border. Lighter and more modern, with the same crisp shadow line.",
     profileNote:
       "Refined narrow perimeter frame that keeps architectural shadow depth while lightening the front elevation.",
     finishes: ["premium-oak", "iron-black", "frosty-white"],
@@ -275,7 +275,7 @@ export const COLLECTIONS: Record<CollectionSlug, CollectionSpec> = {
     name: "Flat",
     styleTag: "Minimalist",
     summary:
-      "Unbroken slab planes where wood grain and the 2 mm reveal carry the whole elevation.",
+      "A plain slab door. The wood grain and the 2 mm gaps do all the work.",
     profileNote:
       "Clean full-overlay slab front with minimal reveals across stacked 8, 9, and 10 ft wall systems.",
     finishes: ["ivory-oak", "classic-walnut", "frosty-white"],

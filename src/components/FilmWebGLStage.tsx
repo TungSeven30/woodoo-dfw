@@ -164,6 +164,14 @@ export default function FilmWebGLStage({
     engine.setSoundEngine(soundEngine);
     engineRef.current = engine;
 
+    // If the GPU context is lost mid-film (common on phones), switch to the still-image version
+    // rather than leaving a black screen.
+    const onContextLost = (e: Event) => {
+      e.preventDefault();
+      fallbackToTierC("webgl-context-lost");
+    };
+    canvas.addEventListener("webglcontextlost", onContextLost);
+
     if (initialT !== null) {
       forcedProgressRef.current = initialT;
       engine.setScrollTarget(initialT, true);
@@ -171,6 +179,7 @@ export default function FilmWebGLStage({
 
     // Smooth weighty Lenis scroll (desktop & mobile)
     const lenis = new Lenis({
+      autoRaf: false,
       lerp: 0.11,
       wheelMultiplier: 0.9,
       touchMultiplier: 1.35,
@@ -202,12 +211,13 @@ export default function FilmWebGLStage({
     lenis.on("scroll", syncScroll);
     window.addEventListener("scroll", syncScroll, { passive: true });
 
-    let lenisRaf = 0;
-    const tickLenis = (time: number) => {
-      lenis.raf(time);
-      lenisRaf = requestAnimationFrame(tickLenis);
-    };
-    lenisRaf = requestAnimationFrame(tickLenis);
+    // Tick smooth scroll inside the engine's own frame so the film never lags a frame behind it.
+    engine.setBeforeFrame((time) => lenis.raf(time));
+    const visibilityObserver = new IntersectionObserver(
+      ([entry]) => engine.setOffscreen(!entry.isIntersecting),
+      { rootMargin: "200px 0px" }
+    );
+    visibilityObserver.observe(track);
 
     const onResize = () => {
       engine.resize(window.innerWidth, window.innerHeight);
@@ -232,7 +242,9 @@ export default function FilmWebGLStage({
     };
 
     return () => {
-      cancelAnimationFrame(lenisRaf);
+      engine.setBeforeFrame(null);
+      canvas.removeEventListener("webglcontextlost", onContextLost);
+      visibilityObserver.disconnect();
       if (snapTimerRef.current) window.clearTimeout(snapTimerRef.current);
       window.removeEventListener("resize", onResize);
       window.removeEventListener("scroll", syncScroll);
@@ -468,22 +480,15 @@ export default function FilmWebGLStage({
             <div style={{ marginBottom: "0.7rem" }}>
               <span className="mono-label">Finish</span>
               <div className="chip-row">
-                {FINISH_ORDER.map((fSlug) => {
-                  const valid = isValidFinishForCollection(scene7.collection, fSlug);
+                {FINISH_ORDER.filter((fSlug) => isValidFinishForCollection(scene7.collection, fSlug)).map((fSlug) => {
                   const f = FINISHES[fSlug];
                   return (
                     <button
                       key={fSlug}
                       type="button"
                       className="chip-btn"
-                      disabled={!valid}
                       aria-pressed={scene7.finish === fSlug}
                       onClick={() => handleScene7Change({ finish: fSlug })}
-                      title={
-                        valid
-                          ? f.name
-                          : `${f.name} is not available in ${COLLECTIONS[scene7.collection].name}`
-                      }
                     >
                       <span
                         className="swatch-dot"

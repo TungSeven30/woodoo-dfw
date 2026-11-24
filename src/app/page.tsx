@@ -2,6 +2,8 @@ import React from "react";
 import Link from "next/link";
 import { FILM_SCENES, LOCAL_DFW_COMMUNITIES } from "@/config/content";
 import { COLLECTION_LIST, FINISHES, SITE_CONFIG, isShowroomOpen } from "@/config/site";
+import { Media } from "@/components/Media";
+import { COLLECTION_IMAGE } from "@/config/images";
 import { FilmShell } from "@/components/FilmShell";
 import { SiteFooter } from "@/components/SiteFooter";
 
@@ -26,81 +28,67 @@ export default function HomePage() {
         </ol>
       </section>
 
-      {/* Architectural Summary & Quick Directory below Scene 8 for crawlers and visitors scrolling past the Film */}
-      <section id="film-end" tabIndex={-1} className="theme-dark section-pad hairline-top" aria-label="DFW overview and quick paths">
+      {/* After the film: the product, in pictures */}
+      <section id="film-end" tabIndex={-1} className="section-pad" aria-label="Collections and next steps">
         <div className="container">
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-              gap: "2.25rem",
-              alignItems: "start",
-            }}
-          >
-            <div>
-              <p className="mono-label" style={{ color: "var(--amber-on-dark)", marginBottom: "0.6rem" }}>
-                Dallas–Fort Worth Branch
-              </p>
-              <h2 className="h2-serif" style={{ marginBottom: "0.9rem" }}>
-                Three door styles. Five finishes. Built for 8, 9, and 10 ft ceilings.
-              </h2>
-              <p style={{ color: "#b6aea3", maxWidth: "46ch", margin: "0 0 1.4rem" }}>
-                European-style frameless RTA kitchen and bath cabinets manufactured in Malaysia,
-                engineered with a 2 mm full-overlay reveal and factory-finished sides. Serving
-                independent builders, remodelers, designers, and homeowners across{" "}
-                {LOCAL_DFW_COMMUNITIES.slice(0, 7).join(", ")}.
-              </p>
-              <div style={{ display: "flex", gap: "0.65rem", flexWrap: "wrap" }}>
-                <Link href="/trade/send-a-plan" className="btn btn-primary">
-                  Send a plan
-                </Link>
-                <Link href="/showroom" className="btn">
-                  {open ? "Book a showroom visit" : "Join the preview list"}
-                </Link>
-                <Link href="/compose" className="btn">
-                  Compose your kitchen
-                </Link>
-              </div>
-            </div>
+          <p className="mono-label">Dallas–Fort Worth</p>
+          <h2 className="display-serif" style={{ maxWidth: "15ch", margin: "0.6rem 0 1.1rem" }}>
+            Three door styles. <span className="tone-2">Five finishes.</span>
+          </h2>
+          <p className="prose" style={{ marginBottom: "2.5rem" }}>
+            European-style frameless kitchen and bath cabinets, made in Malaysia, with a 2 mm
+            full-overlay gap and finished sides. For builders, remodelers, designers and homeowners
+            across {LOCAL_DFW_COMMUNITIES.slice(0, 6).join(", ")}.
+          </p>
+          <div className="photo-grid">
+            {COLLECTION_LIST.map((col) => (
+              <Link key={col.slug} href={`/collections/${col.slug}`}>
+                <Media name={COLLECTION_IMAGE[col.slug]} shape="port" sizes="(max-width: 900px) 100vw, 33vw" />
+                <h3 className="h3-sans">{col.name}</h3>
+                <p>{col.finishes.map((f) => FINISHES[f].name).join(" · ")}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
 
-            <div style={{ display: "grid", gap: "0.9rem" }}>
-              {COLLECTION_LIST.map((col) => (
-                <Link
-                  key={col.slug}
-                  href={`/collections/${col.slug}`}
-                  className="arch-card"
-                  style={{
-                    textDecoration: "none",
-                    color: "var(--paper)",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    gap: "1rem",
-                  }}
-                >
-                  <div>
-                    <span className="mono-label" style={{ color: "var(--amber-on-dark)" }}>
-                      {col.styleTag}
-                    </span>
-                    <h3 className="h3-sans" style={{ margin: "0.2rem 0 0.25rem" }}>
-                      {col.name}
-                    </h3>
-                    <p style={{ margin: 0, fontSize: "0.86rem", color: "#b6aea3" }}>
-                      {col.finishes.map((f) => FINISHES[f].name).join(" · ")}
-                    </p>
-                  </div>
-                  <div style={{ display: "flex", gap: "0.3rem" }} aria-hidden="true">
-                    {col.finishes.map((f) => (
-                      <span
-                        key={f}
-                        className="swatch-dot"
-                        style={{ backgroundImage: `url(${FINISHES[f].swatchImage})` }}
-                      />
-                    ))}
-                  </div>
-                </Link>
-              ))}
+      <div className="container">
+        <div className="feature hairline-top">
+          <Media name="detail-reveal" shape="land" sizes="(max-width: 900px) 100vw, 55vw" />
+          <div className="feature-body">
+            <h2 className="h2-serif">
+              Two millimeters. <span className="tone-2">That&apos;s the whole gap.</span>
+            </h2>
+            <p>
+              No face frame, no center stile, no thick bands of wood between the doors. Just one thin,
+              even line, and a cabinet you can use edge to edge.
+            </p>
+            <div className="btn-row">
+              <Link href="/precision" className="btn">
+                How it&apos;s built
+              </Link>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <section className="section-pad hairline-top">
+        <div className="container">
+          <div className="detail-pair">
+            <Link href="/trade" className="path-card">
+              <Media name="flatpack" shape="land" sizes="(max-width: 900px) 100vw, 45vw" />
+              <p className="mono-label">Builders · Remodelers · Designers</p>
+              <h3 className="h2-serif">For the trade.</h3>
+              <p>Send us the plan. A real person checks every cabinet, filler and trim piece.</p>
+              <span className="btn btn-primary">Send a plan</span>
+            </Link>
+            <Link href="/showroom" className="path-card">
+              <Media name="showroom" shape="land" sizes="(max-width: 900px) 100vw, 45vw" />
+              <p className="mono-label">Homeowners</p>
+              <h3 className="h2-serif">For your home.</h3>
+              <p>See and touch the finishes, and work with a designer from sketch to delivery.</p>
+              <span className="btn btn-primary">{open ? "Book a visit" : "Join the preview list"}</span>
+            </Link>
           </div>
         </div>
       </section>

@@ -198,25 +198,9 @@ export function ComposeStudio() {
           ariaLabel={`Interactive 3D view of ${ROOM_LAYOUTS[layout].name} in ${COLLECTIONS[collection].name} ${FINISHES[finish].name} for a ${ceiling}-foot ceiling. Concept render.`}
         />
 
-        {/* Top-left floating room specification stamp */}
-        <div
-          style={{
-            position: "absolute",
-            top: "1rem",
-            left: "1rem",
-            padding: "0.7rem 0.95rem",
-            background: "rgba(19, 17, 16, 0.78)",
-            border: "1px solid rgba(241, 238, 231, 0.16)",
-            backdropFilter: "blur(8px)",
-            pointerEvents: "none",
-          }}
-        >
-          <span className="mono-label" style={{ color: "var(--amber-on-dark)", display: "block" }}>
-            {ROOM_LAYOUTS[layout].name} · {ROOM_LAYOUTS[layout].footprintLabel}
-          </span>
-          <span style={{ fontSize: "0.88rem", color: "#f1eee7" }}>
-            {COLLECTIONS[collection].name} · {FINISHES[finish].name} · {ceiling} ft ceiling (3&quot; molding)
-          </span>
+        {/* Top-left room summary pill (hidden on phones) */}
+        <div className="compose-stamp" aria-hidden="true">
+          {COLLECTIONS[collection].name} · {FINISHES[finish].name} · {ceiling} ft
         </div>
 
         {/* Bottom-left view mode quick switcher */}
@@ -257,10 +241,11 @@ export function ComposeStudio() {
             Compose your kitchen
           </p>
           <h1 className="h2-serif" style={{ fontSize: "2.1rem", marginBottom: "0.45rem" }}>
-            Five finishes. Three door styles.
+            Three door styles. <span className="tone-2">Five finishes.</span>
           </h1>
           <p style={{ margin: 0, fontSize: "0.9rem", color: "#b6aea3" }}>
-            Drag to orbit. Every change re-assembles the cabinetry in real time. Pricing and
+            Drag to look around, pinch or Ctrl + scroll to zoom. Every change re-assembles the
+            cabinetry in real time. Pricing and
             availability are prepared directly by our DFW team from your measurements.
           </p>
         </div>
@@ -316,10 +301,9 @@ export function ComposeStudio() {
 
         {/* Valid Finish Selector */}
         <div>
-          <span className="mono-label">03 · Finish (valid for {COLLECTIONS[collection].name})</span>
+          <span className="mono-label">03 · Finish</span>
           <div className="chip-row" role="group" aria-label="Finish">
-            {FINISH_ORDER.map((fSlug) => {
-              const valid = isValidFinishForCollection(collection, fSlug);
+            {FINISH_ORDER.filter((fSlug) => isValidFinishForCollection(collection, fSlug)).map((fSlug) => {
               const f = FINISHES[fSlug];
               return (
                 <button
@@ -327,7 +311,6 @@ export function ComposeStudio() {
                   type="button"
                   id={`compose-finish-${fSlug}`}
                   className="chip-btn"
-                  disabled={!valid}
                   aria-pressed={finish === fSlug}
                   onClick={() => {
                     setFinish(fSlug);

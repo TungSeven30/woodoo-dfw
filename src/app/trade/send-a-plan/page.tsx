@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { SendAPlanForm } from "@/components/LeadForms";
 import { SiteFooter } from "@/components/SiteFooter";
+import { Media } from "@/components/Media";
 
 export const metadata: Metadata = {
   title: "Send a Plan for Cabinet Quote",
@@ -14,24 +15,40 @@ export const metadata: Metadata = {
 export default function SendAPlanPage() {
   return (
     <div className="page-shell">
-      <section className="section-pad">
-        <div className="container" style={{ maxWidth: "920px" }}>
-          <p className="mono-label" style={{ marginBottom: "0.65rem" }}>
+      <section className="page-hero">
+        <div className="container">
+          <p className="mono-label">
             <Link href="/trade" style={{ color: "inherit" }}>
               Trade
             </Link>{" "}
-            / Plan takeoff &amp; quote
+            / Send a plan
           </p>
-          <h1 className="h1-serif" style={{ marginBottom: "0.9rem" }}>
-            Send a plan.
+          <h1 className="display-serif" style={{ marginTop: "0.6rem" }}>
+            Send a plan. <span className="tone-2">Get every piece back.</span>
           </h1>
-          <p className="prose" style={{ marginBottom: "2.25rem" }}>
-            Upload architectural drawings, CAD sheets, or clear photos of hand measurements. A real
-            person checks cabinet fit, fillers, toe kicks, stacked upper heights, and 3-inch
-            molding before returning an itemized quote.
-          </p>
+        </div>
+      </section>
 
-          <Suspense fallback={<p className="mono-label">Loading plan uploader...</p>}>
+      <section style={{ paddingBottom: "clamp(3.5rem, 8vw, 7rem)" }}>
+        <div className="container form-split">
+          <aside className="sticky-aside">
+            <Media name="plan-table" shape="land" priority sizes="(max-width: 900px) 100vw, 40vw" />
+            <ol className="step-list">
+              <li>
+                <strong>Upload what you have.</strong> PDF or CAD drawings, or a clear photo of a hand
+                sketch with measurements.
+              </li>
+              <li>
+                <strong>A person checks it.</strong> Fit, fillers, toe kicks, stacked uppers and
+                3-inch molding, cabinet by cabinet.
+              </li>
+              <li>
+                <strong>You get a full list and a quote.</strong> Every box, panel and trim piece,
+                itemized.
+              </li>
+            </ol>
+          </aside>
+          <Suspense fallback={<p className="mono-label">Loading the form…</p>}>
             <SendAPlanForm />
           </Suspense>
         </div>
