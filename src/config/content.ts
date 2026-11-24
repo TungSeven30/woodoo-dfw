@@ -246,22 +246,22 @@ export const TRADE_BENEFITS = [
 
 export const PRECISION_PILLARS = [
   {
-    code: "SPEC 01 · FULL OVERLAY",
+    code: "Spec 01 · Full overlay",
     title: "Two millimeters. That's the whole gap.",
     body: "Traditional framed cabinets leave broad bands of face frame visible around every door. Frameless European geometry mounts full-overlay doors straight across the carcass, tightening the visual seam to an even 2 mm shadow line.",
   },
   {
-    code: "SPEC 02 · FULL ACCESS",
+    code: "Spec 02 · Full access",
     title: "No face frame. No center stile.",
     body: "Remove the inner frame lip and vertical center divider and a 36-inch cabinet finally behaves like 36 inches of storage. Wide trays slide straight in, and factory-finished exterior sides keep exposed ends crisp without extra skin panels.",
   },
   {
-    code: "SPEC 03 · VERTICAL SYSTEM",
+    code: "Spec 03 · Vertical system",
     title: "Built for 8, 9, and 10 ft ceilings.",
     body: "North Texas architecture rarely ends at an eight-foot drywall bulkhead. Modular wall cabinets pair with stacked upper boxes and 3-inch molding so cabinet runs meet 8, 9, and 10 ft ceilings cleanly.",
   },
   {
-    code: "SPEC 04 · MANUFACTURED IN MALAYSIA",
+    code: "Spec 04 · Manufactured in Malaysia",
     title: "Factory repeatability, packed flat for the road.",
     body: "Manufactured in Malaysia with specialist woodworking partners. Flat-pack geometry shields finished surfaces through freight and lets crews stage an entire kitchen in the footprint of a hallway.",
   },
@@ -334,22 +334,22 @@ export const ABOUT_COPY = {
   lead: `Kitchen buyers in Dallas–Fort Worth usually choose between builder-grade boxes and custom European studios priced for a different budget. ${SITE_CONFIG.BRAND_NAME} occupies the clear middle ground — disciplined European frameless construction without the gallery markup.`,
   sections: [
     {
-      chapter: "01 · THE DISCIPLINE OF RESTRAINT",
+      chapter: "01 · The discipline of restraint",
       title: "Three door styles. Five finishes. On purpose.",
       body: "Most showrooms hand you a wall of four hundred door colors, then ask you to wait months while each order is pieced together. We hold tight to three architectural door profiles — Traditional Shaker, Slim Shaker, and Flat — across five finishes that live quietly alongside stone, plaster, and Texas light. Fewer variables mean sharper quality control and plain answers on stock.",
     },
     {
-      chapter: "02 · CLEAR PROCESS",
+      chapter: "02 · Clear process",
       title: "One person from sketch to delivery.",
       body: "Whether you build custom homes in Frisco or remodel a mid-century ranch in Richardson, you should never have to chase three people for an honest cabinet list. One named consultant checks every box, filler strip, finished end panel, and 3-inch crown return against your actual wall dimensions — then stays with you after delivery.",
     },
     {
-      chapter: "03 · OPERATING BACKBONE",
+      chapter: "03 · Operating backbone",
       title: "Showroom plus local warehouse.",
       body: "Backed by the warehouse and team in Elk Grove Village, Illinois, our Dallas–Fort Worth branch pairs a tactile design showroom with local warehouse support serving Richardson, Plano, Frisco, McKinney, Allen, Dallas, and Fort Worth.",
     },
     {
-      chapter: "04 · HONEST BOUNDARIES",
+      chapter: "04 · Honest boundaries",
       title: "Your installer, your schedule.",
       body: "We do not run installation crews or inflate cabinet pricing to cover job-site overhead. Builders stay in command of their own trades; homeowners hire the carpenter or general contractor they trust. We focus entirely on precision cabinetry, exact takeoff schedules, and complete fulfillment.",
     },

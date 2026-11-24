@@ -37,6 +37,7 @@ import {
   buildUnitPanelBoxGeometry,
 } from "./geometry";
 import { WoodMaterialSystem, createWoodMaterialSystem } from "./materials";
+import { ROOM_COLORS, makeOakFloorTexture } from "./room-look";
 import type { CabinetrySoundEngine } from "./sound";
 
 export type StudioViewMode = "perspective" | "plan" | "walk-around";
@@ -151,8 +152,8 @@ export class WoodooStudioEngine {
 
     this.scene = new THREE.Scene();
     const configurator = initial.mode === "configurator";
-    this.scene.background = new THREE.Color(configurator ? "#4a4239" : "#161412");
-    this.scene.fog = new THREE.FogExp2(configurator ? "#4a4239" : "#161412", configurator ? 0.022 : 0.036);
+    this.scene.background = new THREE.Color(configurator ? ROOM_COLORS.fog : "#161412");
+    this.scene.fog = new THREE.FogExp2(configurator ? ROOM_COLORS.fog : "#161412", configurator ? 0.012 : 0.036);
 
     this.camera = new THREE.PerspectiveCamera(38, w / Math.max(1, h), 0.015, 45);
     this.materials = createWoodMaterialSystem(this.renderer);
@@ -191,7 +192,10 @@ export class WoodooStudioEngine {
     this.fillLight.position.set(-4.5, 3.0, 2.8);
     this.scene.add(this.fillLight);
 
-    this.ambientLight = new THREE.HemisphereLight("#f7ece0", "#1e1a17", 0.56);
+    this.ambientLight =
+      this.state.mode === "configurator"
+        ? new THREE.HemisphereLight(ROOM_COLORS.hemiSky, ROOM_COLORS.hemiGround, 0.95)
+        : new THREE.HemisphereLight("#f7ece0", "#1e1a17", 0.56);
     this.scene.add(this.ambientLight);
 
     this.applyTimeOfDay(this.state.timeOfDay);
@@ -200,11 +204,15 @@ export class WoodooStudioEngine {
   private setupStage(): void {
     const floor = new THREE.Mesh(
       new THREE.PlaneGeometry(24, 24).rotateX(-Math.PI / 2),
-      new THREE.MeshStandardMaterial({
-        color: this.state.mode === "configurator" ? "#5a4636" : "#221e1b",
-        roughness: 0.82,
-        metalness: 0.04,
-      })
+      this.state.mode === "configurator"
+        ? new THREE.MeshStandardMaterial({
+            color: "#f2ece4",
+            map: makeOakFloorTexture(this.renderer, [19, 19]),
+            roughness: 0.5,
+            envMap: this.materials.roomEnvMap,
+            envMapIntensity: 0.35,
+          })
+        : new THREE.MeshStandardMaterial({ color: "#221e1b", roughness: 0.82, metalness: 0.04 })
     );
     floor.position.y = -0.002;
     floor.receiveShadow = true;
@@ -213,7 +221,7 @@ export class WoodooStudioEngine {
     if (this.state.mode === "configurator") {
       const backWall = new THREE.Mesh(
         new THREE.PlaneGeometry(14, 5.4),
-        new THREE.MeshStandardMaterial({ color: "#8a7f72", roughness: 0.92 })
+        new THREE.MeshStandardMaterial({ color: ROOM_COLORS.wall, roughness: 0.92 })
       );
       backWall.position.set(0, 2.65, -1.45);
       backWall.receiveShadow = true;
@@ -790,7 +798,7 @@ export class WoodooStudioEngine {
 
     if (!this.warmedEnv && this.materials.envMap) {
       this.warmedEnv = true;
-      setRoomPropEnvMap(this.propMats, this.materials.envMap);
+      setRoomPropEnvMap(this.propMats, this.materials.roomEnvMap);
       this.warmUp();
     }
 

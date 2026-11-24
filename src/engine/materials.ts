@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { KTX2Loader } from "three/examples/jsm/loaders/KTX2Loader.js";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 import { FINISHES, FINISH_ORDER, FinishSlug } from "@/config/site";
+import { applyEdgeBevel, makeMarbleTexture, makeRoomEnvironment } from "./room-look";
 
 export interface FinishTextureSet {
   diff: THREE.Texture;
@@ -32,6 +33,8 @@ export interface WoodMaterialSystem {
   currentFinish: FinishSlug;
   prevFinish: FinishSlug;
   envMap: THREE.Texture | null;
+  /** Bright interior reflection for room surfaces and appliances. */
+  roomEnvMap: THREE.Texture;
   setFinishImmediate: (finish: FinishSlug) => void;
   setFinishTransition: (from: FinishSlug, to: FinishSlug, progress: number) => void;
   setGrainDrawOn: (progress: number) => void;
@@ -165,6 +168,7 @@ export function createWoodMaterialSystem(
 
   woodMaterial.onBeforeCompile = (shader) => {
     Object.assign(shader.uniforms, wipeUniforms);
+    applyEdgeBevel(shader);
 
     shader.vertexShader = shader.vertexShader
       .replace(
@@ -254,15 +258,21 @@ export function createWoodMaterialSystem(
     envMapIntensity: 0.55,
   });
 
-  // Honed architectural Taj Mahal / warm quartzite countertop slab
+  // A bright interior to reflect, for the counters, appliances and floor of the furnished rooms.
+  const roomEnvMap = makeRoomEnvironment(renderer);
+
+  // Polished white marble countertop with soft grey veining (matches the concept photos)
   const counterMaterial = new THREE.MeshPhysicalMaterial({
-    color: new THREE.Color("#e8e2d7"),
-    roughness: 0.34,
-    metalness: 0.02,
-    clearcoat: 0.32,
-    clearcoatRoughness: 0.28,
-    envMapIntensity: 0.9,
+    color: new THREE.Color("#ffffff"),
+    map: makeMarbleTexture(renderer),
+    roughness: 0.2,
+    metalness: 0.0,
+    clearcoat: 0.45,
+    clearcoatRoughness: 0.12,
+    envMap: roomEnvMap,
+    envMapIntensity: 0.75,
   });
+  counterMaterial.onBeforeCompile = (shader) => applyEdgeBevel(shader);
 
   // Brushed dark nickel / steel concealed hardware & pins
   const metalMaterial = new THREE.MeshStandardMaterial({
@@ -302,6 +312,7 @@ export function createWoodMaterialSystem(
     currentFinish: "premium-oak",
     prevFinish: "premium-oak",
     envMap: null,
+    roomEnvMap,
 
     setFinishImmediate(finish: FinishSlug) {
       const set = bank[finish];
@@ -453,6 +464,8 @@ export function createWoodMaterialSystem(
       midRough.dispose();
       ktx2Loader?.dispose();
       system.envMap?.dispose();
+      system.roomEnvMap.dispose();
+      counterMaterial.map?.dispose();
     },
   };
 
@@ -497,7 +510,6 @@ export function createWoodMaterialSystem(
       system.envMap = envRT.texture;
       woodMaterial.envMap = system.envMap;
       interiorMaterial.envMap = system.envMap;
-      counterMaterial.envMap = system.envMap;
       metalMaterial.envMap = system.envMap;
       bronzeMaterial.envMap = system.envMap;
       woodMaterial.needsUpdate = true;
