@@ -1,39 +1,39 @@
 {
-  "timestamp": "2026-11-23T18:34:20.716Z",
+  "timestamp": "2026-11-23T21:17:34.043Z",
   "homeMobile": {
-    "performance": 45,
-    "accessibility": 100,
+    "performance": 63,
+    "accessibility": 96,
     "bestPractices": 100,
     "seo": 100,
-    "lcpMs": 7541,
-    "tbtMs": 3959,
+    "lcpMs": 6875,
+    "tbtMs": 537,
     "cls": 0
   },
   "homeDesktop": {
-    "performance": 61,
-    "accessibility": 100,
+    "performance": 96,
+    "accessibility": 96,
     "bestPractices": 100,
     "seo": 100,
-    "lcpMs": 1671,
-    "tbtMs": 1444,
-    "cls": 0.0015
+    "lcpMs": 1363,
+    "tbtMs": 0,
+    "cls": 0.0007
   },
   "collectionsMobile": {
-    "performance": 93,
+    "performance": 100,
     "accessibility": 100,
     "bestPractices": 100,
     "seo": 100,
-    "lcpMs": 887,
-    "tbtMs": 306,
-    "cls": 0.0168
+    "lcpMs": 757,
+    "tbtMs": 54,
+    "cls": 0
   },
   "collectionsDesktop": {
-    "performance": 97,
+    "performance": 100,
     "accessibility": 100,
     "bestPractices": 100,
     "seo": 100,
-    "lcpMs": 230,
-    "tbtMs": 152,
-    "cls": 0.0009
+    "lcpMs": 206,
+    "tbtMs": 0,
+    "cls": 0
   }
 }

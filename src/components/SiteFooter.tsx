@@ -80,7 +80,7 @@ export function SiteFooter() {
             </ul>
             <p style={{ margin: "1.25rem 0 0", color: "#9e968b", fontSize: "0.8rem", lineHeight: 1.5 }}>
               Customers arrange their own installation. Your installer, your schedule. 3D room
-              visuals are labelled as concept renders.
+              visuals are labeled as concept renders.
             </p>
           </div>
         </div>

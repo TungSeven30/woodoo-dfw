@@ -25,7 +25,7 @@ export default function TermsPage() {
           </h2>
           <p>
             Interactive 3D kitchens, bathrooms, and finish previews on this website are concept
-            renders created for layout exploration. Screen colour varies by display. Always inspect
+            renders created for layout exploration. Screen color varies by display. Always inspect
             physical finish samples and approve your written cabinet list before placing an order.
           </p>
           <h2 className="h3-sans" style={{ color: "var(--fg)", margin: "1.5rem 0 0.5rem" }}>

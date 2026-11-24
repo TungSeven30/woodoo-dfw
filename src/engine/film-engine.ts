@@ -121,11 +121,12 @@ export class WoodooFilmEngine {
   private morphItoV: MorphPair[] = [];
 
   // Scene 7 Live Interactive Morphing State
+  // Scene 7 opens on the room scene 6 ended with (the bath vanity), so the controls match what is on screen.
   private scene7State: Scene7ConfigState = {
-    layout: "l-shape",
-    collection: "traditional-shaker",
-    finish: "premium-oak",
-    ceiling: 9,
+    layout: "vanity",
+    collection: "flat",
+    finish: "frosty-white",
+    ceiling: 8,
   };
   private scene7PrevPanels: CabinetPanelSpec[] = [];
   private scene7TargetPanels: CabinetPanelSpec[] = [];
@@ -202,16 +203,17 @@ export class WoodooFilmEngine {
     });
     this.renderer.setPixelRatio(quality.dpr);
     this.renderer.setSize(canvas.clientWidth || window.innerWidth, canvas.clientHeight || window.innerHeight, false);
-    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.08;
+    // Khronos PBR Neutral keeps the real veneer colour (ACES pushed oak toward orange)
+    this.renderer.toneMapping = THREE.NeutralToneMapping;
+    this.renderer.toneMappingExposure = 0.94;
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.shadowMap.autoUpdate = false;
     this.renderer.shadowMap.needsUpdate = true;
 
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color("#131110");
-    this.scene.fog = new THREE.FogExp2("#131110", 0.048);
+    this.scene.background = new THREE.Color("#0f0e0d");
+    this.scene.fog = new THREE.FogExp2("#100f0e", 0.04);
 
     const w = canvas.clientWidth || window.innerWidth;
     const h = canvas.clientHeight || window.innerHeight;
@@ -248,8 +250,9 @@ export class WoodooFilmEngine {
 
   private buildLighting(): void {
     // Late Texas afternoon raking key light (3800K warm golden-white)
-    this.keyLight = new THREE.DirectionalLight("#ffe6c4", 3.1);
-    this.keyLight.position.set(4.5, 5.4, 4.2);
+    // Soft, near-neutral key (≈4300 K) from high camera-left: product-shot falloff, not a sunset
+    this.keyLight = new THREE.DirectionalLight("#fff2e3", 2.7);
+    this.keyLight.position.set(-3.6, 6.2, 4.4);
     this.keyLight.castShadow = true;
     this.keyLight.shadow.mapSize.set(this.quality.shadowMapSize, this.quality.shadowMapSize);
     this.keyLight.shadow.camera.near = 0.5;
@@ -261,23 +264,73 @@ export class WoodooFilmEngine {
     this.keyLight.shadow.camera.bottom = -d;
     this.keyLight.shadow.bias = -0.0004;
     this.keyLight.shadow.normalBias = 0.018;
+    this.keyLight.shadow.radius = 6;
     this.scene.add(this.keyLight);
 
     // Cool architectural sky fill from opposite flank
-    this.fillLight = new THREE.DirectionalLight("#cdd6e6", 0.72);
-    this.fillLight.position.set(-4.8, 3.2, 2.4);
+    this.fillLight = new THREE.DirectionalLight("#e3e8f0", 0.42);
+    this.fillLight.position.set(5.2, 2.4, 3.0);
     this.scene.add(this.fillLight);
 
     // Dramatic warm grazing rim spotlight for Scenes 0–2
-    this.rimLight = new THREE.SpotLight("#ffd49e", 6.5, 14, Math.PI / 4.2, 0.72, 1.4);
-    this.rimLight.position.set(2.2, 3.4, -2.0);
+    this.rimLight = new THREE.SpotLight("#ffeedd", 7.5, 14, Math.PI / 4.6, 0.85, 1.4);
+    this.rimLight.position.set(2.6, 3.0, -2.4);
     this.rimLight.target.position.set(0, 0.5, 0);
     this.scene.add(this.rimLight);
     this.scene.add(this.rimLight.target);
 
     // Soft warm studio hemisphere fill
-    this.ambientLight = new THREE.HemisphereLight("#f7ece0", "#1c1815", 0.52);
+    this.ambientLight = new THREE.HemisphereLight("#f3f1ed", "#15120f", 0.34);
     this.scene.add(this.ambientLight);
+
+    this.buildStudioSweep();
+  }
+
+  /**
+   * Seamless studio sweep behind every scene: a camera-centred gradient dome with a soft
+   * horizon glow, so objects sit in graded light instead of a flat black void.
+   */
+  private studioSweep: THREE.Mesh | null = null;
+  private studioSweepMat: THREE.ShaderMaterial | null = null;
+  private buildStudioSweep(): void {
+    this.studioSweepMat = new THREE.ShaderMaterial({
+      side: THREE.BackSide,
+      depthWrite: false,
+      fog: false,
+      uniforms: {
+        uTop: { value: new THREE.Color("#0b0a09") },
+        uHorizon: { value: new THREE.Color("#2a2622") },
+        uFloor: { value: new THREE.Color("#0d0c0b") },
+        uGlow: { value: 1.0 },
+      },
+      vertexShader: `
+        varying vec3 vDir;
+        void main() {
+          vDir = normalize(position);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 uTop;
+        uniform vec3 uHorizon;
+        uniform vec3 uFloor;
+        uniform float uGlow;
+        varying vec3 vDir;
+        void main() {
+          float y = vDir.y;
+          float band = exp(-pow((y - 0.06) / 0.32, 2.0));
+          vec3 sky = mix(uTop, uHorizon, band * uGlow);
+          vec3 col = y < 0.0 ? mix(uFloor, sky, smoothstep(-0.25, 0.0, y)) : sky;
+          gl_FragColor = vec4(col, 1.0);
+          #include <tonemapping_fragment>
+          #include <colorspace_fragment>
+        }
+      `,
+    });
+    this.studioSweep = new THREE.Mesh(new THREE.SphereGeometry(30, 48, 24), this.studioSweepMat);
+    this.studioSweep.renderOrder = -10;
+    this.studioSweep.frustumCulled = false;
+    this.scene.add(this.studioSweep);
   }
 
   private buildArchitecturalStage(): void {
@@ -297,8 +350,8 @@ export class WoodooFilmEngine {
     // Warm architectural plaster wall + honed limestone backsplash strip for Scenes 5–7
     const wallGroup = new THREE.Group();
     const wallMat = new THREE.MeshStandardMaterial({
-      color: new THREE.Color("#332e29"),
-      roughness: 0.9,
+      color: new THREE.Color("#4a443d"),
+      roughness: 0.92,
       metalness: 0.0,
     });
     const plasterWall = new THREE.Mesh(new THREE.PlaneGeometry(16, 5.4), wallMat);
@@ -363,12 +416,18 @@ export class WoodooFilmEngine {
     this.backWallMesh.visible = false;
     this.scene.add(this.backWallMesh);
 
-    // Obsidian architectural shadow reveal baffle positioned strictly behind the 2.000 mm Hero gap in Scene 3
-    this.macroShadowBaffle = new THREE.Mesh(
-      new THREE.PlaneGeometry(0.045, 0.68),
-      new THREE.MeshBasicMaterial({ color: "#0b0908" })
-    );
-    this.macroShadowBaffle.position.set(0, 0.42, 12 * IN_TO_M + 0.002);
+    // Shadow baffles sitting exactly inside the 2 mm vertical and horizontal reveals of the hero
+    // cabinet (doors span y 0.114–0.719 m; drawer front starts 2 mm above). Sized to the reveal
+    // so nothing shows outside the seams.
+    const baffleMat = new THREE.MeshBasicMaterial({ color: "#070606" });
+    const baffleGroup = new THREE.Group();
+    const vBaffle = new THREE.Mesh(new THREE.PlaneGeometry(0.006, 0.603), baffleMat);
+    vBaffle.position.set(0, 0.4168, 0);
+    const hBaffle = new THREE.Mesh(new THREE.PlaneGeometry(0.908, 0.006), baffleMat);
+    hBaffle.position.set(0, 0.7203, 0);
+    baffleGroup.add(vBaffle, hBaffle);
+    this.macroShadowBaffle = baffleGroup as unknown as THREE.Mesh;
+    this.macroShadowBaffle.position.set(0, 0, 0.3056);
     this.macroShadowBaffle.visible = false;
     this.scene.add(this.macroShadowBaffle);
 
@@ -659,7 +718,7 @@ export class WoodooFilmEngine {
     this.homeDoorLight = rightDoor.spillLight;
 
     // Soft grazing spotlight illuminating the Iron Black Slim Shaker grain & recessed border
-    const tradeRim = new THREE.SpotLight("#ffdfb8", 4.2, 6, Math.PI / 4, 0.85, 1.2);
+    const tradeRim = new THREE.SpotLight("#fff0dd", 9.0, 7, Math.PI / 4, 0.85, 1.2);
     tradeRim.position.set(-1.6, 2.35, 1.85);
     tradeRim.target.position.set(-0.55, 1.05, 0);
     this.splitDoorsGroup.add(tradeRim, tradeRim.target);
@@ -1146,7 +1205,7 @@ export class WoodooFilmEngine {
         }
 
         const orbitAngle = THREE.MathUtils.lerp(-0.56, 0.38, THREE.MathUtils.smoothstep(u2, 0, 1));
-        const radius = isP ? THREE.MathUtils.lerp(2.45, 2.15, u2) : THREE.MathUtils.lerp(2.1, 1.72, u2);
+        const radius = isP ? THREE.MathUtils.lerp(2.6, 2.55, u2) : THREE.MathUtils.lerp(2.3, 2.05, u2);
         this._camPos.set(
           Math.sin(orbitAngle) * radius,
           THREE.MathUtils.lerp(0.98, 0.72, u2),
@@ -1200,7 +1259,7 @@ export class WoodooFilmEngine {
 
         const ghostAlpha = Math.sin(THREE.MathUtils.clamp((u4 - 0.18) / 0.62, 0, 1) * Math.PI);
         this.ghostFrameGroup.visible = ghostAlpha > 0.02;
-        this.materials.ghostWireframeMaterial.opacity = ghostAlpha * 0.82;
+        this.materials.ghostWireframeMaterial.opacity = ghostAlpha * 0.5;
 
         const shelfShift = Math.sin(THREE.MathUtils.clamp((u4 - 0.22) / 0.55, 0, 1) * Math.PI) * 0.06;
 
@@ -1414,13 +1473,14 @@ export class WoodooFilmEngine {
       const descend = THREE.MathUtils.smoothstep(u7, 0.85, 1.0);
       const topAmt = rise * (1 - descend);
 
-      const planH = isP ? 6.9 : 5.6;
+      // Elevated three-quarter view (not a plan): the room reads as a room, and sits left of the
+      // configurator panel on desktop / above the control drawer on phones.
       this._camPos.set(
-        THREE.MathUtils.lerp(0.9, isP ? 0 : -0.45, topAmt),
-        THREE.MathUtils.lerp(1.52, planH, topAmt),
-        THREE.MathUtils.lerp(3.25, 1.35, topAmt)
+        THREE.MathUtils.lerp(0.9, isP ? 0.9 : 1.9, topAmt),
+        THREE.MathUtils.lerp(1.52, isP ? 3.6 : 2.4, topAmt),
+        THREE.MathUtils.lerp(3.25, isP ? 6.2 : 5.0, topAmt)
       );
-      this._camLook.set(isP ? 0 : -0.25, 0.45, -0.25);
+      this._camLook.set(isP ? 0.1 : 0.45, isP ? 0.2 : 0.95, -0.3);
     }
     // =========================================================================
     // SCENE 8 (0.92 -> 1.00): THE SPLIT — TWO MONUMENTAL 3D CABINET DOORS
@@ -1458,9 +1518,10 @@ export class WoodooFilmEngine {
       this.tradeDoorLight.intensity = Math.abs(this.tradeDoorAngle) * 16 + 1.2;
       this.homeDoorLight.intensity = Math.abs(this.homeDoorAngle) * 16 + 1.2;
 
-      const baseCamZ = isP ? 4.45 : 3.65;
+      // Doors sit in the upper two-thirds; the two choice cards occupy the lower band.
+      const baseCamZ = isP ? 7.3 : 6.2;
       let camX = 0;
-      const camY = 1.08;
+      const camY = isP ? 0.6 : 0.9;
       let camZ = baseCamZ;
       let lookX = 0;
 
@@ -1479,7 +1540,7 @@ export class WoodooFilmEngine {
       }
 
       this._camPos.set(camX, camY, camZ);
-      this._camLook.set(lookX, 1.06, 0);
+      this._camLook.set(lookX, isP ? -0.8 : 0.51, 0);
     }
 
     // Toggle travertine backsplash panels & recessed 3000K under-cabinet LED strips strictly to match active layout
@@ -1497,9 +1558,17 @@ export class WoodooFilmEngine {
       }
     }
     // Show razor obsidian shadow reveal baffle strictly behind the 2 mm gap during Scene 3 macro dive
-    this.macroShadowBaffle.visible = sceneIndex === 3;
+    this.macroShadowBaffle.visible = sceneIndex === 3 || (sceneIndex === 2 && t > 0.27);
+
+    // Per-scene light balance: the rooms (scenes 5–7) carry darker finishes and more area, so
+    // the ambient fill lifts there; the hero object scenes stay contrasty.
+    const roomAmt = THREE.MathUtils.smoothstep(t, 0.47, 0.55) * (1 - THREE.MathUtils.smoothstep(t, 0.91, 0.94));
+    this.ambientLight.intensity = THREE.MathUtils.lerp(0.34, 0.62, roomAmt);
+    this.keyLight.intensity = THREE.MathUtils.lerp(2.7, 3.1, roomAmt);
+    this.fillLight.intensity = THREE.MathUtils.lerp(0.42, 0.7, roomAmt);
 
     // Apply camera & commit instanced pools
+    if (this.studioSweep) this.studioSweep.position.copy(this._camPos);
     this.camera.position.copy(this._camPos);
     this.camera.lookAt(this._camLook);
     this.commitPools(counts);

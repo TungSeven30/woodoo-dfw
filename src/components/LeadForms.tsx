@@ -947,6 +947,7 @@ export function TradeAccountForm({
   const [honeypot, setHoneypot] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
   const [confirmed, setConfirmed] = useState<ConfirmationResult | null>(null);
 
   const audience =
@@ -962,6 +963,17 @@ export function TradeAccountForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const localErrors: Record<string, string[]> = {};
+    if (!name.trim()) localErrors.name = ["Enter your name."];
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) localErrors.email = ["Enter an email address we can reply to."];
+    if (Object.keys(localErrors).length) {
+      setFieldErrors(localErrors);
+      setError("Check the highlighted fields.");
+      const first = Object.keys(localErrors)[0];
+      document.getElementById(`${mode}-${first}`)?.focus();
+      return;
+    }
+    setFieldErrors({});
     setSubmitting(true);
     setError("");
     try {
@@ -987,6 +999,7 @@ export function TradeAccountForm({
       const res = await fetch("/api/leads", { method: "POST", body: fd });
       const data = await res.json();
       if (!res.ok || !data.ok) {
+        if (data.fieldErrors) setFieldErrors(data.fieldErrors);
         setError(data.error || "Please complete required fields.");
         return;
       }
@@ -1015,11 +1028,30 @@ export function TradeAccountForm({
       <div className="form-grid" style={{ marginBottom: "1.4rem" }}>
         <div className="form-field">
           <label htmlFor={`${mode}-name`} className="form-label">Full name *</label>
-          <input id={`${mode}-name`} required className="form-input" value={name} onChange={(e) => setName(e.target.value)} />
+          <input
+            id={`${mode}-name`}
+            required
+            className="form-input"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            aria-invalid={Boolean(fieldErrors.name)}
+            aria-describedby={fieldErrors.name ? `${mode}-name-error` : undefined}
+          />
+          {fieldErrors.name && <span id={`${mode}-name-error`} className="form-error">{fieldErrors.name[0]}</span>}
         </div>
         <div className="form-field">
           <label htmlFor={`${mode}-email`} className="form-label">Email *</label>
-          <input id={`${mode}-email`} type="email" required className="form-input" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input
+            id={`${mode}-email`}
+            type="email"
+            required
+            className="form-input"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            aria-invalid={Boolean(fieldErrors.email)}
+            aria-describedby={fieldErrors.email ? `${mode}-email-error` : undefined}
+          />
+          {fieldErrors.email && <span id={`${mode}-email-error`} className="form-error">{fieldErrors.email[0]}</span>}
         </div>
         <div className="form-field">
           <label htmlFor={`${mode}-phone`} className="form-label">Phone</label>

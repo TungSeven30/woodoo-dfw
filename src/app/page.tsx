@@ -14,11 +14,11 @@ export default function HomePage() {
 
       {/* Semantic Ordered Narrative for Screen Readers & Search Engine Crawlers */}
       <section className="sr-only" aria-label="Full cabinetry story">
-        <h2>{SITE_CONFIG.BRAND_NAME} — It arrives flat. It leaves whole.</h2>
+        <p>{SITE_CONFIG.BRAND_NAME} — It arrives flat. It leaves whole.</p>
         <ol>
           {FILM_SCENES.map((scene) => (
             <li key={scene.id}>
-              <h3>{scene.headline}</h3>
+              <p>{scene.headline}</p>
               <p>{scene.subline}</p>
               <p>{scene.srDescription}</p>
             </li>
@@ -27,7 +27,7 @@ export default function HomePage() {
       </section>
 
       {/* Architectural Summary & Quick Directory below Scene 8 for crawlers and visitors scrolling past the Film */}
-      <section className="theme-dark section-pad hairline-top" aria-label="DFW overview and quick paths">
+      <section id="film-end" tabIndex={-1} className="theme-dark section-pad hairline-top" aria-label="DFW overview and quick paths">
         <div className="container">
           <div
             style={{

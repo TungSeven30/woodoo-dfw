@@ -457,9 +457,8 @@ export function ComposeStudio() {
                   </div>
                 )}
                 <p style={{ margin: "0.45rem 0 0", fontSize: "0.72rem", color: "#9e968b", lineHeight: 1.45 }}>
-                  Stand-in 32 mm proportions (PLACEHOLDER_DIMS) for visual layout planning. No
-                  automated pricing — our DFW team verifies every box, filler, and panel from your
-                  wall measurements.
+                  Proportions are illustrative. There is no automatic pricing: our DFW team checks
+                  every box, filler, and panel against your wall measurements.
                 </p>
               </div>
             </details>
@@ -485,7 +484,7 @@ export function ComposeStudio() {
               })
             }
           >
-            Get this quoted (Homeowners)
+            Get a quote
           </Link>
 
           <Link
@@ -524,7 +523,7 @@ export function ComposeStudio() {
               disabled={exportingAr}
               onClick={() => void handleExportAr()}
             >
-              {exportingAr ? "Exporting..." : "3D / AR glTF"}
+              {exportingAr ? "Exporting..." : "Download 3D model"}
             </button>
           </div>
 

@@ -131,7 +131,7 @@ export const ROOM_LAYOUTS: Record<LayoutId, RoomLayoutSpec> = {
     shortName: "Island",
     roomType: "kitchen",
     description:
-      "Full back elevation stacked to 10 ft with 3-inch molding, anchored by a monolithic centre island.",
+      "Full back elevation stacked to 10 ft with 3-inch molding, anchored by a monolithic center island.",
     defaultCollection: "flat",
     defaultFinish: "classic-walnut",
     defaultCeiling: 10,

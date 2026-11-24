@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Instrument_Serif, Inter_Tight, JetBrains_Mono } from "next/font/google";
+import { Inter_Tight, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
 import { SITE_CONFIG } from "@/config/site";
 import { buildOrganizationJsonLd } from "@/lib/seo";
@@ -7,21 +7,12 @@ import { SiteProvider } from "@/components/SiteProvider";
 import { SiteHeader } from "@/components/SiteHeader";
 import "./globals.css";
 
-// Self-hosted, subsetted Google Fonts; preload ONLY above-the-fold display serif per Section 10
-const instrumentSerif = Instrument_Serif({
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
-  display: "swap",
-  preload: true,
-  variable: "--font-instrument-serif",
-});
-
+// Self-hosted, subsetted Google Fonts. One family carries display and UI; mono is only for part codes.
 const interTight = Inter_Tight({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
   display: "swap",
-  preload: false,
+  preload: true,
   variable: "--font-inter-tight",
 });
 
@@ -78,7 +69,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${instrumentSerif.variable} ${interTight.variable} ${jetbrainsMono.variable}`}
+      className={`${interTight.variable} ${jetbrainsMono.variable}`}
     >
       <head>
         <script

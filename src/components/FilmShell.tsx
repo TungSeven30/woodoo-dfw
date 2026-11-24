@@ -54,9 +54,7 @@ export function FilmShell() {
           <div className="film-hud-layer">
             <div />
             <div className="film-story-card">
-              <p className="mono-label" style={{ color: "var(--amber-on-dark)", marginBottom: "0.5rem" }}>
-                Dallas–Fort Worth
-              </p>
+              <p className="film-eyebrow">Dallas–Fort Worth</p>
               <h1 className="display-serif">{FILM_SCENES[0].headline}</h1>
               <p>{FILM_SCENES[0].subline}</p>
             </div>

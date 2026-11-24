@@ -117,7 +117,7 @@ export default async function CollectionDetailPage({
             </div>
             <div className="arch-card">
               <span className="mono-label">Interior access</span>
-              <h3 className="h3-sans" style={{ margin: "0.35rem 0 0.4rem" }}>No face frame or centre stile</h3>
+              <h3 className="h3-sans" style={{ margin: "0.35rem 0 0.4rem" }}>No face frame or center stile</h3>
               <p style={{ margin: 0, color: "var(--fg-muted)", fontSize: "0.92rem" }}>
                 Unobstructed interior width paired with factory-finished exterior sides.
               </p>

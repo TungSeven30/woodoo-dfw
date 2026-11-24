@@ -7,11 +7,11 @@ import type { CeilingHeightFt } from "@/config/site";
 /**
  * Interactive Architectural Precision Workbench for /precision.
  * Pure SVG + keyboard-accessible range/button controls (zero heavy JS, 100% WCAG 2.2 AA).
- * 1) Framed vs. Frameless Cross-Section X-Ray Scrubber (face frame + centre stile dissolve -> 2 mm reveal)
+ * 1) Framed vs. Frameless Cross-Section X-Ray Scrubber (face frame + center stile dissolve -> 2 mm reveal)
  * 2) Scaled 8 ft / 9 ft / 10 ft North Texas Ceiling Stack Elevation Blueprint
  */
 export function PrecisionInteractiveLab() {
-  // 0 = Traditional Framed (face frame + 3" centre stile); 100 = European Frameless (full overlay, 2 mm reveal)
+  // 0 = Traditional Framed (face frame + 3" center stile); 100 = European Frameless (full overlay, 2 mm reveal)
   const [framelessPct, setFramelessPct] = useState(100);
   const [ceiling, setCeiling] = useState<CeilingHeightFt>(9);
 
@@ -222,7 +222,7 @@ export function PrecisionInteractiveLab() {
                 strokeWidth="1.25"
               />
 
-              {/* Dissolving Traditional Face Frame + Centre Stile */}
+              {/* Dissolving Traditional Face Frame + Center Stile */}
               {frameOpacity > 0.01 && (
                 <g opacity={frameOpacity}>
                   {/* Left & Right Face Stiles */}
@@ -244,7 +244,7 @@ export function PrecisionInteractiveLab() {
                     stroke="#d18d43"
                     strokeDasharray="4 3"
                   />
-                  {/* Vertical Centre Stile */}
+                  {/* Vertical Center Stile */}
                   <rect
                     x={220 - centerStileW / 2}
                     y="38"
@@ -257,7 +257,7 @@ export function PrecisionInteractiveLab() {
                 </g>
               )}
 
-              {/* Precision Centre Gap Dimension Callout */}
+              {/* Precision Center Gap Dimension Callout */}
               <line
                 x1={220 - doorGap / 2}
                 y1="258"
@@ -292,9 +292,9 @@ export function PrecisionInteractiveLab() {
                 letterSpacing="1.4"
               >
                 {t > 0.85
-                  ? "EXACT 2.0 MM SHADOW REVEAL · ZERO CENTRE STILE"
+                  ? "EXACT 2.0 MM SHADOW REVEAL · ZERO CENTER STILE"
                   : t < 0.15
-                    ? "EXPOSED FACE FRAME + VERTICAL CENTRE STILE"
+                    ? "EXPOSED FACE FRAME + VERTICAL CENTER STILE"
                     : "TRANSITIONING TO FULL-OVERLAY FRAMELESS"}
               </text>
 
@@ -347,12 +347,12 @@ export function PrecisionInteractiveLab() {
                 </p>
                 <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--fg-muted)" }}>
                   {t > 0.7
-                    ? "Doors span the full cabinet face down to a 2 mm shadow reveal. Zero inner lip catches wide roasting pans, and no vertical centre stile splits the opening."
-                    : "A nailed front frame and centre vertical stile shrink usable width inside the box and leave broad wood borders visible around every closed door."}
+                    ? "Doors span the full cabinet face down to a 2 mm shadow reveal. Zero inner lip catches wide roasting pans, and no vertical center stile splits the opening."
+                    : "A nailed front frame and center vertical stile shrink usable width inside the box and leave broad wood borders visible around every closed door."}
                 </p>
               </div>
               <p className="mono-label" style={{ margin: 0 }}>
-                Confirmed specs: frameless · full overlay · 2 mm reveal · no face frame or centre stile · factory-finished sides.
+                Confirmed specs: frameless · full overlay · 2 mm reveal · no face frame or center stile · factory-finished sides.
               </p>
             </div>
           </div>
@@ -622,9 +622,8 @@ export function PrecisionInteractiveLab() {
               {cSpec.note}
             </p>
             <p style={{ fontSize: "0.86rem", color: "var(--fg-muted)", marginBottom: "1.5rem" }}>
-              Elevation diagram uses stand-in 32 mm proportions (PLACEHOLDER_DIMS) pending confirmation
-              of exact stocked box heights against the Woodoo catalog. Confirmed 3-inch crown molding
-              caps every 8, 9, and 10 ft run.
+              The elevation is illustrative. Exact box heights come with your quote. A 3-inch crown
+              molding caps every 8, 9, and 10 ft run.
             </p>
             <div style={{ display: "flex", gap: "0.65rem", flexWrap: "wrap" }}>
               <Link

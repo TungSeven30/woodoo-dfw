@@ -62,7 +62,7 @@ export function buildProductJsonLd(slug: CollectionSlug) {
       {
         "@type": "PropertyValue",
         name: "Construction",
-        value: "Frameless full overlay, no face frame or centre stile",
+        value: "Frameless full overlay, no face frame or center stile",
       },
       {
         "@type": "PropertyValue",

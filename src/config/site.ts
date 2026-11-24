@@ -106,7 +106,8 @@ export const SITE_CONFIG: SiteConfig = {
   featureFlags: {
     dealerChannel: process.env.NEXT_PUBLIC_ENABLE_DEALER_CHANNEL === "true",
     sound: true,
-    testimonials: true,
+    // Off until real, permissioned quotes exist (see CONTENT-NEEDED.md). Set NEXT_PUBLIC_SHOW_TESTIMONIALS=true to preview the slot.
+    testimonials: process.env.NEXT_PUBLIC_SHOW_TESTIMONIALS === "true",
   },
   PLACEHOLDER_DIMS: {
     isPlaceholder: true,
@@ -240,7 +241,7 @@ export const COLLECTIONS: Record<CollectionSlug, CollectionSpec> = {
     summary:
       "Balanced five-piece proportions on a frameless full-overlay box. Familiar lines, exact 2 mm gaps.",
     profileNote:
-      "Sturdy stiles and rails framing a recessed centre panel, paired with factory-finished sides and no face frame.",
+      "Sturdy stiles and rails framing a recessed center panel, paired with factory-finished sides and no face frame.",
     finishes: ["premium-oak", "classic-walnut", "iron-black", "frosty-white"],
     defaultFinish: "premium-oak",
     profileDimsMm: {
