@@ -132,6 +132,16 @@ body {
   transition: top var(--dur-fast) ease;
 }
 
+.skip-link:not(:focus) {
+  clip-path: inset(50%);
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 0;
+  border: 0;
+}
+
 .skip-link:focus {
   top: 1rem;
 }
@@ -1446,4 +1456,208 @@ body.flatpack-egg .film-overlay-panel {
   .film-skip-link,
   .media-tag,
   .compose-stamp { background: rgba(19, 17, 16, 0.72); }
+}
+
+/* ------------------------------------------------------------------
+   Rendered film, light version: bright path-traced frames under ink text.
+   A soft paper-colored wash keeps the copy at full contrast without
+   dimming the picture.
+   ------------------------------------------------------------------ */
+.film-light {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.film-light .film-sticky {
+  background: #e9e4dc;
+}
+
+.film-light .film-scrim {
+  background:
+    linear-gradient(90deg, rgba(241, 238, 231, 0.82) 0%, rgba(241, 238, 231, 0.45) 26%, rgba(241, 238, 231, 0) 46%),
+    linear-gradient(0deg, rgba(241, 238, 231, 0.55) 0%, rgba(241, 238, 231, 0) 28%);
+}
+
+.film-light .film-story-card h1,
+.film-light .film-story-card h2,
+.film-light .film-scene-count {
+  color: var(--ink);
+}
+
+.film-light .film-story-card h2 .tone-2,
+.film-light .film-scene-count-total {
+  color: #6f675e;
+}
+
+.film-light .film-story-card p {
+  color: #3d3732;
+}
+
+.film-light .film-eyebrow,
+.film-light .film-chip-label {
+  color: var(--amber-on-light);
+}
+
+.film-light .film-scroll-cue {
+  color: #544d46 !important;
+}
+
+.film-light .film-scroll-cue-line {
+  background: rgba(19, 17, 16, 0.16);
+}
+
+.film-light .film-scroll-cue-line::after {
+  background: var(--ink);
+}
+
+.film-light .film-skip-link,
+.film-light .concept-render-tag {
+  color: var(--ink);
+  background: rgba(250, 248, 244, 0.72);
+  box-shadow: inset 0 0 0 1px rgba(19, 17, 16, 0.1);
+}
+
+.film-light .film-skip-link:hover {
+  background: var(--paper-elevated);
+}
+
+.film-light .scene-tick {
+  color: #544d46;
+}
+
+.film-light .scene-tick-bar {
+  background: rgba(19, 17, 16, 0.3);
+}
+
+.film-light .scene-tick[aria-current="step"] {
+  color: var(--ink);
+}
+
+.film-light .scene-tick[aria-current="step"] .scene-tick-bar {
+  background: var(--ink);
+}
+
+.film-chip-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+
+.film-chip {
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.film-light .macro-dimension {
+  color: var(--ink);
+}
+
+.film-light .reconfig-hud,
+.film-light .scene7-panel,
+.film-light .split-door-card {
+  background: rgba(250, 248, 244, 0.86);
+  color: var(--ink);
+  border: 1px solid rgba(19, 17, 16, 0.08);
+  box-shadow: 0 18px 50px -28px rgba(19, 17, 16, 0.45);
+}
+
+.reconfig-hud-name {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.reconfig-hud-line {
+  font-size: 0.86rem;
+  color: #544d46;
+}
+
+.film-light .scene7-panel {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.look-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+.look-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 52px;
+  padding: 0.45rem 0.6rem;
+  text-align: left;
+  border: 1px solid rgba(19, 17, 16, 0.12);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+  transition: border-color var(--dur-fast) ease, background-color var(--dur-fast) ease;
+}
+
+.look-btn > span:last-child {
+  display: grid;
+  line-height: 1.2;
+}
+
+.look-btn strong {
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.look-btn strong + span {
+  font-size: 0.76rem;
+  color: #544d46;
+}
+
+.look-btn:hover {
+  border-color: rgba(19, 17, 16, 0.32);
+}
+
+.look-btn[aria-pressed="true"] {
+  border-color: var(--ink);
+  background: rgba(19, 17, 16, 0.05);
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+
+.look-btn .swatch-dot {
+  flex: none;
+  width: 26px;
+  height: 26px;
+}
+
+.film-light .split-door-card h2 {
+  margin: 0;
+  color: var(--ink);
+}
+
+.film-light .split-door-card p {
+  margin: 0;
+  color: #3d3732;
+  font-size: 0.95rem;
+}
+
+.split-door-actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-top: 0.25rem;
+}
+
+@media (max-width: 900px) {
+  .film-light .film-scrim {
+    background:
+      linear-gradient(0deg, rgba(241, 238, 231, 0.94) 0%, rgba(241, 238, 231, 0.7) 26%, rgba(241, 238, 231, 0) 48%),
+      linear-gradient(180deg, rgba(241, 238, 231, 0.6) 0%, rgba(241, 238, 231, 0) 18%);
+  }
 }

@@ -8,21 +8,23 @@ import { FILM_SCENES } from "@/config/content";
 
 const emptySubscribe = () => () => {};
 
-// Dynamically load Three.js + Lenis ONLY on the client when Tier A or B is active.
-// Keeps initial HTML/JS payload tiny (<= 170 KB budget) and LCP fast on the HTML poster!
-const FilmWebGLStage = dynamic(() => import("./FilmWebGLStage"), {
+// The frame player loads on the client only. Until then the first frame shows as a plain image.
+const FilmSequenceStage = dynamic(() => import("./FilmSequenceStage"), {
   ssr: false,
   loading: () => (
     <div className="film-track">
       <div className="film-sticky">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/tier-c/scene-0.webp"
-          alt=""
-          aria-hidden="true"
-          fetchPriority="high"
-          className="film-poster"
-        />
+        <picture>
+          <source media="(max-aspect-ratio: 9/10)" srcSet="/film/phone/f000.webp" />
+          { }
+          <img
+            src="/film/desktop/f000.webp"
+            alt=""
+            aria-hidden="true"
+            fetchPriority="high"
+            className="film-poster"
+          />
+        </picture>
         <div className="film-scrim" aria-hidden="true" />
       </div>
     </div>
@@ -40,16 +42,19 @@ export function FilmShell() {
   // Show fast LCP poster until hydration determines Tier A/B vs Tier C / reduced motion
   if (!hydrated) {
     return (
-      <div className="film-root theme-dark">
+      <div className="film-root film-light">
         <div className="film-sticky" style={{ position: "relative" }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/tier-c/scene-0.webp"
-            alt=""
-            aria-hidden="true"
-            fetchPriority="high"
-            className="film-poster"
-          />
+          <picture>
+            <source media="(max-aspect-ratio: 9/10)" srcSet="/film/phone/f000.webp" />
+            { }
+            <img
+              src="/film/desktop/f000.webp"
+              alt=""
+              aria-hidden="true"
+              fetchPriority="high"
+              className="film-poster"
+            />
+          </picture>
           <div className="film-scrim" aria-hidden="true" />
           <div className="film-hud-layer">
             <div />
@@ -65,11 +70,11 @@ export function FilmShell() {
   }
 
   return (
-    <div className="film-root theme-dark">
+    <div className="film-root film-light">
       {quality.tier === "C" || quality.reducedMotion ? (
         <FilmTierC quality={quality} />
       ) : (
-        <FilmWebGLStage quality={quality} />
+        <FilmSequenceStage quality={quality} />
       )}
     </div>
   );
