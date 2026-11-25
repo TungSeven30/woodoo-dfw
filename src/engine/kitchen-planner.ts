@@ -837,11 +837,11 @@ export function fixtureExtents(f: FixturePlacement, ceilingIn: number) {
     case "hood":
       return { x0: -w / 2, x1: w / 2, y0: 66, y1: ceilingIn, z0: 0, z1: 20 };
     case "dishwasher":
-      return { x0: -w / 2, x1: w / 2, y0: 0.25, y1: 34.25, z0: 0.5, z1: 26.25 };
+      return { x0: -w / 2, x1: w / 2, y0: 0.25, y1: 34.25, z0: 0.5, z1: 27.5 };
     case "sink":
-      return { x0: -15.5, x1: 15.5, y0: COUNTER_TOP, y1: COUNTER_TOP + 16.5, z0: 2, z1: 22 };
+      return { x0: -15.5, x1: 15.5, y0: COUNTER_TOP, y1: COUNTER_TOP + 17, z0: 2, z1: 22 };
     case "vessel-basin":
-      return { x0: -10, x1: 10, y0: COUNTER_TOP, y1: COUNTER_TOP + 12.5, z0: 2, z1: 18 };
+      return { x0: -10, x1: 10, y0: COUNTER_TOP, y1: COUNTER_TOP + 13, z0: 1.5, z1: 18 };
     case "mirror":
       return { x0: -w / 2, x1: w / 2, y0: 44, y1: 76, z0: 0, z1: 1 };
     case "stool":
@@ -946,7 +946,7 @@ export function checkPlan(plan: PlannedRoom): PlanIssue[] {
     const h = hoods.find((x) => Math.abs(x.xIn - r.xIn) < 0.01 && Math.abs(x.zIn - r.zIn) < 0.01 && x.rotYDeg === r.rotYDeg);
     if (!h) issues.push({ rule: "hood-centred", detail: "range has no hood centred over it" });
     else if (Math.abs((h.widthIn ?? 0) - (r.widthIn ?? 0)) > 0.5) issues.push({ rule: "hood-width", detail: "hood is not the range's width" });
-    for (const side of [-1, 1]) {
+    for (const side of [-1, 1] as const) {
       const land = counterBeside(plan, r, side);
       if (land < 15 - tol) issues.push({ rule: "range-landing", detail: `only ${land}" of counter beside the range` });
     }
