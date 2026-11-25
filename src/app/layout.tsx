@@ -40,13 +40,13 @@ export const metadata: Metadata = {
     template: `%s | ${SITE_CONFIG.BRAND_NAME}`,
   },
   description:
-    "European-style frameless RTA kitchen and bath cabinets for Dallas–Fort Worth builders, remodelers, and homeowners. Full overlay, 2 mm reveal, five finishes.",
+    "Frameless European kitchen and bath cabinetry for Dallas–Fort Worth. Three door styles, five finishes, a 2 mm gap between every door.",
   openGraph: {
     type: "website",
     siteName: SITE_CONFIG.BRAND_NAME,
-    title: `${SITE_CONFIG.BRAND_NAME} — It arrives flat. It leaves whole.`,
+    title: `${SITE_CONFIG.BRAND_NAME} — Frameless kitchen cabinetry`,
     description:
-      "European-style frameless RTA cabinets for Dallas–Fort Worth. Three door styles, five finishes, built for 8, 9, and 10 ft ceilings.",
+      "Frameless European kitchen and bath cabinetry for Dallas–Fort Worth. Three door styles, five finishes.",
     images: [{ url: "/og/home.png", width: 1200, height: 630, alt: "Frameless cabinetry concept render" }],
   },
   twitter: {

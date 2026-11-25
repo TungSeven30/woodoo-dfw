@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SITE_CONFIG } from "@/config/site";
-import { useSite } from "./SiteProvider";
 import { trackEvent } from "@/lib/analytics";
 
 // Five primary destinations in the bar; the rest live in the mobile menu and the footer.
@@ -24,7 +23,6 @@ const MORE_LINKS = [
 
 export function SiteHeader() {
   const pathname = usePathname();
-  const { soundEnabled, toggleSound, quality, toggleLighterVersion } = useSite();
   const [menuOpenedAtPath, setMenuOpenedAtPath] = useState<string | null>(null);
   const menuOpen = menuOpenedAtPath === pathname;
   const setMenuOpen = (next: boolean | ((prev: boolean) => boolean)) => {
@@ -34,10 +32,6 @@ export function SiteHeader() {
       return target ? pathname : null;
     });
   };
-
-  // The home film is bright now, so only the compose studio keeps the dark header.
-  const isDarkStage = pathname === "/compose";
-  const isFilm = pathname === "/";
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -50,7 +44,7 @@ export function SiteHeader() {
 
   return (
     <>
-      <header className={`site-header ${isDarkStage ? "header-on-film" : ""}`}>
+      <header className="site-header">
         <div className="header-inner">
           <Link
             href="/"
@@ -89,32 +83,6 @@ export function SiteHeader() {
           </nav>
 
           <div className="header-actions">
-            {isFilm && SITE_CONFIG.featureFlags.sound && (
-              <button
-                type="button"
-                id="sound-toggle-btn"
-                className="btn btn-quiet btn-sm header-hide-xs"
-                onClick={() => void toggleSound()}
-                aria-pressed={soundEnabled}
-                title={soundEnabled ? "Mute cabinet audio" : "Enable cabinet audio"}
-              >
-                <SoundGlyph on={soundEnabled} />
-                <span className="sr-only">{soundEnabled ? "Sound on" : "Sound off"}</span>
-              </button>
-            )}
-
-            {isFilm && (
-              <button
-                type="button"
-                id="lighter-version-toggle"
-                className="btn btn-quiet btn-sm header-hide-xs header-hide-md"
-                onClick={toggleLighterVersion}
-                aria-pressed={quality.tier === "C"}
-                title="Switch between the interactive 3D film and a lighter still-image version"
-              >
-                {quality.tier === "C" ? "3D film" : "Still images"}
-              </button>
-            )}
 
             <Link
               href="/trade/send-a-plan"
@@ -206,45 +174,9 @@ export function SiteHeader() {
                 Book a visit
               </Link>
             </div>
-            <div style={{ display: "flex", gap: "0.75rem" }}>
-              {SITE_CONFIG.featureFlags.sound && (
-                <button
-                  type="button"
-                  className="btn btn-sm"
-                  style={{ color: "var(--paper)", borderColor: "rgba(241,238,231,0.25)" }}
-                  onClick={() => void toggleSound()}
-                >
-                  {soundEnabled ? "Sound: On" : "Sound: Off"}
-                </button>
-              )}
-              <button
-                type="button"
-                className="btn btn-sm"
-                style={{ color: "var(--paper)", borderColor: "rgba(241,238,231,0.25)" }}
-                onClick={() => {
-                  toggleLighterVersion();
-                  setMenuOpen(false);
-                }}
-              >
-                {quality.tier === "C" ? "Switch to 3D film" : "Switch to still images"}
-              </button>
-            </div>
           </div>
         </div>
       )}
     </>
-  );
-}
-
-function SoundGlyph({ on }: { on: boolean }) {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-      <path d="M3 7h2.5L9 4v10l-3.5-3H3z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
-      {on ? (
-        <path d="M12 6.5c.9.7 1.4 1.5 1.4 2.5s-.5 1.8-1.4 2.5M14 4.5c1.5 1.2 2.3 2.7 2.3 4.5S15.5 12.3 14 13.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
-      ) : (
-        <path d="M12.5 7l4 4M16.5 7l-4 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
-      )}
-    </svg>
   );
 }

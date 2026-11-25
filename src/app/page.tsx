@@ -1,96 +1,143 @@
 import React from "react";
 import Link from "next/link";
-import { FILM_SCENES, LOCAL_DFW_COMMUNITIES } from "@/config/content";
-import { COLLECTION_LIST, FINISHES, SITE_CONFIG, isShowroomOpen } from "@/config/site";
-import { Media } from "@/components/Media";
-import { COLLECTION_IMAGE } from "@/config/images";
-import { FilmShell } from "@/components/FilmShell";
+import { FINISHES, isShowroomOpen } from "@/config/site";
+import { FINISH_PHOTOS, PHOTOS } from "@/config/photos";
+import { ProductPhoto } from "@/components/ProductPhoto";
 import { SiteFooter } from "@/components/SiteFooter";
 
 export default function HomePage() {
   const open = isShowroomOpen();
+  const visit = open ? "Book a visit" : "Join the preview list";
 
   return (
     <>
-      <FilmShell />
+      <section className="pp-hero" aria-labelledby="pp-hero-title">
+        <div className="pp-hero-copy">
+          <h1 id="pp-hero-title" className="pp-display">Frameless.</h1>
+          <p className="pp-lede">European kitchen cabinetry, now in Dallas–Fort&nbsp;Worth.</p>
+          <div className="pp-actions">
+            <Link href="/showroom" className="btn btn-primary">
+              {visit}
+            </Link>
+            <Link href="/collections" className="pp-link">
+              See the collections
+            </Link>
+          </div>
+        </div>
+        <ProductPhoto
+          photo={PHOTOS.heroKitchen}
+          tall={PHOTOS.heroKitchenTall}
+          priority
+          className="pp-bleed pp-hero-photo"
+        />
+      </section>
 
-      {/* Semantic Ordered Narrative for Screen Readers & Search Engine Crawlers */}
-      <section className="sr-only" aria-label="Full cabinetry story">
-        <p>{SITE_CONFIG.BRAND_NAME} — It arrives flat. It leaves whole.</p>
-        <ol>
-          {FILM_SCENES.map((scene) => (
-            <li key={scene.id}>
-              <p>{scene.headline}</p>
-              <p>{scene.subline}</p>
-              <p>{scene.srDescription}</p>
+      <section className="pp-section" aria-labelledby="pp-cover">
+        <div className="pp-copy pp-reveal">
+          <h2 id="pp-cover" className="pp-h2">
+            Doors that cover the whole box.
+          </h2>
+          <p className="pp-body">
+            There is no face frame around the opening. Doors and drawer fronts sit over the cabinet
+            edge to edge, so the front reads as one surface and the inside opens to its full width.
+          </p>
+        </div>
+        <div className="pp-bleed-wrap">
+          <ProductPhoto photo={PHOTOS.islandOpenPlan} tall={PHOTOS.islandOpenPlanTall} className="pp-bleed pp-zoom" />
+        </div>
+      </section>
+
+      <section className="pp-section pp-split" aria-labelledby="pp-gap">
+        <div className="pp-split-photo">
+          <ProductPhoto
+            photo={PHOTOS.drawersGap}
+            sizes="(max-width: 900px) 100vw, 50vw"
+            className="pp-fill pp-zoom"
+          />
+        </div>
+        <div className="pp-split-copy pp-reveal">
+          <p id="pp-gap" className="pp-number">
+            2&thinsp;mm
+          </p>
+          <p className="pp-body">
+            Between every door and drawer front. One even line, top to bottom, across the whole kitchen.
+          </p>
+          <Link href="/precision" className="pp-link">
+            How it’s built
+          </Link>
+        </div>
+      </section>
+
+      <section className="pp-section" aria-labelledby="pp-finishes">
+        <div className="pp-copy pp-reveal">
+          <h2 id="pp-finishes" className="pp-h2">
+            Five finishes. <span className="pp-quiet">Three door styles.</span>
+          </h2>
+        </div>
+        <ul className="pp-finishes" role="list">
+          {FINISH_PHOTOS.map((f) => (
+            <li key={f.finish} className="pp-finish">
+              <Link href="/collections">
+                <div className="pp-finish-photo">
+                  <ProductPhoto
+                    photo={f}
+                    sizes="(max-width: 760px) 82vw, (max-width: 1100px) 40vw, 20vw"
+                    className="pp-fill"
+                  />
+                </div>
+                <p className="pp-finish-name">{FINISHES[f.finish].name}</p>
+                <p className="pp-finish-door">{f.door}</p>
+              </Link>
             </li>
           ))}
-        </ol>
+        </ul>
       </section>
 
-      {/* After the film: the product, in pictures */}
-      <section id="film-end" tabIndex={-1} className="section-pad" aria-label="Collections and next steps">
-        <div className="container">
-          <p className="mono-label">Dallas–Fort Worth</p>
-          <h2 className="display-serif" style={{ maxWidth: "15ch", margin: "0.6rem 0 1.1rem" }}>
-            Three door styles. <span className="tone-2">Five finishes.</span>
+      <section className="pp-section" aria-labelledby="pp-bath">
+        <div className="pp-copy pp-reveal">
+          <h2 id="pp-bath" className="pp-h2">
+            The bath, too.
           </h2>
-          <p className="prose" style={{ marginBottom: "2.5rem" }}>
-            European-style frameless kitchen and bath cabinets, made in Malaysia, with a 2 mm
-            full-overlay gap and finished sides. For builders, remodelers, designers and homeowners
-            across {LOCAL_DFW_COMMUNITIES.slice(0, 6).join(", ")}.
+          <p className="pp-body">Vanities and linen towers in the same doors and finishes as the kitchen.</p>
+        </div>
+        <div className="pp-bleed-wrap">
+          <ProductPhoto photo={PHOTOS.bath} className="pp-bleed pp-zoom" />
+        </div>
+      </section>
+
+      <section className="pp-section pp-studio" aria-labelledby="pp-studio">
+        <div className="pp-copy pp-reveal">
+          <h2 id="pp-studio" className="pp-h2">
+            Try it on your room.
+          </h2>
+          <p className="pp-body">
+            Pick a layout, a door and a finish, and see the whole kitchen in 3D at 8, 9 or 10&nbsp;ft.
           </p>
-          <div className="photo-grid">
-            {COLLECTION_LIST.map((col) => (
-              <Link key={col.slug} href={`/collections/${col.slug}`}>
-                <Media name={COLLECTION_IMAGE[col.slug]} shape="port" sizes="(max-width: 900px) 100vw, 33vw" />
-                <h3 className="h3-sans">{col.name}</h3>
-                <p>{col.finishes.map((f) => FINISHES[f].name).join(" · ")}</p>
-              </Link>
-            ))}
+          <div className="pp-actions pp-actions-center">
+            <Link href="/compose" className="btn btn-primary">
+              Open the studio
+            </Link>
           </div>
         </div>
       </section>
 
-      <div className="container">
-        <div className="feature hairline-top">
-          <Media name="detail-reveal" shape="land" sizes="(max-width: 900px) 100vw, 55vw" />
-          <div className="feature-body">
-            <h2 className="h2-serif">
-              Two millimeters. <span className="tone-2">That&apos;s the whole gap.</span>
-            </h2>
-            <p>
-              No face frame, no center stile, no thick bands of wood between the doors. Just one thin,
-              even line, and a cabinet you can use edge to edge.
-            </p>
-            <div className="btn-row">
-              <Link href="/precision" className="btn">
-                How it&apos;s built
-              </Link>
-            </div>
+      <section id="film-end" tabIndex={-1} className="pp-section pp-paths" aria-label="Next steps">
+        <Link href="/trade/send-a-plan" className="pp-path">
+          <div className="pp-path-photo">
+            <ProductPhoto photo={PHOTOS.trade} sizes="(max-width: 900px) 100vw, 50vw" className="pp-fill" />
           </div>
-        </div>
-      </div>
-
-      <section className="section-pad hairline-top">
-        <div className="container">
-          <div className="detail-pair">
-            <Link href="/trade" className="path-card">
-              <Media name="flatpack" shape="land" sizes="(max-width: 900px) 100vw, 45vw" />
-              <p className="mono-label">Builders · Remodelers · Designers</p>
-              <h3 className="h2-serif">For the trade.</h3>
-              <p>Send us the plan. A real person checks every cabinet, filler and trim piece.</p>
-              <span className="btn btn-primary">Send a plan</span>
-            </Link>
-            <Link href="/showroom" className="path-card">
-              <Media name="showroom" shape="land" sizes="(max-width: 900px) 100vw, 45vw" />
-              <p className="mono-label">Homeowners</p>
-              <h3 className="h2-serif">For your home.</h3>
-              <p>See and touch the finishes, and work with a designer from sketch to delivery.</p>
-              <span className="btn btn-primary">{open ? "Book a visit" : "Join the preview list"}</span>
-            </Link>
+          <h2 className="pp-h3">For the trade.</h2>
+          <p className="pp-body">Send a plan. A person checks every cabinet, filler and trim piece.</p>
+          <span className="pp-link">Send a plan</span>
+        </Link>
+        <Link href="/showroom" className="pp-path">
+          <div className="pp-path-photo">
+            <ProductPhoto photo={PHOTOS.home} sizes="(max-width: 900px) 100vw, 50vw" className="pp-fill" />
           </div>
-        </div>
+          <h2 className="pp-h3">For your home.</h2>
+          <p className="pp-body">See the doors in person and plan your kitchen with a designer.</p>
+          <span className="pp-link">{visit}</span>
+        </Link>
       </section>
 
       <SiteFooter />

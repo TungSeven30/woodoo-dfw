@@ -9,10 +9,10 @@ import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment
  */
 export const ROOM_COLORS = {
   wall: "#ebe5dc",
-  fog: "#d9d1c5",
+  fog: "#ebe6de",
   horizon: "#e4ddd2",
   hemiSky: "#fbf7f0",
-  hemiGround: "#9c8d7a",
+  hemiGround: "#a29b91",
 } as const;
 
 /** Small seeded random so every visit draws the same marble and the same floor. */
@@ -127,8 +127,8 @@ export function makeOakFloorTexture(renderer: THREE.WebGLRenderer, repeat: [numb
   for (let col = 0; col < planks; col++) {
     let y = -r() * size;
     while (y < size) {
-      const len = size * (0.45 + r() * 0.5);
-      const shade = 0.92 + r() * 0.14;
+      const len = size * (0.8 + r() * 0.7);
+      const shade = 0.97 + r() * 0.05;
       const base = [196 * shade, 168 * shade, 132 * shade].map((v) => Math.round(Math.min(255, v)));
       const x0 = col * pw;
       // Draw each plank twice when it crosses the tile edge so the floor repeats cleanly.
@@ -149,14 +149,14 @@ export function makeOakFloorTexture(renderer: THREE.WebGLRenderer, repeat: [numb
           ctx.stroke();
         }
         // End seam
-        ctx.fillStyle = "rgba(70,52,36,0.45)";
-        ctx.fillRect(x0, yy + len - 1.5, pw, 1.5);
+        ctx.fillStyle = "rgba(70,52,36,0.22)";
+        ctx.fillRect(x0, yy + len - 1, pw, 1);
       }
       y += len;
     }
     // Long seam
-    ctx.fillStyle = "rgba(70,52,36,0.5)";
-    ctx.fillRect(col * pw, 0, 1.5, size);
+    ctx.fillStyle = "rgba(70,52,36,0.26)";
+    ctx.fillRect(col * pw, 0, 1, size);
   }
   return finishTexture(new THREE.CanvasTexture(c), renderer, repeat);
 }

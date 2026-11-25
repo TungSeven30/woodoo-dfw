@@ -158,7 +158,7 @@ export const FINISHES: Record<FinishSlug, FinishSpec> = {
   "premium-oak": {
     slug: "premium-oak",
     name: "Premium Oak",
-    shortNote: "Warm European oak grain under a satin finish.",
+    shortNote: "Mid-tone oak with its grain left visible. Satin.",
     swatchHex: "#b79165",
     swatchImage: "/textures/swatches/premium-oak.webp",
     edgeHex: "#9e7a51",
@@ -171,7 +171,7 @@ export const FINISHES: Record<FinishSlug, FinishSpec> = {
   "ivory-oak": {
     slug: "ivory-oak",
     name: "Ivory Oak",
-    shortNote: "Pale architectural oak for bright, restrained rooms.",
+    shortNote: "Pale oak for light, quiet rooms.",
     swatchHex: "#ddcfb9",
     swatchImage: "/textures/swatches/ivory-oak.webp",
     edgeHex: "#c9baa3",
@@ -184,7 +184,7 @@ export const FINISHES: Record<FinishSlug, FinishSpec> = {
   "classic-walnut": {
     slug: "classic-walnut",
     name: "Classic Walnut",
-    shortNote: "Deep chocolate walnut with quiet vertical movement.",
+    shortNote: "Dark walnut with a long, straight grain.",
     swatchHex: "#674833",
     swatchImage: "/textures/swatches/classic-walnut.webp",
     edgeHex: "#513726",
@@ -197,7 +197,7 @@ export const FINISHES: Record<FinishSlug, FinishSpec> = {
   "iron-black": {
     slug: "iron-black",
     name: "Iron Black",
-    shortNote: "Dark charcoal tone where subtle grain meets raking light.",
+    shortNote: "Near-black, with the grain still showing in low light.",
     swatchHex: "#23201d",
     swatchImage: "/textures/swatches/iron-black.webp",
     edgeHex: "#191715",
@@ -210,7 +210,7 @@ export const FINISHES: Record<FinishSlug, FinishSpec> = {
   "frosty-white": {
     slug: "frosty-white",
     name: "Frosty White",
-    shortNote: "Clean warm-white architectural satin.",
+    shortNote: "A warm white. Satin, not gloss.",
     swatchHex: "#f1eee7",
     swatchImage: "/textures/swatches/frosty-white.webp",
     edgeHex: "#dfd9ce",

@@ -6,7 +6,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 export const metadata: Metadata = {
   title: "Compose Your Kitchen",
   description:
-    "Configure frameless European cabinets in 3D across five room layouts, three door styles, five finishes, and 8, 9, or 10 ft ceilings.",
+    "Choose a room, a door style and a finish, and see your frameless kitchen in 3D at 8, 9 or 10 ft.",
   alternates: { canonical: "/compose" },
   openGraph: {
     images: [{ url: "/og/island.png", width: 1200, height: 630, alt: "3D Kitchen Configurator concept render" }],
@@ -15,11 +15,11 @@ export const metadata: Metadata = {
 
 export default function ComposePage() {
   return (
-    <div className="page-shell theme-dark">
+    <div className="page-shell cs-page">
       <Suspense
         fallback={
-          <div style={{ minHeight: "80vh", display: "grid", placeItems: "center" }}>
-            <span className="mono-label">Preparing 3D studio...</span>
+          <div style={{ minHeight: "80vh", display: "grid", placeItems: "center", color: "#6f675e" }}>
+            Loading the studio…
           </div>
         }
       >

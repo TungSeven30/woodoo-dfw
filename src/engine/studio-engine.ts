@@ -146,16 +146,19 @@ export class WoodooStudioEngine {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     this.renderer.setSize(w, h, false);
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.08;
+    // The studio sits a touch lower so pale oak keeps its grain instead of washing to yellow.
+    this.renderer.toneMappingExposure = initial.mode === "configurator" ? 0.98 : 1.08;
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     this.scene = new THREE.Scene();
     const configurator = initial.mode === "configurator";
     this.scene.background = new THREE.Color(configurator ? ROOM_COLORS.fog : "#161412");
-    this.scene.fog = new THREE.FogExp2(configurator ? ROOM_COLORS.fog : "#161412", configurator ? 0.012 : 0.036);
+    this.scene.fog = new THREE.FogExp2(configurator ? ROOM_COLORS.fog : "#161412", configurator ? 0.006 : 0.036);
 
-    this.camera = new THREE.PerspectiveCamera(38, w / Math.max(1, h), 0.015, 45);
+    // The studio uses a longer lens from further back, like an architectural photo: straighter
+    // verticals and less stretch at the edges than a wide angle.
+    this.camera = new THREE.PerspectiveCamera(configurator ? 29 : 38, w / Math.max(1, h), 0.015, 60);
     this.materials = createWoodMaterialSystem(this.renderer);
     this.materials.setFinishImmediate(this.state.finish);
     void this.materials.loadFinishHiRes(this.state.finish);
@@ -237,7 +240,7 @@ export class WoodooStudioEngine {
       // The strip has a fixed width, so it floated free of shorter runs; keep only its light.
       void ledStrip;
 
-      const ledWash = new THREE.PointLight("#ffdba6", 1.9, 4.2, 1.8);
+      const ledWash = new THREE.PointLight("#ffe6c8", 1.3, 4.2, 1.8);
       ledWash.position.set(0, 1.31, -1.06);
       this.scene.add(ledWash);
     }
@@ -354,15 +357,16 @@ export class WoodooStudioEngine {
     } else if (view === "plan") {
       this.targetYaw = 0.0;
       this.targetPitch = 1.34;
-      this.targetDist = this.state.layout === "vanity" ? 4.4 : 6.0;
+      this.targetDist = this.state.layout === "vanity" ? 5.8 : 7.9;
     } else if (view === "walk-around") {
-      this.targetYaw = 0.28;
-      this.targetPitch = 0.14;
-      this.targetDist = this.state.layout === "vanity" ? 3.3 : 4.6;
+      this.targetYaw = 0.3;
+      this.targetPitch = 0.1;
+      this.targetDist = this.state.layout === "vanity" ? 4.3 : 6.0;
     } else {
-      this.targetYaw = -0.44;
-      this.targetPitch = 0.27;
-      this.targetDist = this.state.layout === "vanity" ? 4.4 : 6.7;
+      // Close to eye level and nearly square to the back wall, the way a kitchen is photographed.
+      this.targetYaw = -0.34;
+      this.targetPitch = 0.16;
+      this.targetDist = this.state.layout === "vanity" ? 5.6 : 8.6;
     }
     if (immediate) {
       this.orbitYaw = this.targetYaw;
@@ -577,7 +581,7 @@ export class WoodooStudioEngine {
       // ctrl/cmd + wheel zooms the camera.
       if (!e.ctrlKey && !e.metaKey) return;
       e.preventDefault();
-      this.targetDist = THREE.MathUtils.clamp(this.targetDist + e.deltaY * 0.003, 1.8, 7.6);
+      this.targetDist = THREE.MathUtils.clamp(this.targetDist + e.deltaY * 0.004, 2.4, 10.5);
     };
 
     this.canvas.addEventListener("pointerdown", onDown);
