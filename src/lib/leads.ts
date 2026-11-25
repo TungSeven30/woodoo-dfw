@@ -59,6 +59,8 @@ export const LeadSubmissionSchema = z.object({
       finish: z.string().optional(),
       ceiling: z.union([z.string(), z.number()]).optional(),
       shareUrl: z.string().optional(),
+      /** Measured walls and planned cabinet count from the studio. */
+      plan: z.string().max(400).optional(),
     })
     .optional(),
   files: z.array(UploadedFileMetaSchema).max(10).optional().default([]),

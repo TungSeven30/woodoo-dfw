@@ -2389,6 +2389,153 @@ img.pp-hero-photo {
   color: #5e574f;
 }
 
+/* Walls: a slider plus exact feet and inches. */
+.cs-wall {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cs-wall-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.cs-wall-label .cs-q {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 400;
+}
+
+.cs-wall-fields {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  font-family: var(--font-mono);
+  color: #8a8279;
+}
+
+.cs-num {
+  width: 3.4em;
+  min-height: 40px;
+  padding: 0 6px;
+  border: 1px solid rgba(19, 17, 16, 0.16);
+  border-radius: 10px;
+  background: #faf8f4;
+  color: var(--ink);
+  font: 500 1rem/1 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  -moz-appearance: textfield;
+}
+
+.cs-num::-webkit-outer-spin-button,
+.cs-num::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.cs-num:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+}
+
+/* Summary figures, drawn like a dimension table. */
+.cs-figures {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 0;
+  border-top: 1px solid rgba(19, 17, 16, 0.08);
+  border-bottom: 1px solid rgba(19, 17, 16, 0.08);
+}
+
+.cs-figures div {
+  padding: 12px 0;
+}
+
+.cs-figures div + div {
+  padding-left: 12px;
+  border-left: 1px solid rgba(19, 17, 16, 0.08);
+}
+
+.cs-figures dt {
+  font-size: 0.8125rem;
+  color: #8a8279;
+}
+
+.cs-figures dd {
+  margin: 4px 0 0;
+  font-family: var(--font-mono);
+  font-size: 1.0625rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.cs-estimate {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cs-estimate-label {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #8a8279;
+}
+
+.cs-estimate-value {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.cs-saved {
+  border-top: 1px solid rgba(19, 17, 16, 0.08);
+  padding-top: 12px;
+}
+
+.cs-saved ul {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.cs-saved li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-height: 36px;
+}
+
+.cs-saved-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink);
+  font-size: 0.9375rem;
+  text-decoration: none;
+}
+
+.cs-saved-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(19, 17, 16, 0.14);
+}
+
+.cs-saved-x {
+  font-size: 0.8125rem;
+  color: #8a8279;
+}
+
 @media (max-width: 1020px) {
   .cs {
     grid-template-columns: 1fr;

@@ -6,7 +6,8 @@ import {
   LayoutId,
   SITE_CONFIG,
 } from "@/config/site";
-import { CabinetPlacement, ROOM_LAYOUTS } from "@/config/layouts";
+import type { CabinetPlacement } from "@/config/layouts";
+import { planRoom, type PlannedRoom, type WallSizes } from "./kitchen-planner";
 
 export const IN_TO_M = 0.0254;
 export const MM_TO_M = 0.001;
@@ -133,7 +134,9 @@ export function generateCabinetPanels(
     placement.type === "drawer_base" ||
     placement.type === "sink_base" ||
     placement.type === "vanity" ||
-    placement.type === "filler";
+    placement.type === "filler" ||
+    placement.type === "end_panel" ||
+    placement.type === "counter_span";
   const isWall = placement.type === "wall";
   const isTall = placement.type === "tall" || placement.type === "linen_tower";
 
@@ -197,40 +200,69 @@ export function generateCabinetPanels(
     });
   };
 
-  // Filler strip (simple solid finished face + side return)
+  const counterSlab = (dockOrder: number) => {
+    if (!placement.hasCounter) return;
+    const cH = dims.countertopThicknessIn * IN_TO_M;
+    const cOver = (placement.counterOverhangIn ?? dims.countertopOverhangIn) * IN_TO_M;
+    const back = (placement.counterBackExtraIn ?? 0) * IN_TO_M;
+    // A counter_span covers the full face line (box + door) with no extra door thickness of its own.
+    const front = placement.type === "counter_span" && placement.counterOverhangIn === 0 ? 0 : cOver + DOOR_T;
+    const depth = dM + front + back;
+    addPanel(
+      "CTR",
+      "counter",
+      "box",
+      [wM + 0.003, cH, depth],
+      [0, hM + cH / 2, (front - back) / 2],
+      dockOrder,
+      { materialZone: "counter" }
+    );
+  };
+
+  // Counter only: over a dishwasher, or across the hidden blind corner.
+  if (placement.type === "counter_span") {
+    // On an island the seating side is in view: close it with a finished panel.
+    if (placement.counterBackExtraIn) {
+      addPanel("BACK", "back", "box", [wM, hM, T], [0, hM / 2, -dM / 2 + T / 2], 0.3, { materialZone: "wood" });
+    }
+    counterSlab(0.95);
+    return assignFlatPackStack(panels, options.flatPackOrigin ?? [cabPos[0], 0, cabPos[2]]);
+  }
+
+  // Finished end panel (island ends): a full-depth slab of the door finish.
+  if (placement.type === "end_panel") {
+    addPanel("END", "carcass", "box", [wM, hM, dM + DOOR_T], [0, hM / 2, DOOR_T / 2], 0.5, { materialZone: "wood" });
+    counterSlab(0.96);
+    return assignFlatPackStack(panels, options.flatPackOrigin ?? [cabPos[0], 0, cabPos[2]]);
+  }
+
+  // Filler strip: a finished face in the door plane. Base fillers keep a toe kick; wall fillers
+  // run from the bottom of the wall cabinets to the top line.
   if (placement.type === "filler") {
-    const bodyH = hM - TK_H;
+    const onWall = (placement.yIn ?? 0) > 0;
+    const y0 = onWall ? 0 : TK_H;
+    const bodyH = hM - y0;
     addPanel(
       "FILL",
       "carcass",
       "box",
-      [wM - REVEAL_M, bodyH, DOOR_T],
-      [0, TK_H + bodyH / 2, dM / 2 + DOOR_T / 2],
+      [Math.max(0.004, wM - REVEAL_M), bodyH, DOOR_T],
+      [0, y0 + bodyH / 2, dM / 2 + DOOR_T / 2],
       0.55,
       { materialZone: "wood" }
     );
-    addPanel(
-      "TK",
-      "toekick",
-      "box",
-      [wM, TK_H, T],
-      [0, TK_H / 2, dM / 2 - TK_RECESS],
-      0.35,
-      { materialZone: "wood" }
-    );
-    if (placement.hasCounter) {
-      const cH = dims.countertopThicknessIn * IN_TO_M;
-      const cOver = dims.countertopOverhangIn * IN_TO_M;
+    if (!onWall) {
       addPanel(
-        "CTR",
-        "counter",
+        "TK",
+        "toekick",
         "box",
-        [wM + 0.004, cH, dM + cOver + DOOR_T],
-        [0, hM + cH / 2, (cOver + DOOR_T) / 2],
-        0.95,
-        { materialZone: "counter" }
+        [wM, TK_H, T],
+        [0, TK_H / 2, dM / 2 - TK_RECESS],
+        0.35,
+        { materialZone: "wood" }
       );
     }
+    counterSlab(0.95);
     return assignFlatPackStack(panels, options.flatPackOrigin ?? [cabPos[0], 0, cabPos[2]]);
   }
 
@@ -617,19 +649,7 @@ export function generateCabinetPanels(
   }
 
   // Honed quartzite countertop slab above counter-bearing bases/vanities
-  if (placement.hasCounter) {
-    const cH = dims.countertopThicknessIn * IN_TO_M;
-    const cOver = dims.countertopOverhangIn * IN_TO_M;
-    addPanel(
-      "CTR",
-      "counter",
-      "box",
-      [wM + 0.003, cH, dM + cOver + DOOR_T],
-      [0, hM + cH / 2, (cOver + DOOR_T) / 2],
-      0.97,
-      { materialZone: "counter" }
-    );
-  }
+  counterSlab(0.97);
 
   return assignFlatPackStack(
     panels,
@@ -724,21 +744,24 @@ export function generateHeroCabinet(
 }
 
 /**
- * Generates the complete panel list for any of the five room layouts.
+ * Generates the complete panel list for a planned room (see kitchen-planner.ts).
+ * Pass a plan, or a layout and wall sizes to plan one here.
  */
 export function generateLayoutPanels(
   layoutId: LayoutId,
   collection: CollectionSlug,
   _finish: FinishSlug,
   ceilingFt: CeilingHeightFt,
-  mergeSmallParts = false
+  mergeSmallParts = false,
+  walls?: WallSizes,
+  plan?: PlannedRoom
 ): CabinetPanelSpec[] {
-  const layout = ROOM_LAYOUTS[layoutId];
+  const layout = plan ?? planRoom(layoutId, walls, ceilingFt);
   const all: CabinetPanelSpec[] = [];
 
   // Order wave naturally: base/vanity runs -> tall pantry -> wall cabinets -> stacked uppers -> counters
   const priority = (t: CabinetPlacement["type"]) => {
-    if (t === "base" || t === "drawer_base" || t === "sink_base" || t === "vanity" || t === "filler") return 0;
+    if (t === "base" || t === "drawer_base" || t === "sink_base" || t === "vanity" || t === "filler" || t === "end_panel" || t === "counter_span") return 0;
     if (t === "tall" || t === "linen_tower") return 1;
     return 2;
   };

@@ -13,6 +13,8 @@ import {
   isShowroomOpen,
 } from "@/config/site";
 import { ROOM_LAYOUTS } from "@/config/layouts";
+import { WALL_SPECS, formatFeetInches, planRoom, summarizePlan, wallsFromParams } from "@/engine/kitchen-planner";
+import type { CeilingHeightFt, LayoutId } from "@/config/site";
 import {
   captureUtmParams,
   hasUsedConfigurator,
@@ -133,7 +135,19 @@ function useAttachedConfig() {
     const finish = sp.get("finish");
     const ceiling = sp.get("ceiling");
     if (!layout && !collection && !finish) return null;
+    // Measured walls and the planned cabinet count, so the team sees the same list the visitor saw.
+    let plan: string | undefined;
+    if (layout && layout in ROOM_LAYOUTS) {
+      const lid = layout as LayoutId;
+      const ceil = (["8", "9", "10"].includes(ceiling ?? "") ? Number(ceiling) : 9) as CeilingHeightFt;
+      const walls = wallsFromParams(lid, (k) => sp.get(k));
+      const p = planRoom(lid, walls, ceil);
+      const sched = summarizePlan(p);
+      const wallText = WALL_SPECS[lid].map((w) => `${w.label.toLowerCase()} ${formatFeetInches(walls[w.key])}`).join(", ");
+      plan = `${wallText}; ${sched.cabinetCount + sched.stackedUpperCount} cabinets, ${formatFeetInches(p.totals.baseRunIn)} of base cabinets`;
+    }
     return {
+      plan,
       layout: layout || undefined,
       collection: collection || undefined,
       finish: finish || undefined,
@@ -289,6 +303,7 @@ export function SendAPlanForm() {
               ? ROOM_LAYOUTS[attachedConfig.layout as keyof typeof ROOM_LAYOUTS].name
               : attachedConfig.layout}{" "}
             · {attachedConfig.collection} · {attachedConfig.finish} · {attachedConfig.ceiling} ft ceiling
+            {attachedConfig.plan && <><br />{attachedConfig.plan}</>}
           </p>
         </div>
       )}
@@ -744,6 +759,7 @@ export function BookVisitForm() {
             · Door style: <strong>{attachedConfig.collection}</strong> · Finish:{" "}
             <strong>{attachedConfig.finish}</strong> · Ceiling:{" "}
             <strong>{attachedConfig.ceiling} ft</strong>
+            {attachedConfig.plan && <><br />{attachedConfig.plan}</>}
           </p>
         </div>
       )}

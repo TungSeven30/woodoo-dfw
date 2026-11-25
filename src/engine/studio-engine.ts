@@ -1,10 +1,14 @@
 import {
   buildRoomProps,
+  buildRoomShell,
   createRoomPropMaterials,
+  createRoomShellResources,
   disposeRoomProps,
   setRoomPropEnvMap,
   setRoomPropsAppear,
+  type RoomShellResources,
 } from "./room-props";
+import { planRoom, type PlannedRoom, type WallSizes } from "./kitchen-planner";
 import * as THREE from "three";
 import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter.js";
 import {
@@ -60,6 +64,8 @@ export interface StudioConfig {
   doorsOpen?: boolean;
   showGhostFrame?: boolean;
   macroZoom?: boolean;
+  /** Wall lengths in inches for the configurator's planner (see kitchen-planner.ts). */
+  walls?: WallSizes;
 }
 
 const MAX_POOL = 260;
@@ -190,6 +196,7 @@ export class WoodooStudioEngine {
     this.keyLight.shadow.bias = -0.0004;
     this.keyLight.shadow.normalBias = 0.016;
     this.scene.add(this.keyLight);
+    this.scene.add(this.keyLight.target);
 
     this.fillLight = new THREE.DirectionalLight("#cfd9ea", 0.8);
     this.fillLight.position.set(-4.5, 3.0, 2.8);
@@ -222,27 +229,12 @@ export class WoodooStudioEngine {
     this.scene.add(floor);
 
     if (this.state.mode === "configurator") {
-      const backWall = new THREE.Mesh(
-        new THREE.PlaneGeometry(14, 5.4),
-        new THREE.MeshStandardMaterial({ color: ROOM_COLORS.wall, roughness: 0.92 })
-      );
-      backWall.position.set(0, 2.65, -1.45);
-      backWall.receiveShadow = true;
-      this.scene.add(backWall);
-
-
-      // 3000K architectural under-cabinet recessed LED strip & warm grazing light
-      const ledStrip = new THREE.Mesh(
-        new THREE.BoxGeometry(3.2, 0.014, 0.022),
-        new THREE.MeshBasicMaterial({ color: "#ffe3b0" })
-      );
-      ledStrip.position.set(0, 1.375, -1.25);
-      // The strip has a fixed width, so it floated free of shorter runs; keep only its light.
-      void ledStrip;
-
-      const ledWash = new THREE.PointLight("#ffe6c8", 1.3, 4.2, 1.8);
-      ledWash.position.set(0, 1.31, -1.06);
-      this.scene.add(ledWash);
+      // Walls, backsplash and under-cabinet lights come from the plan (see rebuildGeometry).
+      // One warm wash light follows the main run of wall cabinets.
+      this.ledWash = new THREE.PointLight("#ffe6c8", 1.3, 4.2, 1.8);
+      this.ledWash.position.set(0, 1.31, -1.06);
+      this.scene.add(this.ledWash);
+      this.shellRes = createRoomShellResources(this.materials.counterMaterial.map, this.materials.roomEnvMap);
     }
 
     this.pendantsGroup = new THREE.Group();
@@ -255,9 +247,11 @@ export class WoodooStudioEngine {
     });
     for (let i = 0; i < 3; i++) {
       const g = new THREE.Group();
-      const cord = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.004, 1.3, 8), stemMat);
-      cord.position.y = 0.65;
-      const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.09, 18, 14), bulbMat);
+      // Cord is 1 m long, pivoting at the shade; it is scaled to reach the ceiling.
+      const cord = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.004, 1, 8).translate(0, 0.5, 0), stemMat);
+      cord.name = "cord";
+      const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.09, 24, 18), bulbMat);
+      bulb.castShadow = false;
       const pt = new THREE.PointLight("#ffd69e", 1.8, 4.5, 1.8);
       pt.name = "pendantLight";
       g.add(cord, bulb, pt);
@@ -339,7 +333,11 @@ export class WoodooStudioEngine {
     // Sweep sun from Texas morning (east, cooler crisp) -> midday (high neutral) -> late afternoon / golden hour (west, warm amber)
     const angle = THREE.MathUtils.lerp(-1.1, 1.05, t);
     const elevation = Math.sin(THREE.MathUtils.lerp(0.35, Math.PI - 0.35, t)) * 5.6 + 1.8;
-    this.keyLight.position.set(Math.sin(angle) * 5.8, elevation, Math.cos(angle) * 4.4);
+    this.keyLight.position.set(
+      this.lookCenter.x + Math.sin(angle) * 5.8,
+      elevation,
+      this.lookCenter.z + Math.cos(angle) * 4.4
+    );
 
     const morning = new THREE.Color("#f0f4ff");
     const noon = new THREE.Color("#fff8ee");
@@ -354,19 +352,26 @@ export class WoodooStudioEngine {
       this.targetYaw = this.state.macroZoom ? 0.0 : -0.35;
       this.targetPitch = this.state.macroZoom ? 0.02 : 0.24;
       this.targetDist = this.state.macroZoom ? 0.42 : 1.72;
-    } else if (view === "plan") {
-      this.targetYaw = 0.0;
-      this.targetPitch = 1.34;
-      this.targetDist = this.state.layout === "vanity" ? 5.8 : 7.9;
-    } else if (view === "walk-around") {
-      this.targetYaw = 0.3;
-      this.targetPitch = 0.1;
-      this.targetDist = this.state.layout === "vanity" ? 4.3 : 6.0;
     } else {
-      // Close to eye level and nearly square to the back wall, the way a kitchen is photographed.
-      this.targetYaw = -0.34;
-      this.targetPitch = 0.16;
-      this.targetDist = this.state.layout === "vanity" ? 5.6 : 8.6;
+      // Bigger rooms pull the camera back so the whole plan stays in frame.
+      const span = this.plan ? Math.max(this.plan.bounds.maxX - this.plan.bounds.minX, (this.plan.bounds.maxZ - this.plan.bounds.minZ) * 0.9) * IN_TO_M : 3.6;
+      const k = THREE.MathUtils.clamp(span / 3.7, 0.75, 1.6);
+      if (view === "plan") {
+        this.targetYaw = 0.0;
+        this.targetPitch = 1.34;
+        this.targetDist = (this.state.layout === "vanity" ? 5.8 : 7.9) * k;
+      } else {
+        // Always shoot from the room's open side, so no run of cabinets shows its back:
+        // the U from straight on, the galley down its aisle from the open end.
+        const layout = this.state.layout;
+        const closer = view === "walk-around";
+        const yaw =
+          layout === "u-shape" ? 0 : layout === "galley" ? (closer ? 1.42 : 1.36) : closer ? -0.2 : -0.34;
+        this.targetYaw = yaw;
+        this.targetPitch = closer ? 0.09 : layout === "galley" ? 0.2 : 0.16;
+        const base = layout === "vanity" ? (closer ? 4.0 : 5.6) : layout === "galley" ? (closer ? 4.6 : 6.4) : closer ? 5.4 : 8.6;
+        this.targetDist = base * k;
+      }
     }
     if (immediate) {
       this.orbitYaw = this.targetYaw;
@@ -376,14 +381,19 @@ export class WoodooStudioEngine {
   }
 
   private rebuildGeometry(immediate = false): void {
+    if (this.state.mode === "configurator") {
+      this.plan = planRoom(this.state.layout, this.state.walls, this.state.ceiling);
+    }
     const nextPanels =
-      this.state.mode === "configurator"
+      this.state.mode === "configurator" && this.plan
         ? generateLayoutPanels(
             this.state.layout,
             this.state.collection,
             this.state.finish,
             this.state.ceiling,
-            false
+            false,
+            undefined,
+            this.plan
           )
         : generateHeroCabinet(this.state.collection, this.state.ceiling, false);
 
@@ -397,28 +407,55 @@ export class WoodooStudioEngine {
       this.morphProgress = 0.0;
     }
 
-    // Appliances, sink, plants: rebuild for the new layout and let them rise in after the cabinets.
-    const propsKey = `${this.state.layout}:${this.state.ceiling}`;
-    if (this.state.mode === "configurator" && propsKey !== this.propsKey) {
+    // Appliances, walls, backsplash and lights: rebuild for the new plan and let the appliances
+    // rise in after the cabinets.
+    const plan = this.plan;
+    const propsKey = plan ? JSON.stringify([this.state.layout, this.state.ceiling, plan.walls]) : "";
+    if (this.state.mode === "configurator" && plan && propsKey !== this.propsKey) {
       this.propsKey = propsKey;
       if (this.propsGroup) disposeRoomProps(this.propsGroup);
-      this.propsGroup = buildRoomProps(this.propMats, this.state.layout, this.state.ceiling);
+      if (this.shellGroup) disposeRoomProps(this.shellGroup);
+      this.propsGroup = buildRoomProps(this.propMats, plan);
       this.propsRiseFrom = immediate ? -1 : this.morphProgress;
       this.scene.add(this.propsGroup);
-    }
+      if (this.shellRes) {
+        this.shellGroup = buildRoomShell(this.shellRes, this.propMats, plan);
+        this.scene.add(this.shellGroup);
+      }
 
-    // Update pendants in configurator mode
-    if (this.state.mode === "configurator") {
-      const layout = ROOM_LAYOUTS[this.state.layout];
+      // Pendants hang only where the planner put them (over an island), cords to the ceiling.
+      const ceilingM = plan.ceilingIn * IN_TO_M;
       this.pendantsGroup.children.forEach((g, idx) => {
-        const spec = layout.pendants[idx];
+        const spec = plan.pendants[idx];
         if (!spec) {
           this.setPendantShown(g, false);
         } else {
           this.setPendantShown(g, true);
-          g.position.set(spec.xIn * IN_TO_M, 1.98, spec.zIn * IN_TO_M);
+          const y = spec.yIn * IN_TO_M;
+          g.position.set(spec.xIn * IN_TO_M, y, spec.zIn * IN_TO_M);
+          const cord = g.getObjectByName("cord");
+          if (cord) cord.scale.y = Math.max(0.05, ceilingM - y);
         }
       });
+
+      // Warm wash under the longest run of wall cabinets.
+      const strip = [...plan.lightStrips].sort((a, b) => b.widthIn - a.widthIn)[0];
+      if (this.ledWash) {
+        this.ledWash.intensity = strip ? 1.3 : 0;
+        if (strip) {
+          const r = THREE.MathUtils.degToRad(strip.rotYDeg);
+          this.ledWash.position.set((strip.xIn + Math.sin(r) * 9) * IN_TO_M, 1.31, (strip.zIn + Math.cos(r) * 9) * IN_TO_M);
+        }
+      }
+
+      // Keep the sun's shadow map centred on this room.
+      const cx = ((plan.bounds.minX + plan.bounds.maxX) / 2) * IN_TO_M;
+      const cz = ((plan.bounds.minZ + plan.bounds.maxZ) / 2) * IN_TO_M;
+      this.lookCenter.set(cx, 0, Math.min(cz, -0.3));
+      this.keyLight.target.position.set(cx, 0, cz);
+      this.keyLight.target.updateMatrixWorld();
+      this.applyTimeOfDay(this.state.timeOfDay);
+      this.applyViewPreset(this.state.view, immediate);
     }
   }
 
@@ -438,10 +475,12 @@ export class WoodooStudioEngine {
     const nextView = partial.view ?? this.state.view;
     const nextTime = partial.timeOfDay ?? this.state.timeOfDay;
 
+    const nextWalls = partial.walls ?? this.state.walls;
     const geomChanged =
       nextLayout !== this.state.layout ||
       nextCollection !== this.state.collection ||
-      nextCeiling !== this.state.ceiling;
+      nextCeiling !== this.state.ceiling ||
+      JSON.stringify(nextWalls ?? {}) !== JSON.stringify(this.state.walls ?? {});
     const finishChanged = nextFinish !== this.state.finish;
     const viewChanged =
       nextView !== this.state.view ||
@@ -522,7 +561,7 @@ export class WoodooStudioEngine {
   /** Stretch Goal: Export live composed cabinetry as standard glTF (.glb) for AR / CAD Quick Look */
   public async exportGltfBlob(): Promise<Blob> {
     const exportGroup = new THREE.Group();
-    exportGroup.name = `Woodoo_${this.state.layout}_${this.state.collection}_${this.state.finish}`;
+    exportGroup.name = `${SITE_CONFIG.BRAND_NAME.replace(/[^A-Za-z0-9]+/g, "_")}_${this.state.layout}_${this.state.collection}_${this.state.finish}`;
     const mat = new THREE.MeshStandardMaterial({
       color: new THREE.Color(this.materials.woodMaterial.color),
       roughness: 0.55,
@@ -672,18 +711,19 @@ export class WoodooStudioEngine {
         : this.state.macroZoom
           ? 0.42
           : 0.46;
-    const lookZ = this.state.mode === "configurator" ? -0.3 : 0;
+    const lookX = this.state.mode === "configurator" ? this.lookCenter.x : 0;
+    const lookZ = this.state.mode === "configurator" ? this.lookCenter.z : 0;
 
     // Narrow (phone) viewports need the camera further back to fit the whole run.
     const fit =
       this.state.mode === "configurator" ? Math.pow(Math.max(1, 1.35 / this.camera.aspect), 0.7) : 1;
     const dist = this.orbitDist * fit;
     this.camera.position.set(
-      Math.sin(this.orbitYaw) * Math.cos(this.orbitPitch) * dist,
+      lookX + Math.sin(this.orbitYaw) * Math.cos(this.orbitPitch) * dist,
       lookY + Math.sin(this.orbitPitch) * dist,
       lookZ + Math.cos(this.orbitYaw) * Math.cos(this.orbitPitch) * dist
     );
-    this.camera.lookAt(0, lookY, lookZ);
+    this.camera.lookAt(lookX, lookY, lookZ);
 
     // Door open animation & ghost wireframe for /collections & /precision
     this.doorOpenSmooth = THREE.MathUtils.lerp(
@@ -815,6 +855,11 @@ export class WoodooStudioEngine {
   };
 
   private propMats = createRoomPropMaterials();
+  private plan: PlannedRoom | null = null;
+  private shellRes: RoomShellResources | null = null;
+  private shellGroup: THREE.Group | null = null;
+  private ledWash: THREE.PointLight | null = null;
+  private lookCenter = new THREE.Vector3(0, 0, -0.3);
   private propsGroup: THREE.Group | null = null;
   private propsKey = "";
   private propsRiseFrom = -1;

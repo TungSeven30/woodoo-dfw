@@ -9,6 +9,7 @@ export type AnalyticsEventName =
   | "scene_reached"
   | "configurator_change"
   | "configurator_save"
+  | "configurator_share"
   | "cta_click"
   | "form_start"
   | "form_submit"

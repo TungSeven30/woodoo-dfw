@@ -10,7 +10,8 @@
     "test:engine": "tsx scripts/test-engine.ts",
     "export:3d": "node scripts/export-3d-assets.mjs",
     "verify:all": "node scripts/verify-all.mjs",
-    "verify:lighthouse": "node scripts/run-lighthouse.mjs"
+    "verify:lighthouse": "node scripts/run-lighthouse.mjs",
+    "test:planner": "tsx scripts/test-planner.ts"
   },
   "dependencies": {
     "next": "16.4.6",
