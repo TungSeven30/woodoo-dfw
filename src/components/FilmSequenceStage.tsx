@@ -232,7 +232,11 @@ export default function FilmSequenceStage({ quality }: { quality: QualityProfile
         const b = frac > 0.001 && i0 + 1 < TOTAL_FRAMES ? images[i0 + 1] : null;
         if (a) {
           drawCover(a, 1);
-          if (b) drawCover(b, frac);
+          // A short, eased dissolve: less time spent as a double exposure between frames.
+          if (b) {
+            const k = Math.max(0, Math.min(1, (frac - 0.2) / 0.6));
+            drawCover(b, k * k * (3 - 2 * k));
+          }
           if (lookMix > 0 && lookShown !== null) {
             const li = images[CHAPTER_OFFSET[6] + lookShown * LOOK_FRAMES + 1];
             if (li) drawCover(li, lookMix);

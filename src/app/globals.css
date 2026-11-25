@@ -1474,8 +1474,8 @@ body.flatpack-egg .film-overlay-panel {
 
 .film-light .film-scrim {
   background:
-    linear-gradient(90deg, rgba(241, 238, 231, 0.9) 0%, rgba(241, 238, 231, 0.62) 30%, rgba(241, 238, 231, 0) 56%),
-    linear-gradient(0deg, rgba(241, 238, 231, 0.7) 0%, rgba(241, 238, 231, 0) 34%);
+    linear-gradient(90deg, rgba(241, 238, 231, 0.82) 0%, rgba(241, 238, 231, 0.45) 26%, rgba(241, 238, 231, 0) 46%),
+    linear-gradient(0deg, rgba(241, 238, 231, 0.55) 0%, rgba(241, 238, 231, 0) 28%);
 }
 
 .film-light .film-story-card h1,
@@ -1657,7 +1657,7 @@ body.flatpack-egg .film-overlay-panel {
 @media (max-width: 900px) {
   .film-light .film-scrim {
     background:
-      linear-gradient(0deg, rgba(241, 238, 231, 0.94) 0%, rgba(241, 238, 231, 0.75) 30%, rgba(241, 238, 231, 0) 55%),
+      linear-gradient(0deg, rgba(241, 238, 231, 0.94) 0%, rgba(241, 238, 231, 0.7) 26%, rgba(241, 238, 231, 0) 48%),
       linear-gradient(180deg, rgba(241, 238, 231, 0.6) 0%, rgba(241, 238, 231, 0) 18%);
   }
 }
