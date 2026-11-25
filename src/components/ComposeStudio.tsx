@@ -13,6 +13,7 @@ import {
   FINISH_ORDER,
   FinishSlug,
   LayoutId,
+  SITE_CONFIG,
   isValidFinishForCollection,
   resolveFinishForCollection,
 } from "@/config/site";
@@ -20,6 +21,9 @@ import { LAYOUT_ORDER, ROOM_LAYOUTS, summarizeLayoutSchedule } from "@/config/la
 import type { StudioCanvasHandle } from "./StudioCanvas";
 import type { StudioViewMode } from "@/engine/studio-engine";
 import { markConfiguratorUsed, trackEvent } from "@/lib/analytics";
+
+// Download names follow the brand setting, so a rename needs no code change.
+const FILE_PREFIX = SITE_CONFIG.BRAND_NAME.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
 const StudioCanvas = dynamic(
   () => import("./StudioCanvas").then((m) => m.StudioCanvas),
@@ -137,7 +141,7 @@ export function ComposeStudio() {
     if (stillData) {
       const a = document.createElement("a");
       a.href = stillData;
-      a.download = `woodoo-dfw-${layout}-${collection}-${finish}-${ceiling}ft.png`;
+      a.download = `${FILE_PREFIX}-${layout}-${collection}-${finish}-${ceiling}ft.png`;
       a.click();
     }
 
@@ -158,7 +162,7 @@ export function ComposeStudio() {
         const objUrl = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = objUrl;
-        a.download = `woodoo-dfw-${layout}-${collection}-${finish}.glb`;
+        a.download = `${FILE_PREFIX}-${layout}-${collection}-${finish}.glb`;
         a.click();
         window.setTimeout(() => URL.revokeObjectURL(objUrl), 2000);
         setSavedToast("3D model downloaded (.glb).");
