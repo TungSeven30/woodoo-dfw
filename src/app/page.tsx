@@ -4,6 +4,8 @@ import { FINISHES, isShowroomOpen } from "@/config/site";
 import { FINISH_PHOTOS, PHOTOS } from "@/config/photos";
 import { ProductPhoto } from "@/components/ProductPhoto";
 import { SiteFooter } from "@/components/SiteFooter";
+import { DoorHero } from "@/components/DoorHero";
+import { DrawingMark } from "@/components/DrawingMark";
 
 export default function HomePage() {
   const open = isShowroomOpen();
@@ -11,29 +13,33 @@ export default function HomePage() {
 
   return (
     <>
-      <section className="pp-hero" aria-labelledby="pp-hero-title">
-        <div className="pp-hero-copy">
+      <section className="pp-hero dw-hero" aria-labelledby="pp-hero-title">
+        <div className="dw-hero-copy">
           <h1 id="pp-hero-title" className="pp-display">Frameless.</h1>
-          <p className="pp-lede">European kitchen cabinetry, now in Dallas–Fort&nbsp;Worth.</p>
-          <div className="pp-actions">
-            <Link href="/showroom" className="btn btn-primary">
-              {visit}
-            </Link>
-            <Link href="/collections" className="pp-link">
-              See the collections
-            </Link>
+          <div className="dw-hero-side">
+            <p className="pp-lede">European kitchen cabinetry, at home in Dallas–Fort&nbsp;Worth.</p>
+            <div className="pp-actions">
+              <Link href="/showroom" className="btn btn-primary">
+                {visit}
+              </Link>
+              <Link href="/collections" className="pp-link">
+                See the collections
+              </Link>
+            </div>
           </div>
         </div>
-        <ProductPhoto
-          photo={PHOTOS.heroKitchen}
-          tall={PHOTOS.heroKitchenTall}
-          priority
-          className="pp-bleed pp-hero-photo"
-        />
+        <DoorHero photo={PHOTOS.heroKitchen} tall={PHOTOS.heroKitchenTall} />
+        <p className="dw-caption">
+          <span className="dw-dim" aria-hidden="true" />
+          <span>
+            <strong>2 mm.</strong> Every gap on this page is the gap between our doors.
+          </span>
+        </p>
       </section>
 
       <section className="pp-section" aria-labelledby="pp-cover">
-        <div className="pp-copy pp-reveal">
+        <div className="dw-copy pp-reveal">
+          <DrawingMark n="01">No face frame</DrawingMark>
           <h2 id="pp-cover" className="pp-h2">
             Doors that cover the whole box.
           </h2>
@@ -56,11 +62,13 @@ export default function HomePage() {
           />
         </div>
         <div className="pp-split-copy pp-reveal">
-          <p id="pp-gap" className="pp-number">
+          <DrawingMark n="02">The reveal</DrawingMark>
+          <p id="pp-gap" className="pp-number dw-dimensioned">
             2&thinsp;mm
           </p>
           <p className="pp-body">
-            Between every door and drawer front. One even line, top to bottom, across the whole kitchen.
+            Between every door and drawer front. One even line, top to bottom, across the whole
+            kitchen. Even a Texas-sized one.
           </p>
           <Link href="/precision" className="pp-link">
             How it’s built
@@ -69,10 +77,12 @@ export default function HomePage() {
       </section>
 
       <section className="pp-section" aria-labelledby="pp-finishes">
-        <div className="pp-copy pp-reveal">
+        <div className="dw-copy pp-reveal">
+          <DrawingMark n="03">Finishes</DrawingMark>
           <h2 id="pp-finishes" className="pp-h2">
             Five finishes. <span className="pp-quiet">Three door styles.</span>
           </h2>
+          <p className="pp-body">Shown in real kitchens, in real daylight.</p>
         </div>
         <ul className="pp-finishes" role="list">
           {FINISH_PHOTOS.map((f) => (
@@ -94,7 +104,8 @@ export default function HomePage() {
       </section>
 
       <section className="pp-section" aria-labelledby="pp-bath">
-        <div className="pp-copy pp-reveal">
+        <div className="dw-copy pp-reveal">
+          <DrawingMark n="04">Bath</DrawingMark>
           <h2 id="pp-bath" className="pp-h2">
             The bath, too.
           </h2>
@@ -106,14 +117,15 @@ export default function HomePage() {
       </section>
 
       <section className="pp-section pp-studio" aria-labelledby="pp-studio">
-        <div className="pp-copy pp-reveal">
+        <div className="dw-copy pp-reveal">
+          <DrawingMark n="05">Studio</DrawingMark>
           <h2 id="pp-studio" className="pp-h2">
             Try it on your room.
           </h2>
           <p className="pp-body">
             Pick a layout, a door and a finish, and see the whole kitchen in 3D at 8, 9 or 10&nbsp;ft.
           </p>
-          <div className="pp-actions pp-actions-center">
+          <div className="pp-actions dw-actions">
             <Link href="/compose" className="btn btn-primary">
               Open the studio
             </Link>
@@ -138,6 +150,12 @@ export default function HomePage() {
           <p className="pp-body">See the doors in person and plan your kitchen with a designer.</p>
           <span className="pp-link">{visit}</span>
         </Link>
+      </section>
+
+      <section className="dw-close" aria-label="Where it comes from">
+        <p className="dw-close-line">
+          Made in Malaysia. <span className="pp-quiet">At home in Texas.</span>
+        </p>
       </section>
 
       <SiteFooter />

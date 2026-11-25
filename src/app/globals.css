@@ -2425,3 +2425,273 @@ img.pp-hero-photo {
     background: rgba(255, 255, 255, 0.9);
   }
 }
+
+/* ------------------------------------------------------------------
+   Shop-drawing layer. The page borrows the language of a cabinet
+   shop drawing: sheet numbers, thin rules, dimension lines, and the
+   2 mm reveal as the one structural line. Copy sits off-center, on a
+   drawing grid, instead of stacked in the middle.
+   ------------------------------------------------------------------ */
+
+/* Hero: headline left, lede and actions to its right, on one baseline */
+.dw-hero {
+  text-align: left;
+}
+
+.dw-hero-copy {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 24px 64px;
+  max-width: 1440px;
+  margin: 0 auto clamp(32px, 5vh, 56px);
+  padding: 0 var(--gutter);
+}
+
+.dw-hero .pp-display {
+  font-size: clamp(64px, 11vw, 176px);
+  line-height: 0.9;
+}
+
+.dw-hero .pp-lede {
+  margin: 0;
+  max-width: 22ch;
+  text-wrap: pretty;
+}
+
+.dw-hero .pp-actions {
+  justify-content: flex-start;
+  margin-top: 24px;
+}
+
+@media (max-width: 860px) {
+  .dw-hero-copy {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* The doors */
+.dh {
+  position: relative;
+  height: min(78vh, 62vw);
+  background: var(--paper);
+  overflow: hidden;
+}
+
+.dh-door {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--x) * 1%);
+  width: calc(var(--w) * 1% - 2px);
+  overflow: hidden;
+  transition: transform 420ms var(--ease-join);
+}
+
+.dh-door:last-child {
+  width: calc(var(--w) * 1%);
+}
+
+/* Each plate is the full-width photo, shifted so the door shows its own slice */
+.dh-plate {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--x) / var(--w) * -100%);
+  width: calc(100 / var(--w) * 100%);
+}
+
+.dh-img,
+.dh-img img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 760px) {
+  .dh {
+    height: 72vh;
+    height: 72svh;
+  }
+  .dh-door {
+    left: calc(var(--xm) * 1%);
+    width: calc(var(--wm) * 1% - 2px);
+  }
+  .dh-door:nth-child(4) {
+    width: calc(var(--wm) * 1%);
+  }
+  .dh-plate {
+    left: calc(var(--xm) / var(--wm) * -100%);
+    width: calc(100 / var(--wm) * 100%);
+  }
+  .dh-wide-only {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Doors hang into place one after another, the way a run is fitted */
+  .dh-door {
+    animation: dh-hang 1100ms var(--ease-join) both;
+    animation-delay: calc(120ms + var(--i) * 70ms);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .dh-door:hover {
+      transform: translateY(-6px);
+    }
+  }
+}
+
+@keyframes dh-hang {
+  from {
+    transform: translateY(28px);
+    clip-path: inset(100% 0 0 0);
+  }
+  to {
+    transform: translateY(0);
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* Caption under the doors: a dimension mark and one line of explanation */
+.dw-caption {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 1440px;
+  margin: 18px auto 0;
+  padding: 0 var(--gutter);
+  font-size: 0.9375rem;
+  color: #6f675e;
+}
+
+.dw-caption strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* |<-->| : two ticks with a line between, drawn at the size of the reveal it labels */
+.dw-dim {
+  position: relative;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 12px;
+  border-left: 1px solid var(--ink);
+  border-right: 1px solid var(--ink);
+}
+
+.dw-dim::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  border-top: 1px solid var(--ink);
+}
+
+/* Section mark: sheet number, short rule, title */
+.dw-mark {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 24px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #6f675e;
+}
+
+.dw-n {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--amber-on-light);
+}
+
+.dw-rule {
+  width: 40px;
+  border-top: 1px solid rgba(19, 17, 16, 0.35);
+}
+
+/* Off-center copy block: starts at the second drawing column, reads left to right */
+.dw-copy {
+  max-width: 1440px;
+  margin: 0 auto clamp(40px, 6vh, 64px);
+  padding: 0 var(--gutter) 0 calc(var(--gutter) + min(16vw, 240px));
+  text-align: left;
+}
+
+.dw-copy .pp-h2 {
+  max-width: 14ch;
+}
+
+.dw-copy .pp-body {
+  margin-left: 0;
+}
+
+.dw-actions {
+  justify-content: flex-start;
+}
+
+@media (max-width: 860px) {
+  .dw-copy {
+    padding: 0 var(--gutter);
+  }
+}
+
+/* The big 2 mm gets a dimension line under it, as on a drawing */
+.dw-dimensioned {
+  display: inline-block;
+  position: relative;
+  padding-bottom: 22px;
+}
+
+.dw-dimensioned::after {
+  content: "";
+  position: absolute;
+  left: 0.04em;
+  right: 0.04em;
+  bottom: 0;
+  height: 14px;
+  border-left: 1px solid var(--ink);
+  border-right: 1px solid var(--ink);
+  background: linear-gradient(var(--ink), var(--ink)) center / 100% 1px no-repeat;
+}
+
+.pp-split-copy .dw-mark {
+  margin-bottom: 32px;
+}
+
+/* Closing line before the footer */
+.dw-close {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(48px, 10vh, 120px) var(--gutter) clamp(96px, 14vh, 160px);
+  border-top: 2px solid var(--paper);
+  background: var(--paper);
+}
+
+.dw-close-line {
+  margin: 0;
+  max-width: 16ch;
+  font-family: var(--font-display);
+  font-size: clamp(44px, 7vw, 112px);
+  font-weight: 600;
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+
+/* Trade and home paths follow the same left-reading drawing grid */
+.pp-path {
+  text-align: left;
+}
+.pp-path .pp-h3,
+.pp-path .pp-body,
+.pp-path .pp-link {
+  margin-left: clamp(20px, 3vw, 40px);
+  margin-right: clamp(20px, 3vw, 40px);
+}
+.pp-path .pp-body {
+  max-width: 36ch;
+}
