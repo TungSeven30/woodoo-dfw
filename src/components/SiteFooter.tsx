@@ -21,34 +21,34 @@ export function SiteFooter() {
               <span className="brand-mark-rule" aria-hidden="true" />
               <span>{SITE_CONFIG.BRAND_NAME}</span>
             </div>
-            <p style={{ margin: "0 0 0.85rem", color: "#b6aea3", maxWidth: "36ch", fontSize: "0.95rem" }}>
+            <p className="footer-blurb">
               Frameless kitchen and bath cabinetry for Dallas–Fort Worth homes, builders and
               designers. Made in Malaysia.
             </p>
-            <p className="mono-label" style={{ margin: "0 0 0.35rem" }}>
+            <p className="footer-small" style={{ margin: "0 0 0.35rem" }}>
               {addressText}
             </p>
             {hasPhone && (
               <p style={{ margin: "0.2rem 0", fontSize: "0.9rem" }}>
-                <a href={`tel:${SITE_CONFIG.PHONE}`} style={{ color: "var(--paper)" }}>
+                <a href={`tel:${SITE_CONFIG.PHONE}`} className="footer-a">
                   {SITE_CONFIG.PHONE}
                 </a>
               </p>
             )}
             {hasEmail && (
               <p style={{ margin: "0.2rem 0", fontSize: "0.9rem" }}>
-                <a href={`mailto:${SITE_CONFIG.EMAIL}`} style={{ color: "var(--paper)" }}>
+                <a href={`mailto:${SITE_CONFIG.EMAIL}`} className="footer-a">
                   {SITE_CONFIG.EMAIL}
                 </a>
               </p>
             )}
-            <p style={{ margin: "0.9rem 0 0", color: "#9e968b", fontSize: "0.82rem" }}>
+            <p className="footer-small" style={{ margin: "0.9rem 0 0" }}>
               Serving {LOCAL_DFW_COMMUNITIES.slice(0, 7).join(" · ")} and surrounding North Texas.
             </p>
           </div>
 
           <div>
-            <p className="mono-label">Cabinetry</p>
+            <p className="footer-h">Cabinetry</p>
             <ul className="footer-list">
               <li><Link href="/collections">All collections</Link></li>
               <li><Link href="/collections/traditional-shaker">Traditional Shaker</Link></li>
@@ -60,27 +60,26 @@ export function SiteFooter() {
           </div>
 
           <div>
-            <p className="mono-label">For Trade &amp; Home</p>
+            <p className="footer-h">For trade and home</p>
             <ul className="footer-list">
               <li><Link href="/trade/send-a-plan">Send a plan</Link></li>
               <li><Link href="/trade">Trade program</Link></li>
-              <li><Link href="/showroom">Book a visit / Preview list</Link></li>
-              <li><Link href="/process">Seven-step process</Link></li>
+              <li><Link href="/showroom">Book a visit</Link></li>
+              <li><Link href="/process">How it works</Link></li>
               <li><Link href="/faq">FAQ</Link></li>
               <li><Link href="/about">About the DFW branch</Link></li>
             </ul>
           </div>
 
           <div>
-            <p className="mono-label">Direct</p>
+            <p className="footer-h">Company</p>
             <ul className="footer-list">
               <li><Link href="/contact">Contact</Link></li>
               <li><Link href="/legal/privacy">Privacy policy</Link></li>
               <li><Link href="/legal/terms">Terms of use</Link></li>
             </ul>
-            <p style={{ margin: "1.25rem 0 0", color: "#9e968b", fontSize: "0.8rem", lineHeight: 1.5 }}>
-              Customers arrange their own installation. Your installer, your schedule. 3D room
-              visuals are labeled as concept renders.
+            <p className="footer-small" style={{ margin: "1.25rem 0 0" }}>
+              You choose your own installer. Rooms shown in 3D are concept renders.
             </p>
           </div>
         </div>
@@ -94,14 +93,14 @@ export function SiteFooter() {
             justifyContent: "space-between",
             flexWrap: "wrap",
             gap: "0.75rem",
-            fontSize: "0.82rem",
-            color: "#9e968b",
+            fontSize: "0.8125rem",
+            color: "#8a8279",
           }}
         >
           <span>
             &copy; {new Date().getFullYear()} {SITE_CONFIG.BRAND_NAME}. Dallas–Fort Worth, TX.
           </span>
-          <span className="mono-label" style={{ fontSize: "0.68rem" }}>
+          <span>
             2 mm between every door
           </span>
         </div>

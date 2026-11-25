@@ -71,7 +71,7 @@ export const ROOM_LAYOUTS: Record<LayoutId, RoomLayoutSpec> = {
     shortName: "L-Shape",
     roomType: "kitchen",
     description:
-      "Classic North Texas perimeter run with tall pantry, wide drawer bases, and stacked wall cabinets meeting the ceiling.",
+      "Two walls. A tall pantry, wide drawers, and wall cabinets stacked to the ceiling.",
     defaultCollection: "traditional-shaker",
     defaultFinish: "premium-oak",
     defaultCeiling: 9,
@@ -116,7 +116,7 @@ export const ROOM_LAYOUTS: Record<LayoutId, RoomLayoutSpec> = {
     shortName: "Galley",
     roomType: "kitchen",
     description:
-      "Parallel architectural runs designed for tight circulation, uninterrupted lines, and high storage density.",
+      "Two facing runs. The most storage for a narrow room.",
     defaultCollection: "slim-shaker",
     defaultFinish: "iron-black",
     defaultCeiling: 9,
@@ -159,7 +159,7 @@ export const ROOM_LAYOUTS: Record<LayoutId, RoomLayoutSpec> = {
     shortName: "Island",
     roomType: "kitchen",
     description:
-      "Full back elevation stacked to 10 ft with 3-inch molding, anchored by a monolithic center island.",
+      "A full back wall with an island in front of it.",
     defaultCollection: "flat",
     defaultFinish: "classic-walnut",
     defaultCeiling: 10,
@@ -201,7 +201,7 @@ export const ROOM_LAYOUTS: Record<LayoutId, RoomLayoutSpec> = {
     shortName: "Bath Vanity",
     roomType: "bath",
     description:
-      "Double-basin bath vanity paired with a tall linen tower — the same frameless construction scaled for primary baths.",
+      "A double vanity and a tall linen tower, in the same doors as the kitchen.",
     defaultCollection: "flat",
     defaultFinish: "frosty-white",
     defaultCeiling: 8,
@@ -230,7 +230,7 @@ export const ROOM_LAYOUTS: Record<LayoutId, RoomLayoutSpec> = {
     shortName: "U-Shape",
     roomType: "kitchen",
     description:
-      "Three-wall architectural wrap built for high-capacity North Texas family kitchens and custom remodels.",
+      "Three walls of cabinets. The most counter and storage.",
     defaultCollection: "flat",
     defaultFinish: "ivory-oak",
     defaultCeiling: 9,

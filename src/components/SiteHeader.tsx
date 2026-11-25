@@ -33,9 +33,6 @@ export function SiteHeader() {
     });
   };
 
-  // The home film is bright now, so only the compose studio keeps the dark header.
-  const isDarkStage = pathname === "/compose";
-
   useEffect(() => {
     if (!menuOpen) return;
     const onKey = (e: KeyboardEvent) => {
@@ -47,7 +44,7 @@ export function SiteHeader() {
 
   return (
     <>
-      <header className={`site-header ${isDarkStage ? "header-on-film" : ""}`}>
+      <header className="site-header">
         <div className="header-inner">
           <Link
             href="/"

@@ -33,11 +33,11 @@ const StudioCanvas = dynamic(
           minHeight: "62vh",
           display: "grid",
           placeItems: "center",
-          background: "#161412",
-          color: "#b6aea3",
+          background: "#ebe6de",
+          color: "#6f675e",
         }}
       >
-        <span className="mono-label">Loading 3D studio...</span>
+        <span style={{ fontSize: "0.95rem" }}>Loading the studio…</span>
       </div>
     ),
   }
@@ -79,7 +79,8 @@ export function ComposeStudio() {
     parseCeiling(searchParams.get("ceiling"))
   );
   const [view, setView] = useState<StudioViewMode>("perspective");
-  const [timeOfDay, setTimeOfDay] = useState<number>(0.76); // Late Texas afternoon default
+  // Neutral midday light by default, so the finishes read true, as in the photos.
+  const [timeOfDay, setTimeOfDay] = useState<number>(0.5);
   const [savedToast, setSavedToast] = useState<string>("");
   const [liveStatus, setLiveStatus] = useState<string>("");
   const [exportingAr, setExportingAr] = useState(false);
@@ -127,9 +128,9 @@ export function ComposeStudio() {
     const url = `${window.location.origin}/compose?${shareQuery}`;
     try {
       await navigator.clipboard.writeText(url);
-      setSavedToast("Shareable link copied. Still render downloaded.");
+      setSavedToast("Link copied. The image is in your downloads.");
     } catch {
-      setSavedToast("Shareable URL updated in your address bar. Still render downloaded.");
+      setSavedToast("The link is in your address bar. The image is in your downloads.");
     }
 
     const stillData = canvasRef.current?.exportStill();
@@ -160,7 +161,7 @@ export function ComposeStudio() {
         a.download = `woodoo-dfw-${layout}-${collection}-${finish}.glb`;
         a.click();
         window.setTimeout(() => URL.revokeObjectURL(objUrl), 2000);
-        setSavedToast("3D glTF model exported for AR Quick Look / CAD viewers.");
+        setSavedToast("3D model downloaded (.glb).");
       }
     } finally {
       setExportingAr(false);
@@ -171,18 +172,15 @@ export function ComposeStudio() {
   const tradeQuoteUrl = `/trade/send-a-plan?${shareQuery}&from=compose`;
 
   const dayLabel =
-    timeOfDay < 0.25
-      ? "Texas morning"
-      : timeOfDay < 0.6
-        ? "Midday"
-        : timeOfDay < 0.85
-          ? "Late afternoon"
-          : "Golden hour";
+    timeOfDay < 0.25 ? "Morning" : timeOfDay < 0.6 ? "Midday" : timeOfDay < 0.85 ? "Afternoon" : "Evening";
+
+  const sched = summarizeLayoutSchedule(layout, ceiling);
+  const finishOptions = FINISH_ORDER.filter((fSlug) => isValidFinishForCollection(collection, fSlug));
 
   return (
-    <div className="compose-layout theme-dark">
-      {/* Interactive 3D Viewport */}
-      <div className="compose-viewport">
+    <div className="cs">
+      {/* The room. Sticky beside the options on desktop, pinned above them on phones. */}
+      <div className="cs-stage">
         <StudioCanvas
           ref={canvasRef}
           config={{
@@ -194,37 +192,21 @@ export function ComposeStudio() {
             view,
             timeOfDay,
           }}
-          style={{ height: "100%", minHeight: "62vh" }}
+          style={{ height: "100%", minHeight: 0 }}
           ariaLabel={`Interactive 3D view of ${ROOM_LAYOUTS[layout].name} in ${COLLECTIONS[collection].name} ${FINISHES[finish].name} for a ${ceiling}-foot ceiling. Concept render.`}
         />
-
-        {/* Top-left room summary pill (hidden on phones) */}
-        <div className="compose-stamp" aria-hidden="true">
-          {COLLECTIONS[collection].name} · {FINISHES[finish].name} · {ceiling} ft
-        </div>
-
-        {/* Bottom-left view mode quick switcher */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: "0.85rem",
-            left: "1rem",
-            display: "flex",
-            gap: "0.4rem",
-            flexWrap: "wrap",
-          }}
-        >
+        <div className="cs-views" role="group" aria-label="Camera">
           {(
             [
-              { id: "perspective", label: "Perspective" },
-              { id: "plan", label: "Plan view" },
-              { id: "walk-around", label: "Walk-around" },
+              { id: "perspective", label: "Room" },
+              { id: "walk-around", label: "Closer" },
+              { id: "plan", label: "Plan" },
             ] as const
           ).map((v) => (
             <button
               key={v.id}
               type="button"
-              className="chip-btn"
+              className="cs-view"
               aria-pressed={view === v.id}
               onClick={() => setView(v.id)}
             >
@@ -234,57 +216,49 @@ export function ComposeStudio() {
         </div>
       </div>
 
-      {/* Architectural Specification & Controls Rail */}
-      <aside className="compose-sidebar" aria-label="Kitchen configurator controls">
-        <div>
-          <p className="mono-label" style={{ color: "var(--amber-on-dark)", marginBottom: "0.35rem" }}>
-            Compose your kitchen
+      <aside className="cs-panel" aria-label="Kitchen options">
+        <header className="cs-intro">
+          <h1 className="cs-title">Compose your kitchen.</h1>
+          <p className="cs-lede">
+            Choose a room, a door and a finish. Drag the view to look around.
           </p>
-          <h1 className="h2-serif" style={{ fontSize: "2.1rem", marginBottom: "0.45rem" }}>
-            Three door styles. <span className="tone-2">Five finishes.</span>
-          </h1>
-          <p style={{ margin: 0, fontSize: "0.9rem", color: "#b6aea3" }}>
-            Drag to look around, pinch or Ctrl + scroll to zoom. Every change re-assembles the
-            cabinetry in real time. Pricing and
-            availability are prepared directly by our DFW team from your measurements.
-          </p>
-        </div>
+        </header>
 
-        {/* Layout Selector */}
-        <div>
-          <span className="mono-label">01 · Room layout</span>
-          <div className="chip-row" role="group" aria-label="Room layout">
+        <section className="cs-group" aria-labelledby="cs-layout">
+          <h2 id="cs-layout" className="cs-h">
+            Room. <span className="cs-q">Which layout are you planning?</span>
+          </h2>
+          <div className="cs-cards cs-cards-2">
             {LAYOUT_ORDER.map((lid) => (
               <button
                 key={lid}
                 type="button"
                 id={`compose-layout-${lid}`}
-                className="chip-btn"
+                className="cs-card"
                 aria-pressed={layout === lid}
                 onClick={() => {
                   setLayout(lid);
                   announce(lid, collection, finish, ceiling);
                 }}
               >
-                {ROOM_LAYOUTS[lid].shortName}
+                <span className="cs-card-name">{ROOM_LAYOUTS[lid].shortName}</span>
               </button>
             ))}
           </div>
-          <p style={{ margin: "0.45rem 0 0", fontSize: "0.84rem", color: "#9e968b" }}>
-            {ROOM_LAYOUTS[layout].description}
-          </p>
-        </div>
+          <p className="cs-note">{ROOM_LAYOUTS[layout].description}</p>
+        </section>
 
-        {/* Collection Selector */}
-        <div>
-          <span className="mono-label">02 · Door style</span>
-          <div className="chip-row" role="group" aria-label="Door style">
+        <section className="cs-group" aria-labelledby="cs-door">
+          <h2 id="cs-door" className="cs-h">
+            Door. <span className="cs-q">Which profile suits the room?</span>
+          </h2>
+          <div className="cs-cards">
             {COLLECTION_LIST.map((col) => (
               <button
                 key={col.slug}
                 type="button"
                 id={`compose-collection-${col.slug}`}
-                className="chip-btn"
+                className="cs-card cs-card-row"
                 aria-pressed={collection === col.slug}
                 onClick={() => {
                   const nextFinish = resolveFinishForCollection(col.slug, finish);
@@ -293,236 +267,161 @@ export function ComposeStudio() {
                   announce(layout, col.slug, nextFinish, ceiling);
                 }}
               >
-                {col.name}
+                <span className="cs-card-name">{col.name}</span>
+                <span className="cs-card-sub">{DOOR_LINES[col.slug]}</span>
               </button>
             ))}
           </div>
-        </div>
+        </section>
 
-        {/* Valid Finish Selector */}
-        <div>
-          <span className="mono-label">03 · Finish</span>
-          <div className="chip-row" role="group" aria-label="Finish">
-            {FINISH_ORDER.filter((fSlug) => isValidFinishForCollection(collection, fSlug)).map((fSlug) => {
+        <section className="cs-group" aria-labelledby="cs-finish">
+          <h2 id="cs-finish" className="cs-h">
+            Finish. <span className="cs-q">{finishOptions.length} for this door.</span>
+          </h2>
+          <div className="cs-swatches" role="group" aria-label="Finish">
+            {finishOptions.map((fSlug) => {
               const f = FINISHES[fSlug];
               return (
                 <button
                   key={fSlug}
                   type="button"
                   id={`compose-finish-${fSlug}`}
-                  className="chip-btn"
+                  className="cs-swatch"
                   aria-pressed={finish === fSlug}
+                  aria-label={f.name}
+                  title={f.name}
                   onClick={() => {
                     setFinish(fSlug);
                     announce(layout, collection, fSlug, ceiling);
                   }}
                 >
-                  <span
-                    className="swatch-dot"
-                    style={{ width: 16, height: 16, backgroundImage: `url(${f.swatchImage})` }}
-                    aria-hidden="true"
-                  />
-                  {f.name}
+                  <span style={{ backgroundImage: `url(${f.swatchImage})`, backgroundColor: f.swatchHex }} />
                 </button>
               );
             })}
           </div>
-          <p style={{ margin: "0.45rem 0 0", fontSize: "0.84rem", color: "#9e968b" }}>
-            {FINISHES[finish].shortNote}
-          </p>
-        </div>
+          <p className="cs-finish-name">{FINISHES[finish].name}</p>
+          <p className="cs-note">{FINISHES[finish].shortNote}</p>
+        </section>
 
-        {/* Ceiling Height Selector */}
-        <div>
-          <span className="mono-label">04 · Ceiling height (stacked uppers + 3&quot; molding)</span>
-          <div className="chip-row" role="group" aria-label="Ceiling height">
+        <section className="cs-group" aria-labelledby="cs-ceiling">
+          <h2 id="cs-ceiling" className="cs-h">
+            Ceiling. <span className="cs-q">Wall cabinets stack to fit.</span>
+          </h2>
+          <div className="cs-segment" role="group" aria-label="Ceiling height">
             {([8, 9, 10] as CeilingHeightFt[]).map((ft) => (
               <button
                 key={ft}
                 type="button"
                 id={`compose-ceiling-${ft}`}
-                className="chip-btn"
                 aria-pressed={ceiling === ft}
                 onClick={() => {
                   setCeiling(ft);
                   announce(layout, collection, finish, ft);
                 }}
               >
-                {ft} ft ceiling
+                {ft} ft
               </button>
             ))}
           </div>
-        </div>
+        </section>
 
-        {/* Stretch Goal: Time-of-Day Texas Light Slider */}
-        <div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <label htmlFor="texas-light-slider" className="mono-label">
-              05 · Texas daylight
-            </label>
-            <span className="mono-label" style={{ color: "var(--amber-on-dark)" }}>
-              {dayLabel}
-            </span>
+        <section className="cs-group" aria-labelledby="cs-light">
+          <div className="cs-row">
+            <h2 id="cs-light" className="cs-h">
+              <label htmlFor="texas-light-slider">Light.</label>
+            </h2>
+            <span className="cs-q">{dayLabel}</span>
           </div>
           <input
             id="texas-light-slider"
+            className="cs-range"
             type="range"
             min={0}
             max={1}
             step={0.02}
             value={timeOfDay}
             onChange={(e) => setTimeOfDay(parseFloat(e.target.value))}
-            style={{ width: "100%", marginTop: "0.45rem", accentColor: "#d18d43", cursor: "pointer" }}
           />
-        </div>
+        </section>
 
-        {/* Live Parametric Concept Kit Schedule */}
-        {(() => {
-          const sched = summarizeLayoutSchedule(layout, ceiling);
-          return (
-            <details
-              style={{
-                border: "1px solid rgba(241, 238, 231, 0.16)",
-                background: "rgba(19, 17, 16, 0.5)",
-                padding: "0.75rem 0.9rem",
-              }}
+        <section className="cs-summary" aria-label="Your kitchen">
+          <p className="cs-summary-title">Your kitchen</p>
+          <p className="cs-summary-line">
+            {ROOM_LAYOUTS[layout].shortName} · {COLLECTIONS[collection].name} · {FINISHES[finish].name} ·{" "}
+            {ceiling} ft
+          </p>
+          <details className="cs-details">
+            <summary>
+              <span>Cabinet list</span>
+              <span className="cs-q">{sched.cabinetCount + sched.stackedUpperCount} cabinets</span>
+            </summary>
+            <ul>
+              {sched.items.map((item) => (
+                <li key={`${item.code}-${item.dimensionsLabel}`}>
+                  <span className="cs-code">
+                    {item.quantity}× {item.code}
+                  </span>
+                  <span>
+                    {item.role} · {item.dimensionsLabel}
+                  </span>
+                </li>
+              ))}
+              {sched.moldingRuns > 0 && (
+                <li>
+                  <span className="cs-code">Crown</span>
+                  <span>3&quot; molding for {ceiling} ft</span>
+                </li>
+              )}
+            </ul>
+            <p className="cs-note">
+              Sizes here are illustrative. A person checks every cabinet, filler and panel against
+              your measurements before you get a price.
+            </p>
+          </details>
+
+          <div className="cs-actions">
+            <Link
+              href={quoteUrl}
+              id="compose-get-quoted"
+              className="btn btn-primary cs-btn"
+              onClick={() =>
+                trackEvent("cta_click", { cta: "compose-get-quoted", layout, collection, finish, ceiling })
+              }
             >
-              <summary
-                className="mono-label"
-                style={{
-                  cursor: "pointer",
-                  color: "var(--paper)",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  listStyle: "none",
-                }}
-              >
-                <span>06 · Concept kit schedule</span>
-                <span style={{ color: "var(--amber-on-dark)" }}>
-                  {sched.cabinetCount + sched.stackedUpperCount} boxes
-                </span>
-              </summary>
-              <div style={{ marginTop: "0.75rem", display: "grid", gap: "0.38rem" }}>
-                {sched.items.map((item) => (
-                  <div
-                    key={`${item.code}-${item.dimensionsLabel}`}
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      gap: "0.5rem",
-                      fontSize: "0.78rem",
-                      borderBottom: "1px solid rgba(241, 238, 231, 0.08)",
-                      paddingBottom: "0.3rem",
-                    }}
-                  >
-                    <span style={{ color: "#f1eee7", fontFamily: "var(--font-mono)" }}>
-                      {item.quantity}× {item.code}
-                    </span>
-                    <span style={{ color: "#b6aea3", textAlign: "right" }}>
-                      {item.role} · {item.dimensionsLabel}
-                    </span>
-                  </div>
-                ))}
-                {sched.moldingRuns > 0 && (
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      fontSize: "0.78rem",
-                      paddingTop: "0.15rem",
-                    }}
-                  >
-                    <span style={{ color: "var(--amber-on-dark)", fontFamily: "var(--font-mono)" }}>
-                      CROWN
-                    </span>
-                    <span style={{ color: "#ddd6cb" }}>3&quot; crown molding ({ceiling} ft stack)</span>
-                  </div>
-                )}
-                <p style={{ margin: "0.45rem 0 0", fontSize: "0.72rem", color: "#9e968b", lineHeight: 1.45 }}>
-                  Proportions are illustrative. There is no automatic pricing: our DFW team checks
-                  every box, filler, and panel against your wall measurements.
-                </p>
-              </div>
-            </details>
-          );
-        })()}
-
-        {/* Save, Share, AR Export & Get Quoted */}
-        <div
-          className="hairline-top"
-          style={{ paddingTop: "1.1rem", display: "flex", flexDirection: "column", gap: "0.65rem" }}
-        >
-          <Link
-            href={quoteUrl}
-            id="compose-get-quoted"
-            className="btn btn-primary"
-            onClick={() =>
-              trackEvent("cta_click", {
-                cta: "compose-get-quoted",
-                layout,
-                collection,
-                finish,
-                ceiling,
-              })
-            }
-          >
-            Get a quote
-          </Link>
-
-          <Link
-            href={tradeQuoteUrl}
-            id="compose-send-plan"
-            className="btn"
-            style={{ color: "var(--paper)", borderColor: "rgba(241,238,231,0.3)" }}
-            onClick={() =>
-              trackEvent("cta_click", {
-                cta: "compose-send-plan",
-                layout,
-                collection,
-                finish,
-                ceiling,
-              })
-            }
-          >
-            Attach to builder plan upload
-          </Link>
-
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem" }}>
-            <button
-              type="button"
-              id="compose-save-btn"
-              className="btn btn-sm"
-              style={{ color: "var(--paper)", borderColor: "rgba(241,238,231,0.25)" }}
-              onClick={() => void handleSaveKitchen()}
+              Get a quote
+            </Link>
+            <Link
+              href={tradeQuoteUrl}
+              id="compose-send-plan"
+              className="btn cs-btn"
+              onClick={() =>
+                trackEvent("cta_click", { cta: "compose-send-plan", layout, collection, finish, ceiling })
+              }
             >
-              Save my kitchen
+              Send it with a plan
+            </Link>
+          </div>
+          <div className="cs-links">
+            <button type="button" id="compose-save-btn" className="pp-link cs-linkbtn" onClick={() => void handleSaveKitchen()}>
+              Save image and link
             </button>
             <button
               type="button"
               id="compose-ar-export"
-              className="btn btn-sm"
-              style={{ color: "var(--paper)", borderColor: "rgba(241,238,231,0.25)" }}
+              className="pp-link cs-linkbtn"
               disabled={exportingAr}
               onClick={() => void handleExportAr()}
             >
-              {exportingAr ? "Exporting..." : "Download 3D model"}
+              {exportingAr ? "Preparing model" : "Download 3D model"}
             </button>
           </div>
-
           {savedToast && (
-            <p
-              role="status"
-              style={{
-                margin: "0.25rem 0 0",
-                fontSize: "0.84rem",
-                color: "var(--amber-on-dark)",
-              }}
-            >
+            <p role="status" className="cs-toast">
               {savedToast}
             </p>
           )}
-        </div>
+        </section>
 
         <div className="sr-only" aria-live="polite" aria-atomic="true">
           {liveStatus}
@@ -531,3 +430,9 @@ export function ComposeStudio() {
     </div>
   );
 }
+
+const DOOR_LINES: Record<CollectionSlug, string> = {
+  "traditional-shaker": "Wide frame, recessed panel",
+  "slim-shaker": "Narrow frame, recessed panel",
+  flat: "One plain slab",
+};

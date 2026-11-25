@@ -293,6 +293,8 @@ export function buildRoomProps(
   root.name = "roomProps";
   const ceilingIn = SITE_CONFIG.PLACEHOLDER_DIMS.ceilingHeightsIn[ceiling];
   (ROOM_LAYOUTS[layoutId].fixtures ?? []).forEach((f, i) => {
+    // Floor plants read as toy props at studio scale; the counter plants carry enough life.
+    if (f.kind === "plant-floor") return;
     root.add(buildFixture(mats, f, ceilingIn, 1013 + i * 97));
   });
   return root;

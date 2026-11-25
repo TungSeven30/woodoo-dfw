@@ -1,13 +1,11 @@
 /**
  * Real Woodoo project photos used on the home page.
  *
- * PENDING PERMISSION: these come from Woodoo Cabinetry's own shoots (woodoocabinetry.com) and
- * Modé Concept. Adam and Eric have not yet confirmed that the Dallas–Fort Worth site may reuse
- * them, or whether they want a credit. Do not ship to production until they do.
+ * Cleared for use by Woodoo on 2026-11-25, including edits. Every photo carries the same grade
+ * (one white point, matched exposure, a soft highlight shoulder and calmer warm tones) so the set
+ * reads as one shoot. The cabinetry itself is not retouched.
  * Originals and sources: /mnt/project-files/woodoo-dfw-real-photos/MANIFEST.md
  */
-export const PHOTOS_PENDING_PERMISSION = true;
-
 export const PHOTOS = {
   heroKitchen: {
     src: "/photos/hero-kitchen.jpg",
