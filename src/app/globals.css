@@ -1661,3 +1661,340 @@ body.flatpack-egg .film-overlay-panel {
       linear-gradient(180deg, rgba(241, 238, 231, 0.6) 0%, rgba(241, 238, 231, 0) 18%);
   }
 }
+
+/* ------------------------------------------------------------------
+   Home page: the product, in photographs.
+   Big type on paper, full-bleed photos, one slow move per photo.
+   The 2 px gutters between finish photos echo the 2 mm door gap.
+   ------------------------------------------------------------------ */
+.pp-hero {
+  padding-top: calc(var(--header-h) + clamp(40px, 6vh, 80px));
+  text-align: center;
+  background: var(--paper);
+}
+
+.pp-hero-copy {
+  padding: 0 var(--gutter);
+  margin-bottom: clamp(32px, 5vh, 56px);
+}
+
+.pp-display {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(56px, 9vw, 136px);
+  font-weight: 600;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  color: var(--ink);
+}
+
+.pp-lede {
+  margin: 16px auto 0;
+  max-width: 26ch;
+  font-size: clamp(22px, 2.6vw, 36px);
+  font-weight: 500;
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+  color: #6f675e;
+  text-wrap: balance;
+}
+
+.pp-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+
+.pp-link {
+  font-size: 1.0625rem;
+  font-weight: 500;
+  color: var(--amber-on-light);
+  text-decoration: none;
+}
+
+.pp-link::after {
+  content: " ›";
+}
+
+.pp-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.pp-bleed {
+  display: block;
+  width: 100%;
+}
+
+.pp-bleed img,
+img.pp-bleed {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.pp-hero-photo img,
+img.pp-hero-photo {
+  height: min(78vh, 62vw);
+  object-fit: cover;
+}
+
+@media (max-width: 760px) {
+  .pp-hero-photo img,
+  img.pp-hero-photo {
+    height: 72vh;
+  }
+}
+
+.pp-bleed-wrap {
+  overflow: hidden;
+}
+
+.pp-fill,
+.pp-fill img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pp-section {
+  padding-top: clamp(96px, 14vh, 160px);
+  background: var(--paper);
+}
+
+.pp-copy {
+  max-width: 860px;
+  margin: 0 auto clamp(40px, 6vh, 64px);
+  padding: 0 var(--gutter);
+  text-align: center;
+}
+
+.pp-h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(40px, 5.6vw, 80px);
+  font-weight: 600;
+  line-height: 1.03;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.pp-quiet {
+  color: #8a8279;
+}
+
+.pp-h3 {
+  margin: 24px 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(28px, 2.6vw, 40px);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.pp-body {
+  margin: 20px auto 0;
+  max-width: 40ch;
+  font-size: clamp(18px, 1.5vw, 21px);
+  line-height: 1.45;
+  color: #544d46;
+  text-wrap: pretty;
+}
+
+.pp-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 0;
+}
+
+.pp-split-photo {
+  height: min(92vh, 960px);
+  overflow: hidden;
+}
+
+.pp-split-copy {
+  padding: 48px clamp(24px, 6vw, 96px);
+}
+
+.pp-split-copy .pp-body {
+  margin-left: 0;
+}
+
+.pp-split-copy .pp-link {
+  display: inline-block;
+  margin-top: 24px;
+}
+
+.pp-number {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(96px, 14vw, 220px);
+  font-weight: 600;
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+@media (max-width: 900px) {
+  .pp-split {
+    grid-template-columns: 1fr;
+  }
+  .pp-split-photo {
+    height: 80vh;
+  }
+  .pp-split-copy {
+    padding: 48px var(--gutter) 0;
+  }
+}
+
+.pp-finishes {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min(560px, 40vw);
+  gap: 2px;
+  margin: 0;
+  padding: 0 var(--gutter);
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+  scrollbar-width: none;
+}
+
+.pp-finishes::-webkit-scrollbar {
+  display: none;
+}
+
+.pp-finish {
+  scroll-snap-align: start;
+}
+
+.pp-finish a {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.pp-finish-photo {
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--paper-surface);
+}
+
+.pp-finish-photo img {
+  transition: transform 600ms var(--ease-join);
+}
+
+.pp-finish a:hover .pp-finish-photo img {
+  transform: scale(1.02);
+}
+
+.pp-finish-name {
+  margin: 16px 0 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.pp-finish-door {
+  margin: 4px 0 0;
+  font-size: 0.95rem;
+  color: #6f675e;
+}
+
+@media (min-width: 1100px) {
+  /* All five at once on wide screens; a swipeable row on smaller ones. */
+  .pp-finishes {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    overflow: visible;
+  }
+}
+
+@media (max-width: 760px) {
+  .pp-finishes {
+    grid-auto-columns: 82vw;
+  }
+}
+
+.pp-studio {
+  padding-bottom: clamp(32px, 6vh, 64px);
+}
+
+.pp-paths {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  padding-bottom: clamp(96px, 14vh, 160px);
+}
+
+.pp-path {
+  display: block;
+  padding-bottom: 8px;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+.pp-path-photo {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.pp-path .pp-link {
+  display: inline-block;
+  margin-top: 16px;
+}
+
+@media (max-width: 900px) {
+  .pp-paths {
+    grid-template-columns: 1fr;
+    gap: 64px;
+  }
+}
+
+/* One slow move per photo, tied to scroll: it settles from a slight zoom as it enters. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .pp-zoom img,
+    img.pp-zoom {
+      animation: pp-settle linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 55%;
+    }
+    .pp-reveal {
+      animation: pp-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 10% entry 90%;
+    }
+  }
+}
+
+@keyframes pp-settle {
+  from {
+    transform: scale(1.08);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes pp-rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

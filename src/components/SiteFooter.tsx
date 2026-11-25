@@ -22,8 +22,8 @@ export function SiteFooter() {
               <span>{SITE_CONFIG.BRAND_NAME}</span>
             </div>
             <p style={{ margin: "0 0 0.85rem", color: "#b6aea3", maxWidth: "36ch", fontSize: "0.95rem" }}>
-              European-style frameless RTA kitchen and bath cabinets for Dallas–Fort Worth
-              builders, remodelers, designers, and homeowners. Manufactured in Malaysia.
+              Frameless kitchen and bath cabinetry for Dallas–Fort Worth homes, builders and
+              designers. Made in Malaysia.
             </p>
             <p className="mono-label" style={{ margin: "0 0 0.35rem" }}>
               {addressText}
@@ -102,7 +102,7 @@ export function SiteFooter() {
             &copy; {new Date().getFullYear()} {SITE_CONFIG.BRAND_NAME}. Dallas–Fort Worth, TX.
           </span>
           <span className="mono-label" style={{ fontSize: "0.68rem" }}>
-            It arrives flat. It leaves whole.
+            2 mm between every door
           </span>
         </div>
       </div>
